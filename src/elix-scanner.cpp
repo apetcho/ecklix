@@ -191,6 +191,37 @@ Token Tokenizer::read_token(void){
     return token;
 }
 
+// -*-
+Token Tokenizer::read_string(void){
+    Token token;
+    token.kind = TokenKind::Str;
+    token.row = this->m_row;
+    token.col = this->m_col;
+    this->advance(); // eat '"'
+    auto c = this->peek();
+    token.lexeme;
+    while(!this->is_at_end() && c != '"'){
+        if(c=='\\' && this->m_pos+1 < this->m_src.size()){
+            auto esc = this->advance();
+            if(esc=='n'){ token.lexeme.push_back('\n'); }
+            else if(esc=='r'){ token.lexeme.push_back('\r'); }
+            else if(esc=='b'){ token.lexeme.push_back('\b'); }
+            else if(esc=='t'){ token.lexeme.push_back('\t'); }
+            else if(esc=='f'){ token.lexeme.push_back('\f'); }
+            else{ token.lexeme.push_back(esc); }
+            this->m_pos++;
+        }else{
+            token.lexeme.push_back(c);
+            c = this->advance();
+        }
+    }
+    if(!this->is_at_end() && this->peek()=='"'){
+        this->advance(); // eat 
+    }
+    
+    return token;
+}
+
 /*
 class Tokenizer{
 public:
@@ -202,7 +233,6 @@ private:
 
 
 
-Token Tokenizer::read_string(void){}
 char Tokenizer::peek(void) const{}
 char Tokenizer::peek_next(void) const{}
 char Tokenizer::advance(void){}
