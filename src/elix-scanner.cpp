@@ -6,12 +6,16 @@
 namespace ekasoft::elx{
 // -
 
+Tokenizer::Tokenizer(const std::string& src)
+: m_src{src}
+{}
+
 /*
 
 
 class Tokenizer{
 public:
-Tokenizer::Tokenizer(const std::string& src);
+
 Token Tokenizer::next_token(void);
 
 private:
