@@ -249,6 +249,15 @@ char Tokenizer::advance(void){
     return c;
 }
 
+// -*-
+void Tokenizer::skip_comment(char c) {
+    if(c==';'){
+        while(!this->is_at_end() || (this->peek()!='\n')){
+            this->advance();
+        }
+    }
+}
+
 /*
 class Tokenizer{
 public:
@@ -258,7 +267,6 @@ private:
     u32 m_row = 1;
     u32 m_col = 1;
 
-void Tokenizer::skip_whitespace(void){}
 
 };
 
