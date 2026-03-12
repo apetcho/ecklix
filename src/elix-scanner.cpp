@@ -332,8 +332,23 @@ Expression Parser::parse_array(void){
 
 // -*-
 Expression Parser::parse_literal(void){
-    //! @todo
-    return nullptr;
+    auto tok = this->m_token;
+    switch(tok.kind){
+    case TokenKind::Sym:
+    case TokenKind::True:
+    case TokenKind::False:
+    case TokenKind::NIL:
+        return this->parse_symbol();
+    case TokenKind::Integer:{
+            auto num = Number(std::stoll(tok.lexeme));
+            return std::make_unique<LiteralExpr>(std::move(Object(num)));
+        }
+    case TokenKind::Float:{
+            auto num = Number(std::stod(tok.lexeme));
+            return std::make_unique<LiteralExpr>(std::move(Object(num)));
+        }
+    }
+    return std::make_unique<LiteralExpr>(std::move(Object()));
 }
 
 // -*-
