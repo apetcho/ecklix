@@ -1,5 +1,6 @@
 #include "elix.hpp"
 #include<cctype>
+#include<initializer_list>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -33,11 +34,119 @@ bool Tokenizer::is_symbol_char(char c) const{
     return (symchars.find(c)!=std::string::npos);
 }
 
+// -*-
+Token Tokenizer::next_token(void){
+    this->skip_whitespace();
+    this->skip_comment(this->peek());
+    if(this->is_at_end()){
+        return Token(TokenKind::End, "", this->m_row, this->m_col);
+    }
+    auto c = this->peek();
+    switch(c){
+    case '(':
+        this->advance();
+        return Token(TokenKind::LParen, "(", this->m_row, this->m_col);
+    case ')':
+        this->advance();
+        return Token(TokenKind::LParen, ")", this->m_row, this->m_col);
+    case '[':
+        this->advance();
+        return Token(TokenKind::LParen, "[", this->m_row, this->m_col);
+    case ']':
+        this->advance();
+        return Token(TokenKind::LParen, "]", this->m_row, this->m_col);
+    case '{':
+        this->advance();
+        return Token(TokenKind::LParen, "{", this->m_row, this->m_col);
+    case '}':
+        this->advance();
+        return Token(TokenKind::LParen, "}", this->m_row, this->m_col);
+    case '"':
+        this->advance();
+        return this->read_string();
+    default:{
+            // std::initializer_list<TokenKind> kinds{
+            //     TokenKind::Arrow, TokenKind::Dot,
+            //     TokenKind::Quote, TokenKind::Quasiquote,
+            //     TokenKind::Unquote, TokenKind::UnquoteSplicing,
+            //     TokenKind::Progn, TokenKind::If,
+            //     TokenKind::Let, TokenKind::Var,
+            //     TokenKind::Cond, TokenKind::False,
+            //     TokenKind::For, TokenKind::Fun,
+            //     TokenKind::Lambda, TokenKind::Macro,
+            //     TokenKind::NIL, TokenKind::While, TokenKind::True,
+            // };
+            std::string text{};
+            while(!this->is_at_end() && this->is_symbol_char(c) && !std::isspace(c)){
+                text.push_back(c);
+                this->advance();
+            }
+            bool isFloat{false};
+            bool isNum = (
+                !text.empty() &&
+                (std::isdigit(text[0]) || text[0]=='-' || text[0]=='+')
+            );
+            if(!std::isdigit(text[1])){
+                return Token(TokenKind::Sym, text, this->m_row, this->m_col);
+            }
+            auto ptr = text.begin()+2;
+            while(ptr != text.end()){
+                if(std::isdigit(*ptr)){ ptr++;}
+                else{ break; }
+            }
+            if(ptr == text.end()){
+                return Token(TokenKind::Integer, text, this->m_row, this->m_col);
+            }
+            if(*ptr=='.'){ isFloat = true; ++ptr; }
+            if(ptr==text.end()){
+                return Token(TokenKind::Float, text, this->m_row, this->m_col);
+            }
+            if(std::isdigit(*ptr)){
+                while(std::isdigit(*ptr)){ ptr++; }
+            }
+            if(ptr==text.end()){
+                return Token(TokenKind::Float, text, this->m_row, this->m_col);
+            }
+            if(*ptr=='e' || *ptr=='E'){ ++ptr; }
+            if(ptr==text.end()){
+                return Token(TokenKind::Sym, text, this->m_row, this->m_col);
+            }
+            if(*ptr=='-' || *ptr=='+' || std::isdigit(*ptr)){
+                if(*ptr=='-' || *ptr=='+'){
+                    ptr++;
+                    if(ptr==text.end()){
+                        return Token(TokenKind::Sym, text, this->m_row, this->m_col);
+                    }
+                    if(std::isdigit(*ptr)){
+                        ++ptr;
+                        while(ptr!=text.end()){
+                            if(!std::isdigit(*ptr)){
+                                return Token(TokenKind::Sym, text, this->m_row, this->m_col);
+                            }
+                        }
+                        return Token(TokenKind::Float, text, this->m_row, this->m_col);
+                    }
+                }else{
+                    ++ptr;
+                    while(ptr!=text.end()){
+                        if(!std::isdigit(*ptr)){
+                            return Token(TokenKind::Sym, text, this->m_row, this->m_col);
+                        }
+                    }
+                    Token(TokenKind::Float, text, this->m_row, this->m_col);
+                }
+            }else{
+                return this->match(text);
+            }
+        }//
+    }
+}
+
 /*
 class Tokenizer{
 public:
 
-Token Tokenizer::next_token(void);
+
 
 private:
     std::string m_src;
@@ -51,7 +160,7 @@ Token Tokenizer::read_string(void){}
 char Tokenizer::peek(void) const{}
 char Tokenizer::peek_next(void) const{}
 char Tokenizer::advance(void){}
-
+Token Tokenizer::match(std::initializer_list<TokenKind> kind, const std::string& text){}
 
 };
 

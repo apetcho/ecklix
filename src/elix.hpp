@@ -530,9 +530,12 @@ enum class TokenKind{
 // -*-
 struct Token{
     TokenKind kind;
-    std::string lexeme;
-    u32 row;
-    u32 col;
+    std::string lexeme = "";
+    u32 row = 1;
+    u32 col = 1;
+
+    Token()
+    : kind{TokenKind::End}{}
 
     Token(TokenKind kind, const std::string& lex, u32 r, u32 c)
     : kind{kind}, lexeme{lex}, row{r}, col{c}
@@ -548,18 +551,21 @@ public:
 private:
     std::string m_src;
     u32 m_pos = 0;
+    u32 m_start = 0;
     u32 m_row;
     u32 m_col;
 
     void skip_whitespace(void);
+    void skip_comment(char c);
     Token read_number(void);
     Token read_symbol(void);
     Token read_string(void);
     bool is_at_end(void) const;
     char peek(void) const;
     char peek_next(void) const;
-    char advance(void);
+    void advance(void);
     bool is_symbol_char(char c) const;
+    Token match(const std::string& text);
 };
 
 // --------------
