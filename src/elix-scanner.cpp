@@ -222,6 +222,12 @@ Token Tokenizer::read_string(void){
     return token;
 }
 
+// -*-
+char Tokenizer::peek(void) const{
+    if(this->is_at_end()){ return '\0'; }
+    return this->m_src[this->m_pos];
+}
+
 /*
 class Tokenizer{
 public:
@@ -233,7 +239,6 @@ private:
 
 
 
-char Tokenizer::peek(void) const{}
 char Tokenizer::peek_next(void) const{}
 char Tokenizer::advance(void){}
 
