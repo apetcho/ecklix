@@ -228,6 +228,14 @@ char Tokenizer::peek(void) const{
     return this->m_src[this->m_pos];
 }
 
+// -*-
+char Tokenizer::peek_next(void) const{
+    if((this->m_pos + 1) >= this->m_src.length()){
+        return '\0';
+    }
+    return this->m_src[(this->m_pos+1)];
+}
+
 /*
 class Tokenizer{
 public:
@@ -237,9 +245,6 @@ private:
     u32 m_row = 1;
     u32 m_col = 1;
 
-
-
-char Tokenizer::peek_next(void) const{}
 char Tokenizer::advance(void){}
 
 };
