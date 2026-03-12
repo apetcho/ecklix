@@ -1,4 +1,5 @@
 #include "elix.hpp"
+#include<cctype>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -14,6 +15,13 @@ bool Tokenizer::is_at_end(void) const{
     return (this->m_pos >= this->m_src.length());
 }
 
+// -*-
+void Tokenizer::skip_whitespace(void){
+    while(!this->is_at_end() && std::isspace(this->m_src[this->m_pos])){
+        this->m_pos++;
+    }
+}
+
 /*
 class Tokenizer{
 public:
@@ -26,7 +34,6 @@ private:
     u32 m_row = 1;
     u32 m_col = 1;
 
-void Tokenizer::skip_whitespace(void);
 Token Tokenizer::read_number(void);
 Token Tokenizer::read_symbol(void);
 Token Tokenizer::read_string(void);
