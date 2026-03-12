@@ -258,54 +258,37 @@ void Tokenizer::skip_comment(char c) {
     }
 }
 
+// -*-
+Parser::Parser(Tokenizer& tokenizer)
+: m_tokenizer{tokenizer}
+{}
+
+// -*-
+bool Parser::is_at_end(void){
+    return this->m_tokenizer.is_at_end();
+}
+
 /*
-class Tokenizer{
-public:
-private:
-    std::string m_src;
-    u32 m_pos = 0;
-    u32 m_row = 1;
-    u32 m_col = 1;
-
-
-};
 
 // --------------
 // -*- Parser -*-
 // --------------
 class Parser{
 public:
-    explicit Parser(Tokenizer& tokenizer);
 
-    Expression parse(void);
+Expression Parser::parse(void);
 
 private:
     Tokenizer& m_tokenizer;
 
-    bool is_at_end(void);
-    Expression match(std::initializer_list<TokenKind> kinds);
-    Expression parse_list(void);
-    Expression parse_hashset(void);
-    Expression parse_hashmap(void);
-    Expression parse_array(void);
-    Expression parse_literal(void);
-    Expression parse_symbol(void);
-
-    // -*-
-    Object handle_progn(Vec<Expression> exprs);
-    Object handle_if(Vec<Expression> exprs);
-    Object handle_let(Vec<Expression> exprs);
-    Object handle_var(Vec<Expression> exprs);
-    Object handle_cond(Vec<Expression> exprs);
-    Object handle_while(Vec<Expression> exprs);
-    Object handle_for(Vec<Expression> exprs);
-    Object handle_fun(Vec<Expression> exprs);
-    Object handle_macro(Vec<Expression> exprs);
-    Object handle_quote(Vec<Expression> exprs);
-    Object handle_quasiquote(Vec<Expression> exprs);
-    Object handle_unquote(Vec<Expression> exprs);
-    Object handle_unquote_splicing(Vec<Expression> exprs);
-    Object handle_list(Vec<Expression> exprs); // function-call
+Expression Parser::match(std::initializer_list<TokenKind> kinds){}
+Expression Parser::parse_list(void){}
+Expression Parser::parse_hashset(void){}
+Expression Parser::parse_hashmap(void){}
+Expression Parser::parse_array(void){}
+Expression Parser::parse_literal(void){}
+Expression Parser::parse_symbol(void){}
+    
 };
 
 */

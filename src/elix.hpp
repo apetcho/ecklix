@@ -569,6 +569,8 @@ private:
     char advance(void);
     bool is_symbol_char(char c) const;
     Token match(const std::string& text);
+    
+    friend class Parser;
 };
 
 // --------------
@@ -591,22 +593,6 @@ private:
     Expression parse_array(void);
     Expression parse_literal(void);
     Expression parse_symbol(void);
-
-    // -*-
-    Object handle_progn(Vec<Expression> exprs);
-    Object handle_if(Vec<Expression> exprs);
-    Object handle_let(Vec<Expression> exprs);
-    Object handle_var(Vec<Expression> exprs);
-    Object handle_cond(Vec<Expression> exprs);
-    Object handle_while(Vec<Expression> exprs);
-    Object handle_for(Vec<Expression> exprs);
-    Object handle_fun(Vec<Expression> exprs);
-    Object handle_macro(Vec<Expression> exprs);
-    Object handle_quote(Vec<Expression> exprs);
-    Object handle_quasiquote(Vec<Expression> exprs);
-    Object handle_unquote(Vec<Expression> exprs);
-    Object handle_unquote_splicing(Vec<Expression> exprs);
-    Object handle_list(Vec<Expression> exprs); // function-call
 };
 
 // ------------------------------
@@ -658,6 +644,22 @@ private:
     // static void initialize_process(void);
 
     void print(const Object& obj);
+
+    // -*-
+    Object handle_progn(Vec<Expression> exprs);
+    Object handle_if(Vec<Expression> exprs);
+    Object handle_let(Vec<Expression> exprs);
+    Object handle_var(Vec<Expression> exprs);
+    Object handle_cond(Vec<Expression> exprs);
+    Object handle_while(Vec<Expression> exprs);
+    Object handle_for(Vec<Expression> exprs);
+    Object handle_fun(Vec<Expression> exprs);
+    Object handle_macro(Vec<Expression> exprs);
+    Object handle_quote(Vec<Expression> exprs);
+    Object handle_quasiquote(Vec<Expression> exprs);
+    Object handle_unquote(Vec<Expression> exprs);
+    Object handle_unquote_splicing(Vec<Expression> exprs);
+    Object handle_list(Vec<Expression> exprs); // function-call
 
     friend class ModuleLoader;
 };
