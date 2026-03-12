@@ -5,14 +5,16 @@
 // -*--------------------------------------------------------------------------*-
 namespace ekasoft::elx{
 // -
-
 Tokenizer::Tokenizer(const std::string& src)
 : m_src{src}
 {}
 
+// -*-
+bool Tokenizer::is_at_end(void) const{
+    return (this->m_pos >= this->m_src.length());
+}
+
 /*
-
-
 class Tokenizer{
 public:
 
@@ -28,7 +30,6 @@ void Tokenizer::skip_whitespace(void);
 Token Tokenizer::read_number(void);
 Token Tokenizer::read_symbol(void);
 Token Tokenizer::read_string(void);
-bool Tokenizer::is_at_end(void) const;
 
 };
 
