@@ -22,6 +22,17 @@ void Tokenizer::skip_whitespace(void){
     }
 }
 
+// -*-
+bool Tokenizer::is_symbol_char(char c) const{
+    const std::string symchars{
+        "abcdefghijklmnopqrstuvwxyz"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "*^!%&/=+-.,@$<>_:#?"
+        "0123456789"
+    };
+    return (symchars.find(c)!=std::string::npos);
+}
+
 /*
 class Tokenizer{
 public:
@@ -34,9 +45,13 @@ private:
     u32 m_row = 1;
     u32 m_col = 1;
 
-Token Tokenizer::read_number(void);
-Token Tokenizer::read_symbol(void);
-Token Tokenizer::read_string(void);
+Token Tokenizer::read_number(void){}
+Token Tokenizer::read_symbol(void){}
+Token Tokenizer::read_string(void){}
+char Tokenizer::peek(void) const{}
+char Tokenizer::peek_next(void) const{}
+char Tokenizer::advance(void){}
+
 
 };
 

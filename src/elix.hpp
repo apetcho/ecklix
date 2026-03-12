@@ -556,6 +556,10 @@ private:
     Token read_symbol(void);
     Token read_string(void);
     bool is_at_end(void) const;
+    char peek(void) const;
+    char peek_next(void) const;
+    char advance(void);
+    bool is_symbol_char(char c) const;
 };
 
 // --------------
