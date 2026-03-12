@@ -472,33 +472,33 @@ struct ExprBase{
 // -*-
 struct LiteralExpr: public ExprBase{
     Object obj;
-    explicit LiteralExpr(Object obj);
+    explicit LiteralExpr(Object&& obj);
     virtual Object eval(ExprVisitor& visitor) override;
 };
 
 // -*-
 struct SymbolExpr: public ExprBase{
     Symbol name;
-    explicit SymbolExpr(Symbol sym);
+    explicit SymbolExpr(Symbol&& sym);
     virtual Object eval(ExprVisitor& visitor) override;
 };
 
 struct ListExpr: public ExprBase{
     Vec<Expression> items;
-    explicit ListExpr(Vec<Expression> exprs);
+    explicit ListExpr(Vec<Expression>&& exprs);
     virtual Object eval(ExprVisitor& visitor) override;
 };
 
 // -*-
 struct ArrayExpr: public ExprBase{
     Vec<Expression> items;
-    explicit ArrayExpr(Vec<Expression> exprs);
+    explicit ArrayExpr(Vec<Expression>&& exprs);
     virtual Object eval(ExprVisitor& visitor) override;
 };
 
 struct MapExpr: public ExprBase{
     HashMap<std::string, Expression> xmap;
-    explicit MapExpr(HashMap<std::string, Expression> xm);
+    explicit MapExpr(HashMap<std::string, Expression>&& xm);
     virtual Object eval(ExprVisitor& visitor) override;
 };
 
@@ -507,7 +507,7 @@ struct SetExpr: public ExprBase{
         bool operator()(const Expression& lhs, const Expression& rhs) const;
     };
     std::set<Expression, Cmp> xset;
-    explicit SetExpr(std::set<Expression, Cmp> xs);
+    explicit SetExpr(std::set<Expression, Cmp>&& xs);
     virtual Object eval(ExprVisitor& visitor) override;
 };
 
@@ -569,7 +569,7 @@ private:
     char advance(void);
     bool is_symbol_char(char c) const;
     Token match(const std::string& text);
-    
+
     friend class Parser;
 };
 
@@ -584,6 +584,7 @@ public:
 
 private:
     Tokenizer& m_tokenizer;
+    Token m_token;
 
     bool is_at_end(void);
     Expression match(std::initializer_list<TokenKind> kinds);

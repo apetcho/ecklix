@@ -268,6 +268,75 @@ bool Parser::is_at_end(void){
     return this->m_tokenizer.is_at_end();
 }
 
+// -*-
+Expression Parser::match(std::initializer_list<TokenKind> kinds){
+    for(auto kind: kinds){
+        switch(kind){
+        case TokenKind::LParen:
+            return this->parse_list();
+        case TokenKind::RParen:
+            return std::make_unique<LiteralExpr>(std::move(Object()));
+        case TokenKind::Sym:
+            return std::make_unique<LiteralExpr>(
+                std::move(Object(Symbol(m_token.lexeme)))
+            );
+        case TokenKind::LBracket:
+            return this->parse_array();
+        case TokenKind::RBracket:
+            return std::make_unique<LiteralExpr>(std::move(Object()));
+        case TokenKind::Integer:{
+                auto num = Number(std::stoll(this->m_token.lexeme));
+                return std::make_unique<LiteralExpr>(std::move(Object(num)));
+            }
+        case TokenKind::Float:{
+                auto num = Number(std::stod(this->m_token.lexeme));
+                return std::make_unique<LiteralExpr>(std::move(Object(num)));
+            }
+        case TokenKind::LBrace:
+            return this->parse_hashmap();
+        case TokenKind::End:
+            return std::make_unique<LiteralExpr>(std::move(Object()));
+        }
+    }
+    return std::make_unique<LiteralExpr>(std::move(Object()));
+}
+
+// -*-
+Expression Parser::parse_list(void){
+    //! @todo
+    return nullptr;
+}
+
+// -*-
+Expression Parser::parse_hashset(void){
+    //! @todo
+    return nullptr;
+}
+
+// -*-
+Expression Parser::parse_hashmap(void){
+    //! @todo
+    return nullptr;
+}
+
+// -*-
+Expression Parser::parse_array(void){
+    //! @todo
+    return nullptr;
+}
+
+// -*-
+Expression Parser::parse_literal(void){
+    //! @todo
+    return nullptr;
+}
+
+// -*-
+Expression Parser::parse_symbol(void){
+    //! @todo
+    return nullptr;
+}
+
 /*
 
 // --------------
@@ -281,13 +350,8 @@ Expression Parser::parse(void);
 private:
     Tokenizer& m_tokenizer;
 
-Expression Parser::match(std::initializer_list<TokenKind> kinds){}
-Expression Parser::parse_list(void){}
-Expression Parser::parse_hashset(void){}
-Expression Parser::parse_hashmap(void){}
-Expression Parser::parse_array(void){}
-Expression Parser::parse_literal(void){}
-Expression Parser::parse_symbol(void){}
+
+
     
 };
 
