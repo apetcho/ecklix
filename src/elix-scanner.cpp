@@ -276,22 +276,18 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
             return this->parse_list();
         case TokenKind::RParen:
             return std::make_unique<LiteralExpr>(std::move(Object()));
-        case TokenKind::Sym:
-            return std::make_unique<LiteralExpr>(
-                std::move(Object(Symbol(m_token.lexeme)))
-            );
         case TokenKind::LBracket:
             return this->parse_array();
         case TokenKind::RBracket:
             return std::make_unique<LiteralExpr>(std::move(Object()));
-        case TokenKind::Integer:{
-                auto num = Number(std::stoll(this->m_token.lexeme));
-                return std::make_unique<LiteralExpr>(std::move(Object(num)));
-            }
-        case TokenKind::Float:{
-                auto num = Number(std::stod(this->m_token.lexeme));
-                return std::make_unique<LiteralExpr>(std::move(Object(num)));
-            }
+        case TokenKind::False:
+        case TokenKind::True:
+        case TokenKind::NIL:
+        case TokenKind::Sym:
+        case TokenKind::Str:
+        case TokenKind::Integer:
+        case TokenKind::Float:
+            return this->parse_literal();
         case TokenKind::LBrace:
             return this->parse_hashmap();
         case TokenKind::End:
@@ -303,8 +299,17 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
 
 // -*-
 Expression Parser::parse_list(void){
-    //! @todo
-    return nullptr;
+    Vec<Expression> exprs;
+    while(true){
+       auto tok = this->m_token = this->m_tokenizer.next_token();
+        if(tok.kind==TokenKind::RParen || tok.kind==TokenKind::End){
+            break;
+        }
+        this->m_tokenizer.m_pos -= tok.lexeme.length();
+        if(tok.kind==TokenKind::LParen){ this->m_tokenizer.m_pos--; }
+        exprs.push_back(this->parse());
+    }
+    return std::make_unique<ListExpr>(exprs);
 }
 
 // -*-
