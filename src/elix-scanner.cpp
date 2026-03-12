@@ -338,8 +338,18 @@ Expression Parser::parse_literal(void){
 
 // -*-
 Expression Parser::parse_symbol(void){
-    //! @todo
-    return nullptr;
+    auto tok = this->m_token;
+    switch(tok.kind){
+    case TokenKind::True:
+        return std::make_unique<LiteralExpr>(std::move(Object(true)));
+    case TokenKind::False:
+        return std::make_unique<LiteralExpr>(std::move(Object(false)));
+    case TokenKind::NIL:
+        return std::make_unique<LiteralExpr>(std::move(Object()));
+    case TokenKind::Sym:
+        return std::make_unique<LiteralExpr>(std::move(Object(Symbol(tok.lexeme))));
+    }
+    return std::make_unique<LiteralExpr>(std::move(Object()));
 }
 
 /*
