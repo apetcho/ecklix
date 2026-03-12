@@ -14,20 +14,27 @@
 #include<map>
 #include<set>
 
-#define ELIX_RESERVED_WORDS()   \
-    ELIX_DEF(Progn, "progn")    \
-    ELIX_DEF(If, "if")          \
-    ELIX_DEF(Let, "let")        \
-    ELIX_DEF(Var, "var")        \
-    ELIX_DEF(Cond, "cond")      \
-    ELIX_DEF(While, "while")    \
-    ELIX_DEF(For, "for")        \
-    ELIX_DEF(Lambda, "lambda")  \
-    ELIX_DEF(Fun, "fun")        \
-    ELIX_DEF(Macro, "macro")    \
-    ELIX_DEF(NIL, "nil")        \
-    ELIX_DEF(True, "true")      \
-    ELIX_DEF(False, "false")
+#define ELIX_RESERVED_WORDS()                       \
+    ELIX_DEF(Progn, "progn")                        \
+    ELIX_DEF(If, "if")                              \
+    ELIX_DEF(Let, "let")                            \
+    ELIX_DEF(Var, "var")                            \
+    ELIX_DEF(Cond, "cond")                          \
+    ELIX_DEF(While, "while")                        \
+    ELIX_DEF(For, "for")                            \
+    ELIX_DEF(Lambda, "lambda")                      \
+    ELIX_DEF(Fun, "fun")                            \
+    ELIX_DEF(Macro, "macro")                        \
+    ELIX_DEF(And, "and")                            \
+    ELIX_DEF(Or, "or")                              \
+    ELIX_DEF(Not, "not")                            \
+    ELIX_DEF(NIL, "nil")                            \
+    ELIX_DEF(True, "true")                          \
+    ELIX_DEF(False, "false")                        \
+    ELIX_DEF(Quote, "quote")                        \
+    ELIX_DEF(Unquote, "unquote")                    \
+    ELIX_DEF(Quasiquote, "quasiquote")              \
+    ELIX_DEF(UnquoteSplicing, "unquote-splicing")
 
 
 
@@ -40,10 +47,6 @@
     ELIX_DEF(LBrace, "{")           \
     ELIX_DEF(RBrace, "}")           \
     ELIX_DEF(Dot, ".")              \
-    ELIX_DEF(Quote, "'")            \
-    ELIX_DEF(Unquote, ",")          \
-    ELIX_DEF(Quasiquote, "`")       \
-    ELIX_DEF(UnquoteSplicing, ",@") \
     ELIX_DEF(Sym, "SYMBOL")         \
     ELIX_DEF(Integer, "INTEGER")    \
     ELIX_DEF(Float, "FLOAT")        \

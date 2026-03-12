@@ -65,18 +65,6 @@ Token Tokenizer::next_token(void){
         this->advance();
         return this->read_string();
     default:{
-            // std::initializer_list<TokenKind> kinds{
-            //     TokenKind::Arrow, TokenKind::Dot,
-            //     TokenKind::Quote, TokenKind::Quasiquote,
-            //     TokenKind::Unquote, TokenKind::UnquoteSplicing,
-            //     TokenKind::Progn, TokenKind::If,
-            //     TokenKind::Let, TokenKind::Var,
-            //     TokenKind::Cond, TokenKind::False,
-            //     TokenKind::For, TokenKind::Fun,
-            //     TokenKind::Lambda, TokenKind::Macro,
-            //     TokenKind::NIL, TokenKind::While, TokenKind::True,
-            // };
-            
             if((c=='-' || c=='+') && std::isdigit(this->peek_next())){
                 return this->read_number();
             }
@@ -85,12 +73,25 @@ Token Tokenizer::next_token(void){
     }
 }
 
+// -*-
+Token Tokenizer::match(const std::string& text){
+    std::map<std::string, TokenKind> kindmap = {
+#define ELIX_DEF(tok, name) { name, TokenKind::tok},
+        ELIX_RESERVED_WORDS()
+#undef ELIX_DEF
+        { ".", TokenKind::Dot},
+    };
+    auto entry = kindmap.find(text);
+    if(entry != kindmap.end()){
+        return Token(entry->second, text, this->m_row, this->m_row);
+    }
+    return Token(TokenKind::Sym, text, this->m_row, this->m_row);
+}
+
+
 /*
 class Tokenizer{
 public:
-
-
-
 private:
     std::string m_src;
     u32 m_pos = 0;
@@ -103,7 +104,6 @@ Token Tokenizer::read_string(void){}
 char Tokenizer::peek(void) const{}
 char Tokenizer::peek_next(void) const{}
 char Tokenizer::advance(void){}
-Token Tokenizer::match(std::initializer_list<TokenKind> kind, const std::string& text){}
 
 };
 
