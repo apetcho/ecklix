@@ -65,10 +65,16 @@ Token Tokenizer::next_token(void){
         this->advance();
         return this->read_string();
     default:{
-            if((c=='-' || c=='+') && std::isdigit(this->peek_next())){
+            bool check = (
+                ((c=='-' || c=='+') && std::isdigit(this->peek_next())) ||
+                (c=='0'  || this->peek_next()=='x') ||
+                (c=='0'  || this->peek_next()=='b') ||
+                (c=='0'  || this->peek_next()=='o')
+            );
+            if(check){
                 return this->read_number();
             }
-            return this->read_symbol();
+            return this->read_token();
         }//
     }
 }
@@ -80,6 +86,7 @@ Token Tokenizer::match(const std::string& text){
         ELIX_RESERVED_WORDS()
 #undef ELIX_DEF
         { ".", TokenKind::Dot},
+        { "=>", TokenKind::Arrow},
     };
     auto entry = kindmap.find(text);
     if(entry != kindmap.end()){
@@ -88,6 +95,85 @@ Token Tokenizer::match(const std::string& text){
     return Token(TokenKind::Sym, text, this->m_row, this->m_row);
 }
 
+// -*-
+Token Tokenizer::read_number(void){
+    auto r = this->m_row;
+    auto c = this->m_col;
+    auto token = this->read_token();
+    token.kind = TokenKind::Sym;
+    token.row = r;
+    token.col = c;
+    std::string text(token.lexeme);
+    auto len = text.length();
+    if(len > 2 && text[0]=='0' && text[1]=='x'){
+        std::string hexstr = "0123456789abcdefABCDEF";
+        bool ishex{true};
+        for(auto i=2; i < len; i++){
+            if(hexstr.find(text[i])==std::string::npos){
+                ishex = false;
+                break;
+            }
+        }
+        if(ishex){
+            token.kind = TokenKind::Integer;
+            return token;
+        }else{
+            token.kind = TokenKind::Sym;
+            return token;
+        }
+    }else if(len > 2 && text[0]=='0' && text[1]=='o'){
+        std::string octstr = "01234567";
+        bool isoct{true};
+        for(auto i=2; i < len; i++){
+            if(octstr.find(text[i])==std::string::npos){
+                isoct = false;
+                break;
+            }
+        }
+        if(isoct){
+            token.kind = TokenKind::Integer;
+            return token;
+        }else{
+            return token;
+        }
+    }else if(len > 2 && text[0]=='0' && text[1]=='b'){
+        std::string binstr = "01";
+        bool isbin{true};
+        for(auto i=2; i < len; i++){
+            if(binstr.find(text[i])==std::string::npos){
+                isbin = false;
+                break;
+            }
+        }
+        if(isbin){
+            token.kind = TokenKind::Integer;
+            return token;
+        }else{
+            return token;
+        }
+    }else{
+        if(text.find('.')!=std::string::npos){
+            size_t pos = 0;
+            auto [[maybe_unused]] num = std::stod(text, &pos);
+            if(pos!=text.length()){
+                return token;
+            }else{
+                token.kind = TokenKind::Float;
+                return token;
+            }
+        }else if(text.find('e')!=std::string::npos || text.find('E')!=std::string::npos){
+            size_t pos = 0;
+            auto [[maybe_unused]] num = std::stod(text, &pos);
+            if(pos!=text.length()){
+                return token;
+            }else{
+                token.kind = TokenKind::Float;
+                return token;
+            }
+        }
+        return token;
+    }
+}
 
 /*
 class Tokenizer{
@@ -98,7 +184,7 @@ private:
     u32 m_row = 1;
     u32 m_col = 1;
 
-Token Tokenizer::read_number(void){}
+
 Token Tokenizer::read_symbol(void){}
 Token Tokenizer::read_string(void){}
 char Tokenizer::peek(void) const{}

@@ -561,7 +561,7 @@ private:
     void skip_whitespace(void);
     void skip_comment(char c);
     Token read_number(void);
-    Token read_symbol(void);
+    Token read_token(void);
     Token read_string(void);
     bool is_at_end(void) const;
     char peek(void) const;
