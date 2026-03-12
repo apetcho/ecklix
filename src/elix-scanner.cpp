@@ -236,6 +236,19 @@ char Tokenizer::peek_next(void) const{
     return this->m_src[(this->m_pos+1)];
 }
 
+// -*-
+char Tokenizer::advance(void){
+    auto c = this->m_src[this->m_pos];
+    if(c == '\n'){
+        this->m_row += 1;
+        this->m_col = 1;
+    }else{
+        this->m_col += 1;
+    }
+    this->m_pos += 1;
+    return c;
+}
+
 /*
 class Tokenizer{
 public:
@@ -245,7 +258,7 @@ private:
     u32 m_row = 1;
     u32 m_col = 1;
 
-char Tokenizer::advance(void){}
+void Tokenizer::skip_whitespace(void){}
 
 };
 
