@@ -566,7 +566,7 @@ private:
     bool is_at_end(void) const;
     char peek(void) const;
     char peek_next(void) const;
-    void advance(void);
+    char advance(void);
     bool is_symbol_char(char c) const;
     Token match(const std::string& text);
 };

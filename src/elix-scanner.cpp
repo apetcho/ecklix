@@ -19,7 +19,7 @@ bool Tokenizer::is_at_end(void) const{
 // -*-
 void Tokenizer::skip_whitespace(void){
     while(!this->is_at_end() && std::isspace(this->m_src[this->m_pos])){
-        this->m_pos++;
+        auto [[maybe_unused]] _ = this->advance();
     }
 }
 
@@ -175,6 +175,22 @@ Token Tokenizer::read_number(void){
     }
 }
 
+// -*-
+Token Tokenizer::read_token(void){
+    std::string text{};
+    Token token;
+    token.row = this->m_row;
+    token.col = this->m_col;
+    auto c = this->advance();
+    text.push_back(c);
+    while(!this->is_at_end() || !std::isspace(c)){
+        c = this->advance();
+        text.push_back(c);
+    }
+    token.kind = TokenKind::Sym;
+    return token;
+}
+
 /*
 class Tokenizer{
 public:
@@ -185,7 +201,7 @@ private:
     u32 m_col = 1;
 
 
-Token Tokenizer::read_symbol(void){}
+
 Token Tokenizer::read_string(void){}
 char Tokenizer::peek(void) const{}
 char Tokenizer::peek_next(void) const{}
