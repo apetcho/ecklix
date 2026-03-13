@@ -242,13 +242,17 @@ Number Number::acosh(void) const{
 Number Number::atanh(void) const{
     return Number(std::atanh(static_cast<f64>(*this)));
 }
+
+// -*-
+Number Number::exp(void) const{
+    return Number(std::exp(static_cast<f64>(*this)));
+}
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::atanh(void) const{}
 Number Number::exp(void) const{}
 Number Number::expm1(void) const{}
 Number Number::exp2(void) const{}
