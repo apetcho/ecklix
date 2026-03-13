@@ -135,16 +135,17 @@ bool Number::is_integer(void) const{
     return std::holds_alternative<i64>(this->m_value);
 }
 
+Number Number::clone(void) const{
+    if(this->is_integer()){
+        return Number(static_cast<i64>(*this));
+    }
+    return Number(static_cast<f64>(*this));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
-
-
-
-
-// -
-Number Number::clone(void) const;
 
 // -
 Number Number::abs(void) const;
