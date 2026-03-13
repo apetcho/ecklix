@@ -206,14 +206,7 @@ Number Number::acos(void) const{
 
 // -*-
 Number Number::atan(void) const{
-    std::feclearexcept(FE_ALL_EXCEPT);
-    errno = 0;
     auto num = std::atan(static_cast<f64>(*this));
-    if(errno != 0){
-        std::stringstream ss;
-        ss << std::strerror(errno);
-        throw ELixError(ELixError::ValueError, ss.str());
-    }
     return Number(num);
 }
 
@@ -221,14 +214,7 @@ Number Number::atan(void) const{
 Number Number::atan2(const Number& rhs) const{
     auto y = static_cast<f64>(rhs);
     auto x = static_cast<f64>(*this);
-    std::feclearexcept(FE_ALL_EXCEPT);
-    errno = 0;
     auto num = std::atan2(y, x);
-    if(errno != 0){
-        std::stringstream ss;
-        ss << std::strerror(errno);
-        throw ELixError(ELixError::ValueError, ss.str());
-    }
     return Number(num);
 }
 
@@ -279,8 +265,14 @@ Number Number::exp2(void) const{
 
 // -*-
 Number Number::log(void) const{
+    return Number(std::log(static_cast<f64>(*this)));
+}
+
+// -*-
+Number Number::log2(void) const{
     return Number(std::log2(static_cast<f64>(*this)));
 }
+
 /*
 // -*-
 class Number:: final{
