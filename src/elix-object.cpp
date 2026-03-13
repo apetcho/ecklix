@@ -47,13 +47,16 @@ Number::Number(const Number& num) noexcept
 : m_value{num.m_value}
 {}
 
+Number::Number(Number&& num) noexcept
+: m_value{std::move(num.m_value)}
+{}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 
-Number::Number(Number&& num) noexcept;
 Number& Number::operator=(const Number& num) noexcept;
 Number& Number::operator=(Number&& num) noexcept;
 std::string Number::str(void) const;
