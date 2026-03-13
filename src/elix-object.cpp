@@ -223,13 +223,17 @@ Number Number::cosh(void) const{
     return Number(std::cosh(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::tanh(void) const{
+    return Number(std::tanh(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::cosh(void) const{}
 Number Number::tanh(void) const{}
 Number Number::asinh(void) const{}
 Number Number::acosh(void) const{}
