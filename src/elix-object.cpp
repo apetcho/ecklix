@@ -43,12 +43,16 @@ Number::Number(i64 num): m_value{num} {}
 
 Number::Number(f64 num): m_value{num} {}
 
+Number::Number(const Number& num) noexcept
+: m_value{num.m_value}
+{}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-Number::Number(const Number& num) noexcept;
+
 Number::Number(Number&& num) noexcept;
 Number& Number::operator=(const Number& num) noexcept;
 Number& Number::operator=(Number&& num) noexcept;
