@@ -2,6 +2,8 @@
 #define MY_ELIX_HPP
 
 #include<initializer_list>
+#include<unordered_map>
+#include<unordered_set>
 #include<functional>
 #include<filesystem>
 #include<stdexcept>
@@ -80,10 +82,8 @@ using UniquePtr = std::unique_ptr<T>;
 template<typename T>
 using Vec = std::vector<T>;
 
-template<typename K, typename V>
-using HashMap = std::map<K, V>;
-using Dict = HashMap<std::string, Object>;
-using Pair = std::pair<Object, Object>;
+// using Dict = std::map<std::string, Object>;
+// using Pair = std::pair<Object, Object>;
 
 using u64 = std::uint64_t;
 using i64 = std::int64_t;
@@ -98,12 +98,26 @@ using Loader = std::shared_ptr<ModuleLoader>;
 using Context = std::shared_ptr<Env>;
 using Expression = std::unique_ptr<ExprBase>;
 using Fn = std::function<Object(const Vec<Object>&, Context)>;
+using Visitor = std::unique_ptr<ExprVisitor>;
+// -*-----------------------------------------*-
+// -*- begin::namespace::ekasoft::elx::utils -*-
+// -*-----------------------------------------*-
+namespace utils{
+// -
+struct Hash{
+    std::size_t operator()(const Object& key) const;
+};
 
-struct Comparator{
+struct Equal{
     bool operator()(const Object& lhs, const Object& rhs) const;
 };
 
-using HashSet = std::set<Object, Comparator>;
+// -*-----------------------------------------*-
+}//-*- end::namespace::ekasoft::elx::utils   -*-
+// -*-----------------------------------------*-
+
+using HashMap = std::unordered_map<Object, Object, utils::Hash, utils::Equal>;
+using HashSet = std::unordered_set<Object, utils::Hash, utils::Equal>;
 
 // -*-
 struct Nil final{};
@@ -306,24 +320,30 @@ struct String{
 };
 
 // -*-
-struct Map{
-    Dict dict;
-    explicit Map();
-    explicit Map(const Dict& dict);
+struct Pair{
+    Object key;
+    Object val;
+};
+
+// -*-
+struct Dict{ // Dict
+    HashMap hmap;
+    explicit Dict();
+    explicit Dict(const HashMap& dict);
     std::string str(void) const;
     std::string repr(void) const;
-    Map clone(void) const;
+    Dict clone(void) const;
 
     Object find(const Object& key) const;
-    Map& concat(const Map&& dict);
+    Dict& concat(const Dict&& dict);
     i64 len(void) const;
     Object get(const Object& key) const;
-    Map& set(const Object& key, const Object& val);
-    Map& update(const Object& key, const Object& val);
+    Dict& set(const Object& key, const Object& val);
+    Dict& update(const Object& key, const Object& val);
     Vec<Object> keys(void) const;
     Vec<Object> values(void) const;
     Object popitem(const Object& key) const;
-    Map& clear(void);
+    Dict& clear(void);
     Vec<Pair> items(const Vec<Object>& args);
 };
 
@@ -395,7 +415,7 @@ public:
     Object(const String& str);
     Object(const Array& array);
     Object(const List& xs);
-    Object(const Map& xmap);
+    Object(const Dict& xmap);
     Object(const Set& xset);
     Object(const Pair& pair);
 
@@ -418,7 +438,7 @@ public:
     Symbol as_symbol(void) const;
     String as_string(void) const;
     Array as_array(void) const;
-    Map as_map(void) const;
+    Dict as_dict(void) const;
     List as_list(void) const;
     Set as_set(void) const;
     Lambda as_lambda(void) const;
@@ -430,10 +450,12 @@ public:
     std::string repr(void) const;
     Object clone(void) const;
 
+    bool is_hashable(void) const;
+
 private:
     using Value = std::variant<
         Nil, bool, Number, String, Symbol, Func, Lambda, Macro,
-        Pair, List, Array, Map, Set
+        Pair, List, Array, Dict, Set
     >;
 
     Value m_value;
@@ -468,63 +490,60 @@ public:
     Object get(const std::string& name);
 
 private:
-    Dict m_bindins;
+    std::map<std::string, Object> m_bindins;
     Context m_parent;
 };
 
 // -*-
 struct ExprBase{
     virtual ~ExprBase() = default;
-    virtual Object eval(ExprVisitor& visitor) = 0;
+    virtual Object eval(Visitor visitor) = 0;
 };
 
 // -*-
 struct LiteralExpr: public ExprBase{
     Object obj;
-    explicit LiteralExpr(Object&& obj);
-    virtual Object eval(ExprVisitor& visitor) override;
+    // explicit LiteralExpr(Object&& obj);
+    virtual Object eval(Visitor visitor) override;
 };
 
 // -*-
 struct SymbolExpr: public ExprBase{
     Symbol name;
-    explicit SymbolExpr(Symbol&& sym);
-    virtual Object eval(ExprVisitor& visitor) override;
+    // explicit SymbolExpr(Symbol&& sym);
+    virtual Object eval(Visitor visitor) override;
 };
 
 struct ListExpr: public ExprBase{
     Vec<Expression> items;
-    explicit ListExpr(Vec<Expression>&& exprs);
-    virtual Object eval(ExprVisitor& visitor) override;
+    //explicit ListExpr(Vec<Expression>&& exprs);
+    virtual Object eval(Visitor visitor) override;
 };
 
 // -*-
 struct ArrayExpr: public ExprBase{
     Vec<Expression> items;
-    explicit ArrayExpr(Vec<Expression>&& exprs);
-    virtual Object eval(ExprVisitor& visitor) override;
+    //explicit ArrayExpr(Vec<Expression>&& exprs);
+    virtual Object eval(Visitor visitor) override;
 };
 
 struct PairExpr: public ExprBase{
     Expression key;
     Expression val;
-    explicit PairExpr(Expression key, Expression val);
-    virtual Object eval(ExprVisitor& visitor) override;
+    //explicit PairExpr(Expression key, Expression val);
+    virtual Object eval(Visitor visitor) override;
 };
 
-struct MapExpr: public ExprBase{
-    HashMap<std::string, Expression> xmap;
-    explicit MapExpr(HashMap<std::string, Expression>&& xm);
-    virtual Object eval(ExprVisitor& visitor) override;
+struct DictExpr: public ExprBase{
+    Vec<Expression> items;
+    //explicit MapExpr(Vec<Expression> items);
+    virtual Object eval(Visitor visitor) override;
 };
 
 struct SetExpr: public ExprBase{
-    struct Cmp{
-        bool operator()(const Expression& lhs, const Expression& rhs) const;
-    };
-    std::set<Expression, Cmp> xset;
-    explicit SetExpr(std::set<Expression, Cmp>&& xs);
-    virtual Object eval(ExprVisitor& visitor) override;
+    Vec<Expression> items;
+    //explicit SetExpr(Vec<Expression>&& items);
+    virtual Object eval(Visitor visitor) override;
 };
 
 struct ExprVisitor{
@@ -533,7 +552,7 @@ struct ExprVisitor{
     virtual Object eval(SymbolExpr& ) = 0;
     virtual Object eval(ListExpr& ) = 0;
     virtual Object eval(ArrayExpr& ) = 0;
-    virtual Object eval(MapExpr& ) = 0;
+    virtual Object eval(DictExpr& ) = 0;
     virtual Object eval(SetExpr& ) = 0;
     virtual Object eval(PairExpr& ) = 0;
 };
@@ -606,14 +625,16 @@ private:
     Token m_token;
 
     void expect(TokenKind kind);
+    void expect(const std::string& tok);
     void next_token(void);
     void skip_token(void);
 
     bool is_at_end(void);
     Expression match(std::initializer_list<TokenKind> kinds);
+    Expression match(TokenKind kind);
     Expression parse_list(void);        // (x y z ....)
-    Expression parse_hashset(void);     // #{k1 k2 ...}
-    Expression parse_hashmap(void);     // { pair1 pair2 pair3 ... }
+    Expression parse_set(void);         // #{k1 k2 ...}
+    Expression parse_dict(void);        // { pair1 pair2 pair3 ... }
     Expression parse_array(void);       // [v1 v2 v3 ...]
     Expression parse_literal(void);     // true, false, nil, NUMBER, STRING, SYMBOL
     Expression parse_symbol(void);      // SYMBOL
@@ -634,7 +655,7 @@ public:
     static UniquePtr<Symbol> Quasiquote;
     static UniquePtr<Symbol> UnquoteSplicing;
 
-    static UniquePtr<Module> mathModule;    // "Math"
+    //static UniquePtr<Module> mathModule;    // "Math"
     // static Context sysModule;      // "System"
     // static Context fileModule;     // "File"
     // static Context datetimeModule; // "DateTime"
@@ -657,12 +678,12 @@ private:
     Object eval(SymbolExpr& expr) override;
     Object eval(ListExpr& expr) override;
     Object eval(ArrayExpr& expr) override;
-    Object eval(MapExpr& expr) override;
+    Object eval(DictExpr& expr) override;
     Object eval(SetExpr& expr) override;
 
     static void install_builtin(void);
     static void initialize_math(void);
-    // static void initialize_system(void);
+    static void initialize_string(void);
     // static void initialize_file(void);
     // static void initialize_datetime(void);
     // static void initialize_json(void);

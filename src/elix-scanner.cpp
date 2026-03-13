@@ -395,6 +395,12 @@ bool Parser::is_at_end(void){
 }
 
 // -*-
+Expression Parser::match(TokenKind kind){
+    std::initializer_list<TokenKind> kinds{kind};
+    return this->match(kinds);
+}
+
+// -*-
 Expression Parser::match(std::initializer_list<TokenKind> kinds){
     for(auto kind: kinds){
         switch(kind){
@@ -411,9 +417,9 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
         case TokenKind::LBracket:
             return this->parse_array();
         case TokenKind::LBrace:
-            return this->parse_hashmap();
+            return this->parse_dict();
         case TokenKind::PoundBrace:
-            return this->parse_hashset();
+            return this->parse_set();
         case TokenKind::PoundParen:
             return this->parse_pair();
         case TokenKind::End:
@@ -453,19 +459,47 @@ Expression Parser::parse_list(void){
         ss << "column " << tok.col;
         throw ELixError(ELixError::SyntaxError, ss.str());
     }
-    return std::make_unique<ListExpr>(std::move(exprs));
+    ListExpr xs{};
+    xs.items = std::move(exprs);
+    return std::make_unique<ListExpr>(std::move(xs));
 }
 
 // -*-
-Expression Parser::parse_hashset(void){
+Expression Parser::parse_set(void){
     //! @todo
     return nullptr;
 }
 
 // -*-
-Expression Parser::parse_hashmap(void){
-    //! @todo
-    return nullptr;
+Expression Parser::parse_dict(void){
+    Vec<Expression> items;
+    this->skip_token();     // skip "{"
+    Token& tok = this->m_token;
+    bool failed{false};
+    while(true){
+        if(tok.kind==TokenKind::Sym){
+            items.push_back(std::move(parse_symbol()));
+        }else{
+            items.push_back(std::move(this->parse_pair()));
+        }
+        if(this->is_at_end()){
+            failed = true;
+            break;
+        }
+        if(tok.kind==TokenKind::RBrace){
+            this->skip_token(); // skip "}"
+            break;
+        }
+    }
+    if(failed){
+        std::stringstream ss;
+        ss << "Malformed dict literal. Error at row " << tok.row << " and ";
+        ss << "column " << tok.col;
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    auto dict = std::make_unique<DictExpr>();
+    dict->items = std::move(items);
+    return std::move(dict);
 }
 
 // -*-
@@ -492,7 +526,9 @@ Expression Parser::parse_array(void){
         ss << "column " << tok.col;
         throw ELixError(ELixError::SyntaxError, ss.str());
     }
-    return std::make_unique<ArrayExpr>(std::move(exprs));
+    ArrayExpr array{};
+    array.items = std::move(exprs);
+    return std::make_unique<ArrayExpr>(std::move(array));
 }
 
 // -*-
@@ -545,13 +581,10 @@ Expression Parser::parse_symbol(void){
     auto tok = this->m_token;
     switch(tok.kind){
     case TokenKind::True:
-        return std::make_unique<LiteralExpr>(std::move(Object(true)));
     case TokenKind::False:
-        return std::make_unique<LiteralExpr>(std::move(Object(false)));
     case TokenKind::NIL:
-        return std::make_unique<LiteralExpr>(std::move(Object()));
     case TokenKind::Sym:
-        return std::make_unique<LiteralExpr>(std::move(Object(Symbol(tok.lexeme))));
+        return std::make_unique<SymbolExpr>(std::move(Object(Symbol(tok.lexeme))));
     }
     std::stringstream ss;
     ss << "Illegal symbol " << std::quoted(tok.lexeme) << " found at ";
@@ -570,7 +603,11 @@ Expression Parser::parse_pair(void){
         ss << " and column " << this->m_token.col;
         throw ELixError(ELixError::SyntaxError, ss.str());
     }
-    return std::make_unique<PairExpr>(std::move(key), std::move(val));
+    this->skip_token(); // ")"
+    PairExpr pair{};
+    pair.key = std::move(key);
+    pair.val = std::move(val);
+    return std::make_unique<PairExpr>(pair);
 }
 
 // -*-
@@ -588,6 +625,8 @@ void Parser::expect(TokenKind kind){
     ss << "row " << this->m_token.row << " and column " << this->m_token.col;
     throw ELixError(ELixError::SyntaxError, ss.str());
 }
+
+// -*- void Parser::expect(const std::string& tok){}
 
 /*
 
