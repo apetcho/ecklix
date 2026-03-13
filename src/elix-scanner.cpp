@@ -1,6 +1,8 @@
 #include "elix.hpp"
 #include<cctype>
 #include<initializer_list>
+#include<string>
+#include<cmath>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -37,146 +39,233 @@ bool Tokenizer::is_symbol_char(char c) const{
 // -*-
 Token Tokenizer::next_token(void){
     this->skip_whitespace();
-    this->skip_comment(this->peek());
+    this->skip_comment();
     if(this->is_at_end()){
         return Token(TokenKind::End, "", this->m_row, this->m_col);
     }
+    auto row = this->m_row;
+    auto col = this->m_col;
     auto c = this->peek();
+    if(c=='\0'){
+        Token token;
+        token.row = row;
+        token.col = col;
+        token.kind = TokenKind::End;
+        token.lexeme = "";
+        return token;
+    }
     switch(c){
     case '(':
         this->advance();
-        return Token(TokenKind::LParen, "(", this->m_row, this->m_col);
+        return Token(TokenKind::LParen, "(", row, col);
     case ')':
         this->advance();
-        return Token(TokenKind::LParen, ")", this->m_row, this->m_col);
+        return Token(TokenKind::LParen, ")", row, col);
     case '[':
         this->advance();
-        return Token(TokenKind::LParen, "[", this->m_row, this->m_col);
+        return Token(TokenKind::LParen, "[", row, col);
     case ']':
         this->advance();
-        return Token(TokenKind::LParen, "]", this->m_row, this->m_col);
+        return Token(TokenKind::LParen, "]", row, col);
     case '{':
         this->advance();
-        return Token(TokenKind::LParen, "{", this->m_row, this->m_col);
+        return Token(TokenKind::LParen, "{", row, col);
     case '}':
         this->advance();
-        return Token(TokenKind::LParen, "}", this->m_row, this->m_col);
-    case '"':
-        this->advance();
+        return Token(TokenKind::LParen, "}", row, col);
+    case '#':
+        // hashset or symbol
+        // hashset-literal: #{key1 key2 key3 ... }
+        // symbol: #name
+        if(this->peek_next()=='{'){ // hashset-literal
+            return Token(TokenKind::Pound, "#", row, col);
+        }
+        // symbol starting with '#'
+        return this->read_literal();
+    case '"': // string-literal
         return this->read_string();
     default:{
+            // Integer format:
+            //      hex-integer format:  0x01f1
+            //      oct-integer format: 0o01237
+            //      binary-integer format: 0b011101
+            //      decimal-integer format: 1028381
             bool check = (
-                ((c=='-' || c=='+') && std::isdigit(this->peek_next())) ||
-                (c=='0'  || this->peek_next()=='x') ||
-                (c=='0'  || this->peek_next()=='b') ||
-                (c=='0'  || this->peek_next()=='o')
+                ((c=='-' || c=='+') && std::isdigit(this->peek_next())) || // decimal-integer format ?
+                (c=='0'  || this->peek_next()=='x') ||  // hex-integer format
+                (c=='0'  || this->peek_next()=='o') ||  // oct-integer format
+                (c=='0'  || this->peek_next()=='b')     // binary-integer format
             );
             if(check){
                 return this->read_number();
             }
-            return this->read_token();
+            return this->read_literal();
         }//
     }
 }
 
-// -*-
-Token Tokenizer::match(const std::string& text){
-    std::map<std::string, TokenKind> kindmap = {
-#define ELIX_DEF(tok, name) { name, TokenKind::tok},
-        ELIX_RESERVED_WORDS()
-#undef ELIX_DEF
-        { ".", TokenKind::Dot},
-        { "=>", TokenKind::Arrow},
-    };
-    auto entry = kindmap.find(text);
-    if(entry != kindmap.end()){
-        return Token(entry->second, text, this->m_row, this->m_row);
-    }
-    return Token(TokenKind::Sym, text, this->m_row, this->m_row);
-}
+// // -*-
+// Token Tokenizer::match(const std::string& text, u32 row, i32 col){
+//     std::map<std::string, TokenKind> kindmap = {
+// #define ELIX_DEF(tok, name) { name, TokenKind::tok},
+//         ELIX_RESERVED_WORDS()
+// #undef ELIX_DEF
+//         // { ".", TokenKind::Dot},     // found in pair literals: (x . y)
+//         // { "=>", TokenKind::Arrow},  // found in dict literal: { }
+//     };
+//     // auto entry = kindmap.find(text);
+//     // if(entry != kindmap.end()){
+//     //     return Token(entry->second, text, this->m_row, this->m_row);
+//     // }
+//     return Token(TokenKind::Sym, text, this->m_row, this->m_row);
+// }
 
 // -*-
 Token Tokenizer::read_number(void){
     auto r = this->m_row;
     auto c = this->m_col;
-    auto token = this->read_token();
-    token.kind = TokenKind::Sym;
-    token.row = r;
-    token.col = c;
+    auto token = this->read_literal();
+    auto possiblyFloat = [](const std::string& numstr){
+        if(numstr.find('.')!=std::string::npos){ return true; }
+        else if(numstr.find('e')!=std::string::npos){ return true; }
+        else if(numstr.find('E')!=std::string::npos){ return true; }
+        else{ return false; }
+    };
     std::string text(token.lexeme);
     auto len = text.length();
+    std::string errmsg{};
     if(len > 2 && text[0]=='0' && text[1]=='x'){
         std::string hexstr = "0123456789abcdefABCDEF";
-        bool ishex{true};
-        for(auto i=2; i < len; i++){
-            if(hexstr.find(text[i])==std::string::npos){
-                ishex = false;
-                break;
+        if(len > 3){
+            auto failed{false};
+            for(auto i=2; i < len; i++){
+                if(hexstr.find(text[i])==std::string::npos){
+                    failed = true;
+                    break;
+                }
             }
-        }
-        if(ishex){
-            token.kind = TokenKind::Integer;
-            return token;
-        }else{
-            token.kind = TokenKind::Sym;
-            return token;
+            if(!failed){
+                token.kind = TokenKind::Integer;
+                return token;
+            }else{
+                errmsg = "malformed integer in hexa-decimal format";
+            }
         }
     }else if(len > 2 && text[0]=='0' && text[1]=='o'){
         std::string octstr = "01234567";
-        bool isoct{true};
+        bool failed{false};
         for(auto i=2; i < len; i++){
             if(octstr.find(text[i])==std::string::npos){
-                isoct = false;
+                failed = true;
                 break;
             }
         }
-        if(isoct){
+        if(!failed){
             token.kind = TokenKind::Integer;
             return token;
         }else{
-            return token;
+            errmsg = "malformed integer in octal-decimal format";
         }
     }else if(len > 2 && text[0]=='0' && text[1]=='b'){
         std::string binstr = "01";
-        bool isbin{true};
+        bool failed{false};
         for(auto i=2; i < len; i++){
             if(binstr.find(text[i])==std::string::npos){
-                isbin = false;
+                failed = true;
                 break;
             }
         }
-        if(isbin){
+        if(!failed){
             token.kind = TokenKind::Integer;
             return token;
         }else{
+            errmsg = "malformed integer in binary-decimal format";
+        }
+    }else if(possiblyFloat(text)){
+        bool failed{false};
+        bool hasE{false};
+        int dotNum{0};  // number of '.'
+        int eNum{0};    // number of 'e' or 'E' 
+        int mNum{0};    // number of '-'
+        int pNum{0};    // number of '+'
+        size_t pos = 0;
+        // the decimal part
+        for(;pos < text.length(); pos++){
+            auto c = text[pos];
+            if(c=='-'){ mNum++; }
+            if(c=='-'){ pNum++; }
+            if(pNum > 1 && mNum > 1){
+                failed = true;
+                errmsg = "malformed floating-point number";
+                break;
+            }
+            if(c=='.'){
+                dotNum++;
+                pos++;
+                break;
+            }
+            if(c=='e' || c=='E'){
+                eNum++;
+                pos++;
+                break;
+            }
+        }
+
+        // fractional end optional exponential part
+        if(dotNum > 0 && pos < text.length()){
+            auto c = text[pos++];
+            while(true){
+                if(c == 'e' || c=='E'){
+                    eNum++;
+                    // in scientific format: expect the exponential part
+                    if(pos==text.length()){
+                        errmsg = "malformed floating-point number in scientific format";
+                        failed = true;
+                    }
+                    break;
+                }
+                if(pos==text.length()){ break; }
+                c = text[pos++];
+            }
+        }
+
+        // read the exponential part
+        auto c = text[pos++];
+        bool hasReadDigit{false};
+        while(true){
+            if(std::isdigit(c)){ hasReadDigit = true; }
+            if(c=='-'){ mNum++;}
+            if(c=='+'){ pNum++;}
+            if(pNum > 2 || mNum > 2){
+                failed = true;
+                break;
+            }
+            if(!hasReadDigit && pos==text.length()){
+                errmsg = "malformed floating-point number in scientific format";
+                failed = true;
+                break;
+            }
+            if(hasReadDigit && pos==text.length()){
+               break;
+            }
+            c = text[pos++];
+        }
+
+        if(!failed){
+            token.kind = TokenKind::Float;
             return token;
         }
-    }else{
-        if(text.find('.')!=std::string::npos){
-            size_t pos = 0;
-            auto [[maybe_unused]] num = std::stod(text, &pos);
-            if(pos!=text.length()){
-                return token;
-            }else{
-                token.kind = TokenKind::Float;
-                return token;
-            }
-        }else if(text.find('e')!=std::string::npos || text.find('E')!=std::string::npos){
-            size_t pos = 0;
-            auto [[maybe_unused]] num = std::stod(text, &pos);
-            if(pos!=text.length()){
-                return token;
-            }else{
-                token.kind = TokenKind::Float;
-                return token;
-            }
-        }
-        return token;
     }
+
+    errmsg += (
+        " at row " + std::to_string(token.row) +
+        " and column " + std::to_string(token.col)
+    );
+    throw ElixError(ElixError::SyntaxError, errmsg);
 }
 
 // -*-
-Token Tokenizer::read_token(void){
+Token Tokenizer::read_literal(void){
     std::string text{};
     Token token;
     token.row = this->m_row;
@@ -202,21 +291,23 @@ Token Tokenizer::read_string(void){
     token.lexeme;
     while(!this->is_at_end() && c != '"'){
         if(c=='\\' && this->m_pos+1 < this->m_src.size()){
-            auto esc = this->advance();
-            if(esc=='n'){ token.lexeme.push_back('\n'); }
-            else if(esc=='r'){ token.lexeme.push_back('\r'); }
-            else if(esc=='b'){ token.lexeme.push_back('\b'); }
-            else if(esc=='t'){ token.lexeme.push_back('\t'); }
-            else if(esc=='f'){ token.lexeme.push_back('\f'); }
-            else{ token.lexeme.push_back(esc); }
-            this->m_pos++;
+            // push the escaped character
+            token.lexeme.push_back(this->advance());
         }else{
             token.lexeme.push_back(c);
-            c = this->advance();
         }
+        c = this->advance();
     }
     if(!this->is_at_end() && this->peek()=='"'){
         this->advance(); // eat 
+    }else{
+        auto r_ = std::to_string(this->m_row);
+        auto c_ = std::to_string(this->m_col);
+        std::string msg{
+            "malformed string literal. Expected a closing '\"'"
+            " at row " + r_ + " and column " + c_ + "."
+        };
+        throw ElixError(ElixError::SyntaxError, msg);
     }
     
     return token;
@@ -250,8 +341,8 @@ char Tokenizer::advance(void){
 }
 
 // -*-
-void Tokenizer::skip_comment(char c) {
-    if(c==';'){
+void Tokenizer::skip_comment(void) {
+    if(this->peek()==';'){
         while(!this->is_at_end() || (this->peek()!='\n')){
             this->advance();
         }
@@ -320,8 +411,17 @@ Expression Parser::parse_hashset(void){
 
 // -*-
 Expression Parser::parse_hashmap(void){
-    //! @todo
-    return nullptr;
+    Vec<Expression> exprs;
+    while(true){
+       auto tok = this->m_token = this->m_tokenizer.next_token();
+        if(tok.kind==TokenKind::RParen || tok.kind==TokenKind::End){
+            break;
+        }
+        this->m_tokenizer.m_pos -= tok.lexeme.length();
+        if(tok.kind==TokenKind::LParen){ this->m_tokenizer.m_pos--; }
+        exprs.push_back(this->parse());
+    }
+    return std::make_unique<ListExpr>(exprs);
 }
 
 // -*-
@@ -365,6 +465,12 @@ Expression Parser::parse_symbol(void){
         return std::make_unique<LiteralExpr>(std::move(Object(Symbol(tok.lexeme))));
     }
     return std::make_unique<LiteralExpr>(std::move(Object()));
+}
+
+// -*-
+bool Parser::expect(const Token& token, TokenKind kind){
+    //! @todo
+    return false;
 }
 
 /*

@@ -36,17 +36,17 @@
     ELIX_DEF(Quasiquote, "quasiquote")              \
     ELIX_DEF(UnquoteSplicing, "unquote-splicing")
 
-
+//  ELIX_DEF(Dot, ".")
+//  ELIX_DEF(Arrow, "=>")
 
 #define ELIX_TOKENS()               \
-    ELIX_DEF(Arrow, "=>")           \
     ELIX_DEF(LParen, "(")           \
     ELIX_DEF(RParen, ")")           \
     ELIX_DEF(LBracket, "[")         \
     ELIX_DEF(RBracket, "]")         \
     ELIX_DEF(LBrace, "{")           \
     ELIX_DEF(RBrace, "}")           \
-    ELIX_DEF(Dot, ".")              \
+    ELIX_DEF(Pound, "#")            \
     ELIX_DEF(Sym, "SYMBOL")         \
     ELIX_DEF(Integer, "INTEGER")    \
     ELIX_DEF(Float, "FLOAT")        \
@@ -260,6 +260,10 @@ struct Array{
     Object get(i64 idx) const;
     Array& set(i64 idx, const Object& arg);
     Array& splice(i64 idx, const Object& arg);
+    bool any(const Object& predicate) const;
+    bool all(const Object& predicate) const;
+    Object reduce(const Object& fn, const Object& initVal) const;
+    String& sort(const Object& fn);
 };
 
 // -*-
@@ -283,6 +287,8 @@ struct String{
 
     Vec<String> split(const String delim=String(" "));
     String slice(i64 i, i64 j) const;
+    bool startswith(const String& rhs) const;
+    bool endswith(const String& rhs) const;
     String& ltrim(void);
     String& rtrim(void);
     String& trim(void);
@@ -559,16 +565,16 @@ private:
     u32 m_col;
 
     void skip_whitespace(void);
-    void skip_comment(char c);
+    void skip_comment(void);
     Token read_number(void);
-    Token read_token(void);
+    Token read_literal(void);
     Token read_string(void);
     bool is_at_end(void) const;
     char peek(void) const;
     char peek_next(void) const;
     char advance(void);
     bool is_symbol_char(char c) const;
-    Token match(const std::string& text);
+    // Token match(const std::string& text, u32 row, i32 col);
 
     friend class Parser;
 };
@@ -585,6 +591,8 @@ public:
 private:
     Tokenizer& m_tokenizer;
     Token m_token;
+
+    bool expect(const Token& token, TokenKind kind);
 
     bool is_at_end(void);
     Expression match(std::initializer_list<TokenKind> kinds);
