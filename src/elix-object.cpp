@@ -273,14 +273,17 @@ Number Number::log2(void) const{
     return Number(std::log2(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::log10(void) const{
+    return Number(std::log10(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::log(void) const{}
-Number Number::log2(void) const{}
 Number Number::log10(void) const{}
 Number Number::log1p(void) const{}
 Number Number::erf(void) const{}
