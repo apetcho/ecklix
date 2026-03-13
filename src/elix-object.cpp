@@ -221,7 +221,15 @@ Number Number::atan(void) const{
 Number Number::atan2(const Number& rhs) const{
     auto y = static_cast<f64>(rhs);
     auto x = static_cast<f64>(*this);
-    return Number(std::atan2(y, x));
+    std::feclearexcept(FE_ALL_EXCEPT);
+    errno = 0;
+    auto num = std::atan2(y, x);
+    if(errno != 0){
+        std::stringstream ss;
+        ss << std::strerror(errno);
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    return Number(num);
 }
 
 // -*-
