@@ -212,7 +212,7 @@ private:
 };
 
 // -*-
-struct Symbol{
+struct Symbol final {
     std::string value{};
     std::string str(void) const;
     std::string repr(void) const;
@@ -223,10 +223,11 @@ struct Symbol{
 };
 
 // -*-
-struct Lambda{
+struct Lambda final{
     Vec<Symbol> params{};
     Vec<Expression> body{};
     Context ctx{};
+    bool named{false}; // false => lambda, true => function
     std::string str(void) const;
     std::string repr(void) const;
     Lambda clone(void) const;
@@ -235,7 +236,7 @@ struct Lambda{
 };
 
 // -*-
-struct List{
+struct List final{
     Vec<Object> items{};
     std::string str(void) const;
     std::string repr(void) const;
@@ -256,7 +257,7 @@ struct List{
 };
 
 // -*-
-struct Array{
+struct Array final {
     Vec<Object> items{};
     std::string str(void) const;
     std::string repr(void) const;
@@ -278,7 +279,7 @@ struct Array{
 };
 
 // -*-
-struct String{
+struct String final{
     std::string text{};
 
     std::string str(void) const;
@@ -314,7 +315,7 @@ struct String{
 };
 
 // -*-
-struct Pair{
+struct Pair final{
     Object key;
     Object val;
     std::string str(void) const;
@@ -323,7 +324,7 @@ struct Pair{
 };
 
 // -*-
-struct Dict{ // Dict
+struct Dict final{ // Dict
     HashMap hmap;
     std::string str(void) const;
     std::string repr(void) const;
@@ -343,7 +344,7 @@ struct Dict{ // Dict
 };
 
 // -*-
-struct Set{
+struct Set final{
     HashSet hset;
     std::string str(void) const;
     std::string repr(void) const;
@@ -364,7 +365,7 @@ struct Set{
     bool issuperset(const Set& rhs) const;
 };
 
-struct Func{
+struct Func final{
     Fn fn = nullptr;
     std::string str(void) const;
     std::string repr(void) const;
@@ -373,7 +374,7 @@ struct Func{
     Object operator()(const Vec<Object>& args);
 };
 
-struct Macro{
+struct Macro final{
     Vec<Symbol> params{};
     Vec<Expression> body{};
     Context ctx{};
@@ -455,7 +456,7 @@ private:
 };
 
 // -*-
-class ELixError: public std::runtime_error {
+class ELixError final: public std::runtime_error {
 public:
     explicit ELixError();
     explicit ELixError(const Symbol& sym);
@@ -465,6 +466,8 @@ public:
     static Symbol TypeError;
     static Symbol SyntaxError;
     static Symbol RuntimeError;
+    static Symbol KeyError;
+    static Symbol IndexError;
 
     std::string describe(void) const;
 private:
@@ -474,7 +477,7 @@ private:
 // -----------
 // -*- Env -*-
 // -----------
-class Env : public std::enable_shared_from_this<Env> {
+class Env final : public std::enable_shared_from_this<Env> {
 public:
     Env(Context parent=nullptr);
 

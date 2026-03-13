@@ -34,34 +34,20 @@ bool Equal::operator()(const Object& lhs, const Object& rhs) const{
 }//-*- end::namespace::ekasoft::elx::utils   -*-
 // -*-----------------------------------------*-
 
+// --------------
+// -*- Number -*-
+// --------------
+Number::Number(): m_value{i64(0)} {}
+
+Number::Number(i64 num): m_value{num} {}
+
+Number::Number(f64 num): m_value{num} {}
 
 /*
-// -*-----------------------------------------*-
-// -*- begin::namespace::ekasoft::elx::utils -*-
-// -*-----------------------------------------*-
-namespace utils{
-// -
-struct Hash::{
-    std::size_t Hash::operator()(const Object& key) const{}
-};
-
-struct Equal{
-    bool Equal::operator()(const Object& lhs, const Object& rhs) const;
-};
-
-// -*-----------------------------------------*-
-}//-*- end::namespace::ekasoft::elx::utils   -*-
-// -*-----------------------------------------*-
-
-// -*-
-struct Nil final{};
-
 // -*-
 class Number:: final{
 public:
-Number::Number();
-Number::Number(i64 num);
-Number::Number(f64 num);
+
 Number::Number(const Number& num) noexcept;
 Number::Number(Number&& num) noexcept;
 Number& Number::operator=(const Number& num) noexcept;
@@ -385,6 +371,41 @@ private:
 
     Value m_value;
 };
+
+// -*-
+Symbol ELixError::ValueError;
+Symbol ELixError::TypeError;
+Symbol ELixError::SyntaxError;
+Symbol ELixError::RuntimeError;
+Symbol ELixError::KeyError;
+Symbol ELixError::IndexError;
+class ELixError: public std::runtime_error {
+public:
+ELixError::ELixError();
+ELixError::ELixError(const Symbol& sym);
+ELixError::ELixError(const Symbol& sym, const std::string& msg);
+
+std::string ELixError::describe(void) const;
+private:
+    Symbol m_kind;
+};
+
+// -----------
+// -*- Env -*-
+// -----------
+class Env : public std::enable_shared_from_this<Env> {
+public:
+Env::Env(Context parent=nullptr);
+
+void Env::define(const std::string& name, const Object& obj);
+bool Env::update(const std::string& name, const Object& obj);
+Object Env::get(const std::string& name);
+
+private:
+std::map<std::string, Object> m_bindins;
+Context m_parent;
+};
+
 */
 
 // -*--------------------------------------------------------------------------*-
