@@ -47,6 +47,7 @@
     ELIX_DEF(LBrace, "{")           \
     ELIX_DEF(RBrace, "}")           \
     ELIX_DEF(PoundBrace, "#{")      \
+    ELIX_DEF(PoundParen, "#(")      \
     ELIX_DEF(Sym, "SYMBOL")         \
     ELIX_DEF(Integer, "INTEGER")    \
     ELIX_DEF(Float, "FLOAT")        \
@@ -603,6 +604,7 @@ private:
     Token m_token;
 
     void expect(TokenKind kind);
+    void next_token(void);
 
     bool is_at_end(void);
     Expression match(std::initializer_list<TokenKind> kinds);

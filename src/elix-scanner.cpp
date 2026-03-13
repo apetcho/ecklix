@@ -79,6 +79,9 @@ Token Tokenizer::next_token(void){
         if(this->peek_next()=='{'){ // hashset-literal
             this->advance();
             return Token(TokenKind::PoundBrace, "#{", row, col);
+        }else if(this->peek_next()=='('){ // hashset-literal
+            this->advance();
+            return Token(TokenKind::PoundParen, "#(", row, col);
         }
         // symbol starting with '#'
         return this->read_literal();
@@ -339,8 +342,16 @@ Parser::Parser(Tokenizer& tokenizer)
 {}
 
 // -*-
+void Parser::next_token(void){
+    this->m_token = this->m_tokenizer.next_token();
+}
+
+// -*-
 bool Parser::is_at_end(void){
-    return this->m_tokenizer.is_at_end();
+    return (
+        this->m_token.kind==TokenKind::End ||
+        this->m_tokenizer.is_at_end()
+    );
 }
 
 // -*-
@@ -394,6 +405,8 @@ Expression Parser::parse_hashset(void){
 // -*-
 Expression Parser::parse_hashmap(void){
     Vec<Expression> exprs;
+    auto token = this->m_token;
+
     while(true){
        auto tok = this->m_token = this->m_tokenizer.next_token();
         if(tok.kind==TokenKind::RParen || tok.kind==TokenKind::End){
@@ -417,13 +430,10 @@ Expression Parser::parse_literal(void){
     auto tok = this->m_token;
     switch(tok.kind){
     case TokenKind::Sym:
-        return this->parse_symbol();
     case TokenKind::True:
-        return std::make_unique<LiteralExpr>(std::move(Object(true)));
     case TokenKind::False:
-        return std::make_unique<LiteralExpr>(std::move(Object(false)));
     case TokenKind::NIL:
-        return std::make_unique<LiteralExpr>(std::move(Object()));
+        return this->parse_symbol();
     case TokenKind::Integer:{
             i64 num{};
             if(this->m_token.lexeme.find('x')!=std::string::npos){
@@ -473,7 +483,16 @@ Expression Parser::parse_symbol(void){
     case TokenKind::Sym:
         return std::make_unique<LiteralExpr>(std::move(Object(Symbol(tok.lexeme))));
     }
-    return std::make_unique<LiteralExpr>(std::move(Object()));
+    std::stringstream ss;
+    ss << "Illegal symbol " << std::quoted(tok.lexeme) << " found at ";
+    ss << "row " << tok.row << " and column " << tok.col;
+    throw ELixError(ELixError::SyntaxError, ss.str());
+}
+
+// -*-
+Expression Parser::parse_pair(void){
+    //! @todo
+    return nullptr;
 }
 
 // -*-
