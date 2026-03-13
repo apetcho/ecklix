@@ -196,13 +196,17 @@ Number Number::asin(void) const{
     return Number(std::asin(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::acos(void) const{
+    return Number(std::acos(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::asin(void) const{}
 Number Number::acos(void) const{}
 Number Number::atan(void) const{}
 Number Number::atan2(const Number& rhs) const{}
