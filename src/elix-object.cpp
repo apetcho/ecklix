@@ -247,6 +247,11 @@ Number Number::atanh(void) const{
 Number Number::exp(void) const{
     return Number(std::exp(static_cast<f64>(*this)));
 }
+
+// -*-
+Number Number::expm1(void) const{
+    return Number(std::expm1(static_cast<f64>(*this)));
+}
 /*
 // -*-
 class Number:: final{
