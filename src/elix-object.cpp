@@ -252,14 +252,17 @@ Number Number::exp(void) const{
 Number Number::expm1(void) const{
     return Number(std::expm1(static_cast<f64>(*this)));
 }
+
+// -*-
+Number Number::exp2(void) const{
+    return Number(std::exp2(static_cast<f64>(*this)));
+}
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::exp(void) const{}
-Number Number::expm1(void) const{}
 Number Number::exp2(void) const{}
 Number Number::log(void) const{}
 Number Number::log2(void) const{}
