@@ -201,6 +201,11 @@ Number Number::acos(void) const{
     return Number(std::acos(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::atan(void) const{
+    return Number(std::atan(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
