@@ -156,13 +156,18 @@ Number Number::ceil(void) const{
     return Number(std::ceil(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::floor(void) const{
+    return Number(std::floor(static_cast<f64>(*this)));
+}
+
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::floor(void) const{}
 Number Number::round(void) const{}
 Number Number::truncate(void) const{}
 Number Number::sin(void) const{}
