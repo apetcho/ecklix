@@ -162,13 +162,17 @@ Number Number::floor(void) const{
 }
 
 
+// -*-
+Number Number::round(void) const{
+    return Number(std::round(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::round(void) const{}
 Number Number::truncate(void) const{}
 Number Number::sin(void) const{}
 Number Number::cos(void) const{}
