@@ -313,6 +313,10 @@ bool Number::isinf(void) const{
     return std::isinf(static_cast<f64>(*this));
 }
 
+// -*-
+bool Number::isfinite(void) const{
+    return std::isfinite(static_cast<f64>(*this));
+}
 
 /*
 // -*-
@@ -320,9 +324,6 @@ class Number:: final{
 public:
 
 // -
-bool Number::lgamma(void) const{}
-bool Number::isnan(void) const{}
-bool Number::isinf(void) const{}
 bool Number::isfinite(void) const{}
 bool Number::operator!(){}
 Number& Number::operator-(){}
