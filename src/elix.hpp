@@ -607,6 +607,7 @@ private:
 
     void expect(TokenKind kind);
     void next_token(void);
+    void skip_token(void);
 
     bool is_at_end(void);
     Expression match(std::initializer_list<TokenKind> kinds);

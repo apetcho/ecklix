@@ -377,7 +377,9 @@ void Tokenizer::skip_comment(void) {
     }
 }
 
-// -*-
+// -*----------*-
+// -*- Parser -*-
+// -*----------*-
 Parser::Parser(Tokenizer& tokenizer)
 : m_tokenizer{tokenizer}
 {}
@@ -389,20 +391,13 @@ void Parser::next_token(void){
 
 // -*-
 bool Parser::is_at_end(void){
-    return (
-        this->m_token.kind==TokenKind::End ||
-        this->m_tokenizer.is_at_end()
-    );
+    return (this->m_token.kind==TokenKind::End);
 }
 
 // -*-
 Expression Parser::match(std::initializer_list<TokenKind> kinds){
     for(auto kind: kinds){
         switch(kind){
-        case TokenKind::LParen:
-            return this->parse_list();
-        case TokenKind::LBracket:
-            return this->parse_array();
         case TokenKind::False:
         case TokenKind::True:
         case TokenKind::NIL:
@@ -411,28 +406,52 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
         case TokenKind::Integer:
         case TokenKind::Float:
             return this->parse_literal();
+        case TokenKind::LParen:
+            return this->parse_list();
+        case TokenKind::LBracket:
+            return this->parse_array();
         case TokenKind::LBrace:
             return this->parse_hashmap();
         case TokenKind::PoundBrace:
             return this->parse_hashset();
+        case TokenKind::PoundParen:
+            return this->parse_pair();
         case TokenKind::End:
             return std::make_unique<LiteralExpr>(std::move(Object()));
         }
     }
+    //! @todo throw and error
     return std::make_unique<LiteralExpr>(std::move(Object()));
+}
+
+// -*-
+void Parser::skip_token(void){
+    this->next_token();
 }
 
 // -*-
 Expression Parser::parse_list(void){
     Vec<Expression> exprs;
+    this->skip_token(); // skip the '('
+    Token& tok = this->m_token;
+    bool failed{false};
     while(true){
-       auto tok = this->m_token = this->m_tokenizer.next_token();
-        if(tok.kind==TokenKind::RParen || tok.kind==TokenKind::End){
+        this->next_token();
+        if(this->is_at_end()){
+            failed = true;
             break;
         }
-        this->m_tokenizer.m_pos -= tok.lexeme.length();
-        if(tok.kind==TokenKind::LParen){ this->m_tokenizer.m_pos--; }
+        if(tok.kind==TokenKind::RParen){
+            this->skip_token(); // the closing ")"
+            break;
+        }
         exprs.push_back(this->parse());
+    }
+    if(failed){
+        std::stringstream ss;
+        ss << "Malformed list literal. Error at row " << tok.row << " and ";
+        ss << "column " << tok.col;
+        throw ELixError(ELixError::SyntaxError, ss.str());
     }
     return std::make_unique<ListExpr>(exprs);
 }
@@ -445,25 +464,35 @@ Expression Parser::parse_hashset(void){
 
 // -*-
 Expression Parser::parse_hashmap(void){
-    Vec<Expression> exprs;
-    auto token = this->m_token;
-
-    while(true){
-       auto tok = this->m_token = this->m_tokenizer.next_token();
-        if(tok.kind==TokenKind::RParen || tok.kind==TokenKind::End){
-            break;
-        }
-        this->m_tokenizer.m_pos -= tok.lexeme.length();
-        if(tok.kind==TokenKind::LParen){ this->m_tokenizer.m_pos--; }
-        exprs.push_back(this->parse());
-    }
-    return std::make_unique<ListExpr>(exprs);
+    //! @todo
+    return nullptr;
 }
 
 // -*-
 Expression Parser::parse_array(void){
-    //! @todo
-    return nullptr;
+    Vec<Expression> exprs;
+    this->skip_token(); // skip the "["
+    Token& tok = this->m_token;
+    bool failed{false};
+    while(true){
+        this->next_token();
+        if(this->is_at_end()){
+            failed = true;
+            break;
+        }
+        if(tok.kind==TokenKind::RBracket){
+            this->skip_token();     // the closing "]"
+            break;
+        }
+        exprs.push_back(this->parse());
+    }
+    if(failed){
+        std::stringstream ss;
+        ss << "Malformed array literal. Error at row " << tok.row << " and ";
+        ss << "column " << tok.col;
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    return std::make_unique<ArrayExpr>(exprs);
 }
 
 // -*-
