@@ -176,9 +176,9 @@ public:
     Number erfc(void) const;
     Number tgamma(void) const;
     Number lgamma(void) const;
-    Number isnan(void) const;
-    Number isinf(void) const;
-    Number isfinite(void) const;
+    bool isnan(void) const;
+    bool isinf(void) const;
+    bool isfinite(void) const;
     bool operator!();
     Number& operator-();
     Number& operator~();

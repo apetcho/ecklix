@@ -302,16 +302,22 @@ Number Number::tgamma(void) const{
 Number Number::lgamma(void) const{
     return Number(std::lgamma(static_cast<f64>(*this)));
 }
+
+// -*-
+bool Number::isnan(void) const{
+    return std::isnan(static_cast<f64>(*this));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::lgamma(void) const{}
-Number Number::isnan(void) const{}
-Number Number::isinf(void) const{}
-Number Number::isfinite(void) const{}
+bool Number::lgamma(void) const{}
+bool Number::isnan(void) const{}
+bool Number::isinf(void) const{}
+bool Number::isfinite(void) const{}
 bool Number::operator!(){}
 Number& Number::operator-(){}
 Number& Number::operator~(){}
