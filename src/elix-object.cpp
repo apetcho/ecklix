@@ -233,13 +233,17 @@ Number Number::asinh(void) const{
     return Number(std::asinh(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::acosh(void) const{
+    return Number(std::acosh(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::asinh(void) const{}
 Number Number::acosh(void) const{}
 Number Number::atanh(void) const{}
 Number Number::exp(void) const{}
