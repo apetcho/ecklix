@@ -213,13 +213,17 @@ Number Number::atan2(const Number& rhs) const{
     return Number(std::atan2(y, x));
 }
 
+// -*-
+Number Number::sinh(void) const{
+    return Number(std::sinh(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::atan2(const Number& rhs) const{}
 Number Number::sinh(void) const{}
 Number Number::cosh(void) const{}
 Number Number::tanh(void) const{}
