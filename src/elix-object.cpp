@@ -101,12 +101,23 @@ Number::operator f64() const{
     return std::get<f64>(this->m_value);
 }
 
+// -*-
+bool Number::as_bool(void){
+    if(this->is_integer()){
+        i64 num{};
+        this->value(num);
+        return (num=0);
+    }
+    f64 num{};
+    this->value(num);
+    return (num=0.0);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-bool Number::as_bool(void);
 i64 Number::as_integer(void);
 f64 Number::as_float(void);
 bool Number::is_integer(void) const;

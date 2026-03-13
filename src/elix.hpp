@@ -209,6 +209,13 @@ private:
     using Value = std::variant<i64, f64>;
 
     Value m_value;
+    void value(i64& num){
+        num = std::get<i64>(this->m_value);
+    }
+
+    void value(f64& num){
+        num = std::get<f64>(this->m_value);
+    }
 };
 
 // -*-
