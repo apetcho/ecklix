@@ -51,13 +51,20 @@ Number::Number(Number&& num) noexcept
 : m_value{std::move(num.m_value)}
 {}
 
+Number& Number::operator=(const Number& num) noexcept{
+    if(this != &num){
+        this->m_value = num.m_value;
+    }
+    return *this;
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 
-Number& Number::operator=(const Number& num) noexcept;
+
 Number& Number::operator=(Number&& num) noexcept;
 std::string Number::str(void) const;
 std::string Number::repr(void) const;
