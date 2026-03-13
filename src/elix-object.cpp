@@ -65,12 +65,21 @@ Number& Number::operator=(Number&& num) noexcept{
     return *this;
 }
 
+std::string Number::str(void) const{
+    std::stringstream ss;
+    auto ptr = std::get_if<i64>(&this->m_value);
+    if(ptr!=nullptr){ ss << *ptr; }
+    else{ ss << std::get<f64>(this->m_value); }
+
+    return ss.str();
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-std::string Number::str(void) const;
+
 std::string Number::repr(void) const;
 Number::operator bool() const;
 Number::operator i64() const;
