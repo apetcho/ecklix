@@ -293,6 +293,10 @@ Number Number::erfc(void) const{
     return Number(std::erfc(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::tgamma(void) const{
+    return Number(std::tgamma(static_cast<f64>(*this)));
+}
 /*
 // -*-
 class Number:: final{
