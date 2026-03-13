@@ -23,6 +23,13 @@ std::size_t Hash::operator()(const Object& key) const{
     return std::hash<std::string>{}(key.str());
 }
 
+// -*-
+bool Equal::operator()(const Object& lhs, const Object& rhs) const{
+    auto xstr = lhs.str();
+    auto ystr = rhs.str();
+    return (xstr==ystr);
+}
+
 // -*-----------------------------------------*-
 }//-*- end::namespace::ekasoft::elx::utils   -*-
 // -*-----------------------------------------*-
