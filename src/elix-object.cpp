@@ -131,13 +131,17 @@ f64 Number::as_float(void){
     return std::get<f64>(this->m_value);
 }
 
+bool Number::is_integer(void) const{
+    return std::holds_alternative<i64>(this->m_value);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 
-bool Number::is_integer(void) const;
+
 
 // -
 Number Number::clone(void) const;
