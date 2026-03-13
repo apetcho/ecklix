@@ -185,13 +185,18 @@ Number Number::cos(void) const{
     return Number(std::cos(static_cast<f64>(*this)));
 }
 
+
+// -*-
+Number Number::tan(void) const{
+    return Number(std::tan(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::tan(void) const{}
 Number Number::asin(void) const{}
 Number Number::acos(void) const{}
 Number Number::atan(void) const{}
