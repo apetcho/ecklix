@@ -1,6 +1,9 @@
 #include "elix.hpp"
 #include<sstream>
 #include<iomanip>
+#include<cstring>
+#include<cerrno>
+#include<cfenv>
 #include<cmath>
 
 // -*--------------------------------------------------------------------------*-
@@ -203,7 +206,15 @@ Number Number::acos(void) const{
 
 // -*-
 Number Number::atan(void) const{
-    return Number(std::atan(static_cast<f64>(*this)));
+    std::feclearexcept(FE_ALL_EXCEPT);
+    errno = 0;
+    auto num = std::atan(static_cast<f64>(*this));
+    if(errno != 0){
+        std::stringstream ss;
+        ss << std::strerror(errno);
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    return Number(num);
 }
 
 // -*-
@@ -257,13 +268,17 @@ Number Number::expm1(void) const{
 Number Number::exp2(void) const{
     return Number(std::exp2(static_cast<f64>(*this)));
 }
+
+// -*-
+Number Number::log(void) const{
+    return Number(std::log2(static_cast<f64>(*this)));
+}
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::exp2(void) const{}
 Number Number::log(void) const{}
 Number Number::log2(void) const{}
 Number Number::log10(void) const{}
