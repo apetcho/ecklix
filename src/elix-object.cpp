@@ -191,6 +191,11 @@ Number Number::tan(void) const{
     return Number(std::tan(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::asin(void) const{
+    return Number(std::asin(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
