@@ -206,14 +206,19 @@ Number Number::atan(void) const{
     return Number(std::atan(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::atan2(const Number& rhs) const{
+    auto y = static_cast<f64>(rhs);
+    auto x = static_cast<f64>(*this);
+    return Number(std::atan2(y, x));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::acos(void) const{}
-Number Number::atan(void) const{}
 Number Number::atan2(const Number& rhs) const{}
 Number Number::sinh(void) const{}
 Number Number::cosh(void) const{}
