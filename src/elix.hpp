@@ -99,6 +99,7 @@ using Context = std::shared_ptr<Env>;
 using Expression = std::unique_ptr<ExprBase>;
 using Fn = std::function<Object(const Vec<Object>&, Context)>;
 using Visitor = std::unique_ptr<ExprVisitor>;
+
 // -*-----------------------------------------*-
 // -*- begin::namespace::ekasoft::elx::utils -*-
 // -*-----------------------------------------*-
@@ -122,13 +123,16 @@ using HashSet = std::unordered_set<Object, utils::Hash, utils::Equal>;
 // -*-
 struct Nil final{};
 
-
 // -*-
 class Number final{
 public:
     explicit Number();
     explicit Number(i64 num);
     explicit Number(f64 num);
+    Number(const Number& num) noexcept;
+    Number(Number&& num) noexcept;
+    Number& operator=(const Number& num) noexcept;
+    Number& operator=(Number&& num) noexcept;
     std::string str(void) const;
     std::string repr(void) const;
     operator bool() const;
@@ -209,8 +213,7 @@ private:
 
 // -*-
 struct Symbol{
-    std::string value;
-    explicit Symbol(const std::string& val);
+    std::string value{};
     std::string str(void) const;
     std::string repr(void) const;
     Symbol clone(void) const;
@@ -221,10 +224,9 @@ struct Symbol{
 
 // -*-
 struct Lambda{
-    Vec<Symbol> params;
-    Vec<Expression> body;
-    Context ctx;
-    explicit Lambda(const Vec<Symbol>& params, Vec<Expression> expr, Context env);
+    Vec<Symbol> params{};
+    Vec<Expression> body{};
+    Context ctx{};
     std::string str(void) const;
     std::string repr(void) const;
     Lambda clone(void) const;
@@ -234,10 +236,7 @@ struct Lambda{
 
 // -*-
 struct List{
-    Vec<Object> items;
-    explicit List();
-    explicit List(const Vec<Object>& items_);
-
+    Vec<Object> items{};
     std::string str(void) const;
     std::string repr(void) const;
     List clone(void) const;
@@ -256,12 +255,9 @@ struct List{
     Object remove(i64 idx);
 };
 
-
 // -*-
 struct Array{
-    Vec<Object> items;
-    explicit Array();
-    explicit Array(const Vec<Object>& items);
+    Vec<Object> items{};
     std::string str(void) const;
     std::string repr(void) const;
     Array clone(void) const;
@@ -283,10 +279,7 @@ struct Array{
 
 // -*-
 struct String{
-    std::string text;
-    explicit String();
-    explicit String(const std::string& txt);
-    explicit String(const char* cstr);
+    std::string text{};
 
     std::string str(void) const;
     std::string repr(void) const;
@@ -297,10 +290,11 @@ struct String{
     String& concat(const String& arg);
     i64 len(void) const;
 
+    friend bool operator+(const String& lhs, const String& rhs);
     friend bool operator==(const String& lhs, const String& rhs);
     friend bool operator!=(const String& lhs, const String& rhs);
 
-    Vec<String> split(const String delim=String(" "));
+    Vec<String> split(const String delim=String{});
     String slice(i64 i, i64 j) const;
     bool startswith(const String& rhs) const;
     bool endswith(const String& rhs) const;
@@ -323,13 +317,14 @@ struct String{
 struct Pair{
     Object key;
     Object val;
+    std::string str(void) const;
+    std::string repr(void) const;
+    String clone(void) const;
 };
 
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
-    explicit Dict();
-    explicit Dict(const HashMap& dict);
     std::string str(void) const;
     std::string repr(void) const;
     Dict clone(void) const;
@@ -350,11 +345,6 @@ struct Dict{ // Dict
 // -*-
 struct Set{
     HashSet hset;
-    explicit Set();
-    explicit Set(const HashSet& hset);
-    explicit Set(const Array& array);
-    explicit Set(const List& array);
-
     std::string str(void) const;
     std::string repr(void) const;
     Set clone(void) const;
@@ -375,10 +365,7 @@ struct Set{
 };
 
 struct Func{
-    Fn fn;
-    explicit Func();
-    explicit Func(Fn fn);
-
+    Fn fn = nullptr;
     std::string str(void) const;
     std::string repr(void) const;
     Func clone(void) const;
@@ -387,11 +374,9 @@ struct Func{
 };
 
 struct Macro{
-    Vec<Symbol> params;
-    Vec<Expression> body;
-    Context ctx;
-    explicit Macro(const Vec<Symbol>& params, Vec<Expression>& body, Context env);
-
+    Vec<Symbol> params{};
+    Vec<Expression> body{};
+    Context ctx{};
     std::string str(void) const;
     std::string repr(void) const;
     Macro clone(void) const;
@@ -399,10 +384,8 @@ struct Macro{
     Expression expand(const Expression& expr, Context& ctx);
 };
 
-
-
 // -*-
-class Object{
+class Object final{
 public:
     Object();
     Object(bool b);
@@ -418,6 +401,15 @@ public:
     Object(const Dict& xmap);
     Object(const Set& xset);
     Object(const Pair& pair);
+    Object(const Lambda& lambda);
+    Object(const Macro& macro);
+    Object(const Func& func);
+    Object(const Object& obj) noexcept;
+    Object(Object&& obj) noexcept;
+    Object& operator=(const Object& obj) noexcept;
+    Object& operator=(Object&& obj) noexcept;
+
+    ~Object(){}
 
     bool is_nil(void) const;
     bool is_integer(void) const;
@@ -451,6 +443,7 @@ public:
     Object clone(void) const;
 
     bool is_hashable(void) const;
+    Symbol type(void) const;
 
 private:
     using Value = std::variant<
