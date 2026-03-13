@@ -288,7 +288,10 @@ Number Number::erf(void) const{
     return Number(std::erf(static_cast<f64>(*this)));
 }
 
-
+// -*-
+Number Number::erfc(void) const{
+    return Number(std::erfc(static_cast<f64>(*this)));
+}
 
 /*
 // -*-
@@ -296,7 +299,6 @@ class Number:: final{
 public:
 
 // -
-Number Number::erf(void) const{}
 Number Number::erfc(void) const{}
 Number Number::tgamma(void) const{}
 Number Number::lgamma(void) const{}
