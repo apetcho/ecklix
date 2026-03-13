@@ -1,6 +1,7 @@
 #include "elix.hpp"
 #include<sstream>
 #include<iomanip>
+#include<cmath>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -142,69 +143,76 @@ Number Number::clone(void) const{
     return Number(static_cast<f64>(*this));
 }
 
+// -*-
+Number Number::abs(void) const{
+    if(this->is_integer()){
+        return Number(std::abs(static_cast<i64>(*this)));
+    }
+    return Number(std::abs(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::abs(void) const;
-Number Number::ceil(void) const;
-Number Number::floor(void) const;
-Number Number::round(void) const;
-Number Number::truncate(void) const;
-Number Number::sin(void) const;
-Number Number::cos(void) const;
-Number Number::tan(void) const;
-Number Number::asin(void) const;
-Number Number::acos(void) const;
-Number Number::atan(void) const;
-Number Number::atan2(void) const;
-Number Number::sinh(void) const;
-Number Number::cosh(void) const;
-Number Number::tanh(void) const;
-Number Number::asinh(void) const;
-Number Number::acosh(void) const;
-Number Number::atanh(void) const;
-Number Number::exp(void) const;
-Number Number::expm1(void) const;
-Number Number::exp2(void) const;
-Number Number::log(void) const;
-Number Number::log2(void) const;
-Number Number::log10(void) const;
-Number Number::log1p(void) const;
-Number Number::erf(void) const;
-Number Number::erfc(void) const;
-Number Number::tgamma(void) const;
-Number Number::lgamma(void) const;
-Number Number::isnan(void) const;
-Number Number::isinf(void) const;
-Number Number::isfinite(void) const;
-bool Number::operator!();
-Number& Number::operator-();
-Number& Number::operator~();
+Number Number::ceil(void) const{}
+Number Number::floor(void) const{}
+Number Number::round(void) const{}
+Number Number::truncate(void) const{}
+Number Number::sin(void) const{}
+Number Number::cos(void) const{}
+Number Number::tan(void) const{}
+Number Number::asin(void) const{}
+Number Number::acos(void) const{}
+Number Number::atan(void) const{}
+Number Number::atan2(const Number& rhs) const{}
+Number Number::sinh(void) const{}
+Number Number::cosh(void) const{}
+Number Number::tanh(void) const{}
+Number Number::asinh(void) const{}
+Number Number::acosh(void) const{}
+Number Number::atanh(void) const{}
+Number Number::exp(void) const{}
+Number Number::expm1(void) const{}
+Number Number::exp2(void) const{}
+Number Number::log(void) const{}
+Number Number::log2(void) const{}
+Number Number::log10(void) const{}
+Number Number::log1p(void) const{}
+Number Number::erf(void) const{}
+Number Number::erfc(void) const{}
+Number Number::tgamma(void) const{}
+Number Number::lgamma(void) const{}
+Number Number::isnan(void) const{}
+Number Number::isinf(void) const{}
+Number Number::isfinite(void) const{}
+bool Number::operator!(){}
+Number& Number::operator-(){}
+Number& Number::operator~(){}
 
-Number operator+(const Number& lhs, const Number& rhs);
-Number operator-(const Number& lhs, const Number& rhs);
-Number operator*(const Number& lhs, const Number& rhs);
-Number operator/(const Number& lhs, const Number& rhs);
-Number operator%(const Number& lhs, const Number& rhs);
+Number operator+(const Number& lhs, const Number& rhs){}
+Number operator-(const Number& lhs, const Number& rhs){}
+Number operator*(const Number& lhs, const Number& rhs){}
+Number operator/(const Number& lhs, const Number& rhs){}
+Number operator%(const Number& lhs, const Number& rhs){}
 
-Number operator&(const Number& lhs, const Number& rhs);
-Number operator|(const Number& lhs, const Number& rhs);
-Number operator^(const Number& lhs, const Number& rhs);
-Number operator<<(const Number& lhs, const Number& rhs);
-Number operator>>(const Number& lhs, const Number& rhs);
+Number operator&(const Number& lhs, const Number& rhs){}
+Number operator|(const Number& lhs, const Number& rhs){}
+Number operator^(const Number& lhs, const Number& rhs){}
+Number operator<<(const Number& lhs, const Number& rhs){}
+Number operator>>(const Number& lhs, const Number& rhs){}
 
-bool operator&&(const Number& lhs, const Number& rhs);
-bool operator&&(const Number& lhs, const Number& rhs);
+bool operator&&(const Number& lhs, const Number& rhs){}
+bool operator&&(const Number& lhs, const Number& rhs){}
 
-bool operator==(const Number& lhs, const Number& rhs);
-bool operator!=(const Number& lhs, const Number& rhs);
-bool operator<(const Number& lhs, const Number& rhs);
-bool operator>(const Number& lhs, const Number& rhs);
-bool operator<=(const Number& lhs, const Number& rhs);
-bool operator>=(const Number& lhs, const Number& rhs);
+bool operator==(const Number& lhs, const Number& rhs){}
+bool operator!=(const Number& lhs, const Number& rhs){}
+bool operator<(const Number& lhs, const Number& rhs){}
+bool operator>(const Number& lhs, const Number& rhs){}
+bool operator<=(const Number& lhs, const Number& rhs){}
+bool operator>=(const Number& lhs, const Number& rhs){}
 
 private:
     using Value = std::variant<i64, f64>;
