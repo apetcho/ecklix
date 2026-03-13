@@ -86,12 +86,18 @@ Number::operator bool() const{
     return (std::get<f64>(this->m_value)==0.0);
 }
 
+// -*-
+Number::operator i64() const{
+    if(this->is_integer()){
+        return std::get<i64>(this->m_value);
+    }
+    return static_cast<i64>(std::get<f64>(this->m_value));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
-
-Number::operator i64() const;
 Number::operator f64() const;
 bool Number::as_bool(void);
 i64 Number::as_integer(void);
