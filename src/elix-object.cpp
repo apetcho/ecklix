@@ -167,13 +167,18 @@ Number Number::round(void) const{
     return Number(std::round(static_cast<f64>(*this)));
 }
 
+
+// -*-
+Number Number::truncate(void) const{
+    return Number(std::trunc(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::truncate(void) const{}
 Number Number::sin(void) const{}
 Number Number::cos(void) const{}
 Number Number::tan(void) const{}
