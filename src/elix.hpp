@@ -618,7 +618,7 @@ class Parser{
 public:
     explicit Parser(Tokenizer& tokenizer);
 
-    Expression parse(void);
+    Vec<Expression> parse(void);
 
 private:
     Tokenizer& m_tokenizer;

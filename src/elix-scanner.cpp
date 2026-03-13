@@ -395,12 +395,6 @@ bool Parser::is_at_end(void){
 }
 
 // -*-
-Expression Parser::match(TokenKind kind){
-    std::initializer_list<TokenKind> kinds{kind};
-    return this->match(kinds);
-}
-
-// -*-
 bool Parser::is_valid_symbol(void){
     auto kind = this->m_token.kind;
     if(kind!=TokenKind::Float && kind!=TokenKind::Integer && kind==TokenKind::Str){
@@ -417,6 +411,12 @@ bool Parser::is_valid_symbol(void){
 }
 
 // -*-
+Expression Parser::match(TokenKind kind){
+    std::initializer_list<TokenKind> kinds{kind};
+    return this->match(kinds);
+}
+
+// -*-
 Expression Parser::match(std::initializer_list<TokenKind> kinds){
     auto row = this->m_token.row;
     auto col = this->m_token.col;
@@ -426,6 +426,14 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
         }
         return false;
     };
+
+    auto yieldError = [&row, &col](){
+        std::stringstream ss;
+        ss << "an unexpected error occurred while parsing at row " << row;
+        ss << " and column " << col;
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    };
+
     for(auto kind: kinds){
         if(ELix::is_reserved_word(this->m_token.lexeme) || kind==TokenKind::Sym){
             return this->parse_symbol();
@@ -439,12 +447,14 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
             return this->parse_pair();
         }else if(kind==TokenKind::LBracket){
             return this->parse_array();
+        }else{
+            std::stringstream ss;
+            ss << "an unexpected error occurred while parsing at row " << row;
+            ss << " and column " << col;
+            throw ELixError(ELixError::SyntaxError, ss.str());
         }
     }
-    std::stringstream ss;
-    ss << "an unexpected error occurred while parsing at row " << row;
-    ss << " and column " << col;
-    throw ELixError(ELixError::SyntaxError, ss.str());
+    return nullptr;
 }
 
 // -*-
@@ -468,7 +478,7 @@ Expression Parser::parse_list(void){
             this->skip_token(); // the closing ")"
             break;
         }
-        exprs.push_back(this->parse());
+        exprs.push_back(this->match(this->m_token.kind));
     }
     if(failed){
         std::stringstream ss;
@@ -488,7 +498,7 @@ Expression Parser::parse_set(void){
     Token& tok = this->m_token;
     bool failed{false};
     while(true){
-        items.push_back(this->parse());
+        items.push_back(this->match(this->m_token.kind));
         if(this->is_at_end()){
             failed = true;
             break;
@@ -557,7 +567,7 @@ Expression Parser::parse_array(void){
             this->skip_token();     // the closing "]"
             break;
         }
-        exprs.push_back(this->parse());
+        exprs.push_back(this->match(this->m_token.kind));
     }
     if(failed){
         std::stringstream ss;
@@ -630,20 +640,28 @@ Expression Parser::parse_literal(void){
 // -*-
 Expression Parser::parse_symbol(void){
     auto tok = this->m_token;
+    auto yieldError = [tok](){
+        std::stringstream ss;
+        ss << "Illegal symbol " << std::quoted(tok.lexeme) << " found at ";
+        ss << "row " << tok.row << " and column " << tok.col;
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    };
     if(tok.kind==TokenKind::Sym || ELix::is_reserved_word(tok.lexeme)){
+        if(!this->is_valid_symbol()){
+            yieldError();
+            return nullptr; // not-reached
+        }
         return std::make_unique<SymbolExpr>(std::move(Object(Symbol(tok.lexeme))));
     }
-    std::stringstream ss;
-    ss << "Illegal symbol " << std::quoted(tok.lexeme) << " found at ";
-    ss << "row " << tok.row << " and column " << tok.col;
-    throw ELixError(ELixError::SyntaxError, ss.str());
+    yieldError();
+    return nullptr; // not-reached
 }
 
 // -*-
 Expression Parser::parse_pair(void){
     this->skip_token();
-    Expression key = this->parse();
-    Expression val = this->parse();
+    Expression key = this->match(this->m_token.kind);
+    Expression val = this->match(this->m_token.kind);
     if(this->m_token.kind != TokenKind::RParen){
         std::stringstream ss;
         ss << "Malformed pair-literal. Expect ')' at row " << this->m_token.row;
@@ -676,7 +694,8 @@ void Parser::expect(TokenKind kind){
 // -*- void Parser::expect(const std::string& tok){}
 
 // -*-
-Expression Parser::parse(void){
+Vec<Expression> Parser::parse(void){
+    Vec<Expression> result{};
     this->m_token = this->m_tokenizer.next_token();
     std::initializer_list<TokenKind> kinds{
         TokenKind::And,
@@ -704,8 +723,11 @@ Expression Parser::parse(void){
         TokenKind::Var,
         TokenKind::While,
     };
+    for(auto kind: kinds){
+        result.push_back(std::move(this->match(kind)));
+    }
 
-    return this->match(kinds);
+    return std::move(result);
 }
 
 /*
