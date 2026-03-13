@@ -283,13 +283,19 @@ Number Number::log1p(void) const{
     return Number(std::log1p(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::erf(void) const{
+    return Number(std::erf(static_cast<f64>(*this)));
+}
+
+
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::log1p(void) const{}
 Number Number::erf(void) const{}
 Number Number::erfc(void) const{}
 Number Number::tgamma(void) const{}
