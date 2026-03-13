@@ -58,14 +58,18 @@ Number& Number::operator=(const Number& num) noexcept{
     return *this;
 }
 
+Number& Number::operator=(Number&& num) noexcept{
+    if(this != &num){
+        this->m_value = std::move(num.m_value);
+    }
+    return *this;
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-
-
-Number& Number::operator=(Number&& num) noexcept;
 std::string Number::str(void) const;
 std::string Number::repr(void) const;
 Number::operator bool() const;
