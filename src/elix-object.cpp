@@ -74,13 +74,15 @@ std::string Number::str(void) const{
     return ss.str();
 }
 
+std::string Number::repr(void) const{
+    return this->str();
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-
-std::string Number::repr(void) const;
 Number::operator bool() const;
 Number::operator i64() const;
 Number::operator f64() const;
