@@ -113,12 +113,20 @@ bool Number::as_bool(void){
     return (num=0.0);
 }
 
+i64 Number::as_integer(void){
+    if(this->is_integer()){
+        return std::get<i64>(this->m_value);
+    }
+    f64 num{};
+    this->value(num);
+    return static_cast<i64>(num);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-i64 Number::as_integer(void);
 f64 Number::as_float(void);
 bool Number::is_integer(void) const;
 
