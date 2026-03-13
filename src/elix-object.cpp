@@ -308,6 +308,12 @@ bool Number::isnan(void) const{
     return std::isnan(static_cast<f64>(*this));
 }
 
+// -*-
+bool Number::isinf(void) const{
+    return std::isinf(static_cast<f64>(*this));
+}
+
+
 /*
 // -*-
 class Number:: final{
