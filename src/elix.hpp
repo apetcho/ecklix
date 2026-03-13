@@ -639,6 +639,7 @@ private:
     Expression parse_literal(void);     // true, false, nil, NUMBER, STRING, SYMBOL
     Expression parse_symbol(void);      // SYMBOL
     Expression parse_pair(void);        // #(x y)
+    bool is_valid_symbol(void);
 
     friend class ELix;
 };

@@ -401,6 +401,22 @@ Expression Parser::match(TokenKind kind){
 }
 
 // -*-
+bool Parser::is_valid_symbol(void){
+    auto kind = this->m_token.kind;
+    if(kind!=TokenKind::Float && kind!=TokenKind::Integer && kind==TokenKind::Str){
+        auto lexeme = this->m_token.lexeme;
+        bool check = (
+            lexeme.find('[')==std::string::npos &&  // not allowed in symbol-name
+            lexeme.find(']')==std::string::npos &&  // not allowed in symbol-name
+            lexeme.find('(')==std::string::npos &&  // not allowed in symbol-name
+            lexeme.find(')')==std::string::npos     // not allowed in symbol-name
+        );
+        if(check){ return false; }
+    }
+    return true;
+}
+
+// -*-
 Expression Parser::match(std::initializer_list<TokenKind> kinds){
     auto row = this->m_token.row;
     auto col = this->m_token.col;
