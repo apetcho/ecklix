@@ -122,12 +122,21 @@ i64 Number::as_integer(void){
     return static_cast<i64>(num);
 }
 
+f64 Number::as_float(void){
+    if(this->is_integer()){
+        i64 num{};
+        this->value(num);
+        return static_cast<f64>(num);
+    }
+    return std::get<f64>(this->m_value);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-f64 Number::as_float(void);
+
 bool Number::is_integer(void) const;
 
 // -
