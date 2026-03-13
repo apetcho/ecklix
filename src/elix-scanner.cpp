@@ -1,8 +1,7 @@
 #include "elix.hpp"
 #include<cctype>
-#include<initializer_list>
-#include<string>
-#include<cmath>
+#include<sstream>
+#include<iomanip>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -78,7 +77,8 @@ Token Tokenizer::next_token(void){
         // hashset-literal: #{key1 key2 key3 ... }
         // symbol: #name
         if(this->peek_next()=='{'){ // hashset-literal
-            return Token(TokenKind::Pound, "#", row, col);
+            this->advance();
+            return Token(TokenKind::PoundBrace, "#{", row, col);
         }
         // symbol starting with '#'
         return this->read_literal();
@@ -103,22 +103,6 @@ Token Tokenizer::next_token(void){
         }//
     }
 }
-
-// // -*-
-// Token Tokenizer::match(const std::string& text, u32 row, i32 col){
-//     std::map<std::string, TokenKind> kindmap = {
-// #define ELIX_DEF(tok, name) { name, TokenKind::tok},
-//         ELIX_RESERVED_WORDS()
-// #undef ELIX_DEF
-//         // { ".", TokenKind::Dot},     // found in pair literals: (x . y)
-//         // { "=>", TokenKind::Arrow},  // found in dict literal: { }
-//     };
-//     // auto entry = kindmap.find(text);
-//     // if(entry != kindmap.end()){
-//     //     return Token(entry->second, text, this->m_row, this->m_row);
-//     // }
-//     return Token(TokenKind::Sym, text, this->m_row, this->m_row);
-// }
 
 // -*-
 Token Tokenizer::read_number(void){
@@ -261,7 +245,7 @@ Token Tokenizer::read_number(void){
         " at row " + std::to_string(token.row) +
         " and column " + std::to_string(token.col)
     );
-    throw ElixError(ElixError::SyntaxError, errmsg);
+    throw ELixError(ELixError::SyntaxError, errmsg);
 }
 
 // -*-
@@ -307,7 +291,7 @@ Token Tokenizer::read_string(void){
             "malformed string literal. Expected a closing '\"'"
             " at row " + r_ + " and column " + c_ + "."
         };
-        throw ElixError(ElixError::SyntaxError, msg);
+        throw ELixError(ELixError::SyntaxError, msg);
     }
     
     return token;
@@ -365,12 +349,8 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
         switch(kind){
         case TokenKind::LParen:
             return this->parse_list();
-        case TokenKind::RParen:
-            return std::make_unique<LiteralExpr>(std::move(Object()));
         case TokenKind::LBracket:
             return this->parse_array();
-        case TokenKind::RBracket:
-            return std::make_unique<LiteralExpr>(std::move(Object()));
         case TokenKind::False:
         case TokenKind::True:
         case TokenKind::NIL:
@@ -381,6 +361,8 @@ Expression Parser::match(std::initializer_list<TokenKind> kinds){
             return this->parse_literal();
         case TokenKind::LBrace:
             return this->parse_hashmap();
+        case TokenKind::PoundBrace:
+            return this->parse_hashset();
         case TokenKind::End:
             return std::make_unique<LiteralExpr>(std::move(Object()));
         }
@@ -435,20 +417,47 @@ Expression Parser::parse_literal(void){
     auto tok = this->m_token;
     switch(tok.kind){
     case TokenKind::Sym:
-    case TokenKind::True:
-    case TokenKind::False:
-    case TokenKind::NIL:
         return this->parse_symbol();
+    case TokenKind::True:
+        return std::make_unique<LiteralExpr>(std::move(Object(true)));
+    case TokenKind::False:
+        return std::make_unique<LiteralExpr>(std::move(Object(false)));
+    case TokenKind::NIL:
+        return std::make_unique<LiteralExpr>(std::move(Object()));
     case TokenKind::Integer:{
-            auto num = Number(std::stoll(tok.lexeme));
+            i64 num{};
+            if(this->m_token.lexeme.find('x')!=std::string::npos){
+                size_t pos{};
+                num = std::stoll(this->m_token.lexeme, &pos, 16);
+            }else if(this->m_token.lexeme.find('o')!=std::string::npos){
+                size_t pos{};
+                num = std::stoll(this->m_token.lexeme, &pos, 8);
+            }else if(this->m_token.lexeme.find('b')!=std::string::npos){
+                size_t pos{};
+                num = std::stoll(this->m_token.lexeme, &pos, 2);
+            }else{
+                size_t pos{};
+                num = std::stoll(this->m_token.lexeme, &pos);
+            }
             return std::make_unique<LiteralExpr>(std::move(Object(num)));
         }
     case TokenKind::Float:{
             auto num = Number(std::stod(tok.lexeme));
             return std::make_unique<LiteralExpr>(std::move(Object(num)));
         }
+    case TokenKind::Str:
+        return std::make_unique<LiteralExpr>(std::move(Object(this->m_token.lexeme)));
+    default:
+        break;
     }
-    return std::make_unique<LiteralExpr>(std::move(Object()));
+    auto r = this->m_token.row;
+    auto c = this->m_token.col;
+    std::stringstream ss;
+    ss << "error while parsing ELix literal at row " << r;
+    ss << " and column " << c << ".\nFound illegal token ";
+    ss << std::quoted(this->m_token.lexeme);
+    
+    throw ELixError(ELixError::SyntaxError, ss.str());
 }
 
 // -*-
@@ -468,9 +477,19 @@ Expression Parser::parse_symbol(void){
 }
 
 // -*-
-bool Parser::expect(const Token& token, TokenKind kind){
-    //! @todo
-    return false;
+void Parser::expect(TokenKind kind){
+    std::map<TokenKind, std::string> reservedWords = {
+#define ELIX_DEF(tok, word) {TokenKind::tok, word},
+        ELIX_RESERVED_WORDS()
+#undef ELIX_DEF
+    };
+    auto entry = reservedWords.find(kind);
+    if(entry != reservedWords.end()){ return; }
+    std::stringstream ss;
+    ss << "expect " << std::quoted(reservedWords[kind]);
+    ss << " but found " << this->m_token.lexeme << " at ";
+    ss << "row " << this->m_token.row << " and column " << this->m_token.col;
+    throw ELixError(ELixError::SyntaxError, ss.str());
 }
 
 /*

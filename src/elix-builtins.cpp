@@ -40,8 +40,8 @@ static Object fn_ge(const Vec<Object>& args);
 static Object fn_eq(const Vec<Object>& args);
 static Object fn_ne(const Vec<Object>& args);
 
-static Object fn_pair_first(const Vec<Object>& args);
-static Object fn_pair_second(const Vec<Object>& args);
+static Object fn_pair_key(const Vec<Object>& args);
+static Object fn_pair_value(const Vec<Object>& args);
 
 static Object fn_symbol_eq(const Vec<Object>& args);
 static Object fn_symbol_ne(const Vec<Object>& args);

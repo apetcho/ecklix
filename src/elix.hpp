@@ -46,7 +46,7 @@
     ELIX_DEF(RBracket, "]")         \
     ELIX_DEF(LBrace, "{")           \
     ELIX_DEF(RBrace, "}")           \
-    ELIX_DEF(Pound, "#")            \
+    ELIX_DEF(PoundBrace, "#{")      \
     ELIX_DEF(Sym, "SYMBOL")         \
     ELIX_DEF(Integer, "INTEGER")    \
     ELIX_DEF(Float, "FLOAT")        \
@@ -389,6 +389,8 @@ public:
     Object(f64 num);
     Object(const Number& num);
     Object(const Symbol& sym);
+    Object(const char* cstr);
+    Object(const std::string& str);
     Object(const String& str);
     Object(const Array& array);
     Object(const List& xs);
@@ -437,11 +439,11 @@ private:
 };
 
 // -*-
-class ElixError: public std::runtime_error {
+class ELixError: public std::runtime_error {
 public:
-    explicit ElixError();
-    explicit ElixError(const Symbol& sym);
-    explicit ElixError(const Symbol& sym, const std::string& msg);
+    explicit ELixError();
+    explicit ELixError(const Symbol& sym);
+    explicit ELixError(const Symbol& sym, const std::string& msg);
 
     static Symbol ValueError;
     static Symbol TypeError;
@@ -502,6 +504,13 @@ struct ArrayExpr: public ExprBase{
     virtual Object eval(ExprVisitor& visitor) override;
 };
 
+struct PairExpr: public ExprBase{
+    Expression key;
+    Expression val;
+    explicit PairExpr(Expression key, Expression val);
+    virtual Object eval(ExprVisitor& visitor) override;
+};
+
 struct MapExpr: public ExprBase{
     HashMap<std::string, Expression> xmap;
     explicit MapExpr(HashMap<std::string, Expression>&& xm);
@@ -525,6 +534,7 @@ struct ExprVisitor{
     virtual Object eval(ArrayExpr& ) = 0;
     virtual Object eval(MapExpr& ) = 0;
     virtual Object eval(SetExpr& ) = 0;
+    virtual Object eval(PairExpr& ) = 0;
 };
 
 // ------------------
@@ -592,16 +602,17 @@ private:
     Tokenizer& m_tokenizer;
     Token m_token;
 
-    bool expect(const Token& token, TokenKind kind);
+    void expect(TokenKind kind);
 
     bool is_at_end(void);
     Expression match(std::initializer_list<TokenKind> kinds);
-    Expression parse_list(void);
-    Expression parse_hashset(void);
-    Expression parse_hashmap(void);
-    Expression parse_array(void);
-    Expression parse_literal(void);
-    Expression parse_symbol(void);
+    Expression parse_list(void);        // (x y z ....)
+    Expression parse_hashset(void);     // #{k1 k2 ...}
+    Expression parse_hashmap(void);     // { pair1 pair2 pair3 ... }
+    Expression parse_array(void);       // [v1 v2 v3 ...]
+    Expression parse_literal(void);     // true, false, nil, NUMBER, STRING, SYMBOL
+    Expression parse_symbol(void);      // SYMBOL
+    Expression parse_pair(void);        // #(x y)
 };
 
 // ------------------------------
