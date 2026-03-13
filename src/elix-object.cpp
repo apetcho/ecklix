@@ -218,13 +218,17 @@ Number Number::sinh(void) const{
     return Number(std::sinh(static_cast<f64>(*this)));
 }
 
+// -*-
+Number Number::cosh(void) const{
+    return Number(std::cosh(static_cast<f64>(*this)));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::sinh(void) const{}
 Number Number::cosh(void) const{}
 Number Number::tanh(void) const{}
 Number Number::asinh(void) const{}
