@@ -567,23 +567,25 @@ public:
     explicit Tokenizer(const std::string& src);
 
     Token next_token(void);
+    Token peek_next_token(u32& row, u32& col, u32& pos);
 
 private:
     std::string m_src;
     u32 m_pos = 0;
-    u32 m_start = 0;
     u32 m_row;
     u32 m_col;
 
     void skip_whitespace(void);
     void skip_comment(void);
-    Token read_number(void);
-    Token read_literal(void);
-    Token read_string(void);
+    Token read_number(u32& pos);
+    Token read_literal(u32& pos);
+    Token read_string(u32& pos);
     bool is_at_end(void) const;
     char peek(void) const;
     char peek_next(void) const;
     char advance(void);
+    void reset(u32& row, u32& col, u32& pos);
+    void update(u32 row, u32 col, u32 pos);
     bool is_symbol_char(char c) const;
     // Token match(const std::string& text, u32 row, i32 col);
 

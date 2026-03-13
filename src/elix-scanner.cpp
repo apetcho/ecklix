@@ -37,56 +37,91 @@ bool Tokenizer::is_symbol_char(char c) const{
 
 // -*-
 Token Tokenizer::next_token(void){
+    auto pos = this->m_pos;
+    auto col = this->m_col;
+    auto row = this->m_row;
+    auto token = this->peek_next_token(row, col, pos);
+    this->update(row, col, pos);
+    this->advance();
+    return token;
+}
+
+// -*-
+void Tokenizer::reset(u32& row, u32& col, u32& pos){
+    std::swap(row, this->m_row);
+    std::swap(col, this->m_col);
+    std::swap(pos, this->m_pos);
+}
+
+// -*-
+void Tokenizer::update(u32 row, u32 col, u32 pos){
+    this->m_row = row;
+    this->m_col = col;
+    this->m_pos = pos;
+}
+
+// -*-
+Token Tokenizer::peek_next_token(u32& row, u32& col, u32& pos){
+    Token token;
     this->skip_whitespace();
     this->skip_comment();
     if(this->is_at_end()){
-        return Token(TokenKind::End, "", this->m_row, this->m_col);
+        token = Token(TokenKind::End, "", this->m_row, this->m_col);
+        this->reset(row, col, pos);
+        return token;
     }
-    auto row = this->m_row;
-    auto col = this->m_col;
     auto c = this->peek();
     if(c=='\0'){
-        Token token;
-        token.row = row;
-        token.col = col;
+        token.row = this->m_row;
+        token.col = this->m_col;
         token.kind = TokenKind::End;
         token.lexeme = "";
+        this->reset(row, col, pos);
         return token;
     }
     switch(c){
     case '(':
-        this->advance();
+        pos = this->m_pos;this->reset(row, col, pos);
         return Token(TokenKind::LParen, "(", row, col);
     case ')':
-        this->advance();
-        return Token(TokenKind::LParen, ")", row, col);
+        pos = this->m_pos;
+        this->reset(row, col, pos);
+        return Token(TokenKind::RParen, ")", row, col);
     case '[':
-        this->advance();
-        return Token(TokenKind::LParen, "[", row, col);
+        pos = this->m_pos;
+        this->reset(row, col, pos);
+        return Token(TokenKind::LBracket, "[", row, col);
     case ']':
-        this->advance();
-        return Token(TokenKind::LParen, "]", row, col);
+        pos = this->m_pos;
+        this->reset(row, col, pos);
+        return Token(TokenKind::LBracket, "[", row, col);
     case '{':
-        this->advance();
+        pos = this->m_pos;
+        this->reset(row, col, pos);
         return Token(TokenKind::LParen, "{", row, col);
     case '}':
-        this->advance();
+        pos = this->m_pos;
+        this->reset(row, col, pos);
         return Token(TokenKind::LParen, "}", row, col);
     case '#':
         // hashset or symbol
         // hashset-literal: #{key1 key2 key3 ... }
         // symbol: #name
         if(this->peek_next()=='{'){ // hashset-literal
-            this->advance();
-            return Token(TokenKind::PoundBrace, "#{", row, col);
+            this->reset(row, col, pos);
+            return Token(TokenKind::PoundBrace, "#{", (row-1), (col-1));
         }else if(this->peek_next()=='('){ // hashset-literal
-            this->advance();
-            return Token(TokenKind::PoundParen, "#(", row, col);
+            this->reset(row, col, pos);
+            return Token(TokenKind::PoundParen, "#(", (row-1), (col-1));
         }
         // symbol starting with '#'
-        return this->read_literal();
+        token = this->read_literal(pos);
+        this->reset(row, col, pos);
+        return token;
     case '"': // string-literal
-        return this->read_string();
+        token = this->read_string(pos);
+        this->reset(row, col, pos);
+        return token;
     default:{
             // Integer format:
             //      hex-integer format:  0x01f1
@@ -100,18 +135,22 @@ Token Tokenizer::next_token(void){
                 (c=='0'  || this->peek_next()=='b')     // binary-integer format
             );
             if(check){
-                return this->read_number();
+                token = this->read_number(pos);
+                this->reset(row, col, pos);
+                return token;
             }
-            return this->read_literal();
+            token = this->read_literal(pos);
+            this->reset(row, col, pos);
+            return token;
         }//
     }
 }
 
 // -*-
-Token Tokenizer::read_number(void){
+Token Tokenizer::read_number(u32& myPos){
     auto r = this->m_row;
     auto c = this->m_col;
-    auto token = this->read_literal();
+    auto token = this->read_literal(myPos);
     auto possiblyFloat = [](const std::string& numstr){
         if(numstr.find('.')!=std::string::npos){ return true; }
         else if(numstr.find('e')!=std::string::npos){ return true; }
@@ -252,7 +291,7 @@ Token Tokenizer::read_number(void){
 }
 
 // -*-
-Token Tokenizer::read_literal(void){
+Token Tokenizer::read_literal(u32& myPos){
     std::string text{};
     Token token;
     token.row = this->m_row;
@@ -264,11 +303,12 @@ Token Tokenizer::read_literal(void){
         text.push_back(c);
     }
     token.kind = TokenKind::Sym;
+    myPos = this->m_pos;
     return token;
 }
 
 // -*-
-Token Tokenizer::read_string(void){
+Token Tokenizer::read_string(u32& myPos){
     Token token;
     token.kind = TokenKind::Str;
     token.row = this->m_row;
@@ -285,8 +325,9 @@ Token Tokenizer::read_string(void){
         }
         c = this->advance();
     }
-    if(!this->is_at_end() && this->peek()=='"'){
-        this->advance(); // eat 
+    if(!this->is_at_end() && this->peek()!='"'){
+        //! @note: do nothing
+        // '"' is handled in this->next_token()
     }else{
         auto r_ = std::to_string(this->m_row);
         auto c_ = std::to_string(this->m_col);
@@ -296,7 +337,7 @@ Token Tokenizer::read_string(void){
         };
         throw ELixError(ELixError::SyntaxError, msg);
     }
-    
+    myPos = this->m_pos;
     return token;
 }
 
