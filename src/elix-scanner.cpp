@@ -466,8 +466,30 @@ Expression Parser::parse_list(void){
 
 // -*-
 Expression Parser::parse_set(void){
-    //! @todo
-    return nullptr;
+    Vec<Expression> items;
+    this->skip_token();     // skip "#{"
+    Token& tok = this->m_token;
+    bool failed{false};
+    while(true){
+        items.push_back(this->parse());
+        if(this->is_at_end()){
+            failed = true;
+            break;
+        }
+        if(tok.kind==TokenKind::RBrace){
+            this->skip_token(); // skip "}"
+            break;
+        }
+    }
+    if(failed){
+        std::stringstream ss;
+        ss << "Malformed set literal. Error at row " << tok.row << " and ";
+        ss << "column " << tok.col;
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    auto hset = std::make_unique<SetExpr>();
+    hset->items = std::move(items);
+    return std::move(hset);
 }
 
 // -*-
