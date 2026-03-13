@@ -297,14 +297,17 @@ Number Number::erfc(void) const{
 Number Number::tgamma(void) const{
     return Number(std::tgamma(static_cast<f64>(*this)));
 }
+
+// -*-
+Number Number::lgamma(void) const{
+    return Number(std::lgamma(static_cast<f64>(*this)));
+}
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number Number::erfc(void) const{}
-Number Number::tgamma(void) const{}
 Number Number::lgamma(void) const{}
 Number Number::isnan(void) const{}
 Number Number::isinf(void) const{}
