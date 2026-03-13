@@ -453,7 +453,7 @@ Expression Parser::parse_list(void){
         ss << "column " << tok.col;
         throw ELixError(ELixError::SyntaxError, ss.str());
     }
-    return std::make_unique<ListExpr>(exprs);
+    return std::make_unique<ListExpr>(std::move(exprs));
 }
 
 // -*-
@@ -492,7 +492,7 @@ Expression Parser::parse_array(void){
         ss << "column " << tok.col;
         throw ELixError(ELixError::SyntaxError, ss.str());
     }
-    return std::make_unique<ArrayExpr>(exprs);
+    return std::make_unique<ArrayExpr>(std::move(exprs));
 }
 
 // -*-
@@ -561,8 +561,16 @@ Expression Parser::parse_symbol(void){
 
 // -*-
 Expression Parser::parse_pair(void){
-    //! @todo
-    return nullptr;
+    this->skip_token();
+    Expression key = this->parse();
+    Expression val = this->parse();
+    if(this->m_token.kind != TokenKind::RParen){
+        std::stringstream ss;
+        ss << "Malformed pair-literal. Expect ')' at row " << this->m_token.row;
+        ss << " and column " << this->m_token.col;
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    return std::make_unique<PairExpr>(std::move(key), std::move(val));
 }
 
 // -*-
