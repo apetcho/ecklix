@@ -625,7 +625,7 @@ private:
     Token m_token;
 
     void expect(TokenKind kind);
-    void expect(const std::string& tok);
+    //void expect(const std::string& tok);
     void next_token(void);
     void skip_token(void);
 
@@ -639,6 +639,8 @@ private:
     Expression parse_literal(void);     // true, false, nil, NUMBER, STRING, SYMBOL
     Expression parse_symbol(void);      // SYMBOL
     Expression parse_pair(void);        // #(x y)
+
+    friend class ELix;
 };
 
 // ------------------------------
@@ -669,6 +671,8 @@ public:
     static void run(const fs::path& scriptpath, const Vec<Object>& args);
 
     static void setup(void);
+
+    static bool is_reserved_word(const std::string& word);
 
 private:
     Context m_runtime;
