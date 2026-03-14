@@ -1747,15 +1747,22 @@ Object Set::pop(void){
     auto key = vec[idx];
     auto entry = this->hset.find(key);
     this->hset.erase(entry);
-    
+
     return Object(key);
+}
+
+bool Set::isdisjoint(const Set& rhs) const{
+    for(const auto& key: rhs.hset){
+        if(this->find(key)){ return true; }
+    }
+
+    return false;
 }
 
 /*
 // -*-
 struct Set{
     HashSet hset;
-bool Set::isdisjoint(const Set& rhs) const{}
 bool Set::issubset(const Set& rhs) const{}
 bool Set::issuperset(const Set& rhs) const{}
 };
