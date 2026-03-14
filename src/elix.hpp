@@ -114,6 +114,10 @@ struct Equal{
     bool operator()(const Object& lhs, const Object& rhs) const;
 };
 
+struct Less{
+    bool operator()(const Object& lhs, const Object& rhs) const;
+};
+
 // -*-----------------------------------------*-
 }//-*- end::namespace::ekasoft::elx::utils   -*-
 // -*-----------------------------------------*-
@@ -378,6 +382,7 @@ struct Set final{
     Set set_union(const Set& rhs) const;
     Set intersection(const Set& rhs) const;
     Set symmetric_difference(const Set& rhs) const;
+    Set difference(const Set& rhs) const;
     Set& clear(void);
     Set& remove(const Object& key);
     Object pop(void);

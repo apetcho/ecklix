@@ -36,6 +36,12 @@ bool Equal::operator()(const Object& lhs, const Object& rhs) const{
     return (xstr==ystr);
 }
 
+bool Less::operator()(const Object& lhs, const Object& rhs) const{
+    auto xstr = lhs.str();
+    auto ystr = rhs.str();
+    return (xstr<ystr);
+}
+
 // -*-----------------------------------------*-
 }//-*- end::namespace::ekasoft::elx::utils   -*-
 // -*-----------------------------------------*-
@@ -1692,6 +1698,21 @@ Set Set::symmetric_difference(const Set& rhs) const{
         this->hset.begin(), this->hset.end(),
         rhs.hset.begin(), rhs.hset.end(),
         std::back_inserter(result.hset)
+    );
+
+    return std::move(result);
+}
+
+Set Set::difference(const Set& rhs) const{
+    Set result{};
+    result.hset = {};
+    std::set_difference(
+        this->hset.begin(), this->hset.end(),
+        rhs.hset.begin(), rhs.hset.end(),
+        std::back_inserter(result.hset),
+        [](const Object& x, const Object& y){
+            return utils::Less()(x, y);
+        }
     );
 
     return std::move(result);
