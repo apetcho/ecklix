@@ -1782,11 +1782,14 @@ std::string Func::str(void) const{
     return ss.str();
 }
 
+std::string Func::repr(void) const{
+    return this->str();
+}
+
 /*
 struct Func{
     Fn fn;
 
-std::string Func::repr(void) const{}
 Func Func::clone(void) const{}
 Object Func::operator()(const Vec<Object>& args){}
 };
