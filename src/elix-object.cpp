@@ -1134,14 +1134,17 @@ Array& Array::sort(const Object& predicate){
     }
 }
 
+// -*-
+Array& Array::clear(void){
+    this->items.clear();
+    return *this;
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-
-
-Array& Array::clear(void){}
 Array& Array::push(const Object& rhs){}
 Array& Array::pop(void){}
 };
