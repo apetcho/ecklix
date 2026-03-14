@@ -1504,9 +1504,7 @@ std::string Dict::repr(void) const{
 
 Dict Dict::clone(void) const{
     Dict dict{};
-    for(const auto& [key, val]: this->hmap){
-        dict.hmap[Object(key)] = Object(val);
-    }
+    dict.hmap = HashMap{this->hmap};
     return std::move(dict);
 }
 
@@ -1641,13 +1639,16 @@ std::string Set::repr(void) const{
     return ss.str();
 }
 
+Set Set::clone(void) const{
+    Set result{};
+    result.hset = HashSet{this->hset};
+    return std::move(result);
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
-
-
-Set Set::clone(void) const{}
 
 bool Set::find(const Object& needle) const{}
 Set& Set::concat(const Set& args){}
