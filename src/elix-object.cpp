@@ -1616,29 +1616,41 @@ Vec<Pair> Dict::items(const Vec<Object>& args){
     };
 }
 
-/*
+// -*----------------------*-
+// -*- Set Implementation -*-
+// -*----------------------*-
+std::string Set::str(void) const{
+    if(this->len()==0){ return "#{}"; }
+    std::stringstream ss;
+    ss << "#{\n";
+    for(const auto& key: this->hset){
+        ss << key.str() << " ";
+    }
+    ss << "\n}";
+    return ss.str();
+}
 
+/*
 // -*-
 struct Set{
     HashSet hset;
 
-std::string Set::str(void) const;
-std::string Set::repr(void) const;
-Set Set::clone(void) const;
+std::string Set::repr(void) cons{}
+Set Set::clone(void) const{}
 
-bool Set::find(const Object& needle) const;
-Set& Set::concat(const Set& args);
-i64 Set::len(void) const;
-Set& Set::add(const Object& key);
-Set Set::set_union(const Set& rhs) const;
-Set Set::intersection(const Set& rhs) const;
-Set Set::symmetric_difference(const Set& rhs) const;
-Set& Set::clear(void);
-Set& Set::discard(const Object& key);
-Object Set::pop(void);
-bool Set::isdisjoint(const Set& rhs) const;
-bool Set::issubset(const Set& rhs) const;
-bool Set::issuperset(const Set& rhs) const;
+bool Set::find(const Object& needle) const{}
+Set& Set::concat(const Set& args){}
+i64 Set::len(void) const{}
+Set& Set::add(const Object& key){}
+Set Set::set_union(const Set& rhs) const{}
+Set Set::intersection(const Set& rhs) const{}
+Set Set::symmetric_difference(const Set& rhs) const{}
+Set& Set::clear(void){}
+Set& Set::discard(const Object& key){}
+Object Set::pop(void){}
+bool Set::isdisjoint(const Set& rhs) const{}
+bool Set::issubset(const Set& rhs) const{}
+bool Set::issuperset(const Set& rhs) const{}
 };
 
 struct Func{
