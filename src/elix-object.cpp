@@ -1312,6 +1312,15 @@ bool String::startswith(const String& rhs) const{
     return true;
 }
 
+bool String::endswith(const String& rhs) const{
+    if(this->len() > rhs.len()){ return false; }
+    auto start = this->len() - rhs.len();
+    for(auto i=0; i < rhs.len(); i++){
+        if(this->text[start+i]!=rhs.text[i]){ return false; }
+    }
+    return true;
+}
+
 /*
 // -*-
 struct String{
@@ -1347,9 +1356,6 @@ inline auto trim(std::string str, unsigned char character = ' ') -> std::string
 }
 
 
-
-
-bool String::endswith(const String& rhs) const{}
 String& String::ltrim(void){}
 String& String::rtrim(void){}
 String& String::trim(void){}
