@@ -610,13 +610,23 @@ std::string Lambda::repr(void) const{
     return ss.str();
 }
 
+// -*-
+Lambda Lambda::clone(void) const{
+    Lambda result{};
+    result.named = this->named;
+    result.params = this->params;
+    result.body = this->body;
+    result.ctx = std::make_shared<Env>(*ctx);
+
+    return std::move(result);
+}
+
 /*
 // -*-
 struct Lambda{
     Vec<Symbol> params;
     Vec<Expression> body;
     Context ctx;
-Lambda Lambda::clone(void) const{}
 Object Lambda::operator()(const Vec<Object>& args){}
 };
 
