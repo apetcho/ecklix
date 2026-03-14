@@ -1140,12 +1140,18 @@ Array& Array::clear(void){
     return *this;
 }
 
+// -*-
+Array& Array::push(const Object& rhs){
+    this->items.emplace_back(Object(rhs));
+    return *this;
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-Array& Array::push(const Object& rhs){}
+
 Array& Array::pop(void){}
 };
 
