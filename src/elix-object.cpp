@@ -499,13 +499,22 @@ bool operator&&(const Number& lhs, const Number& rhs){
     return (x && y);
 }
 
+bool operator==(const Number& lhs, const Number& rhs){
+    if(lhs.is_integer() && rhs.is_integer()){
+        auto x = static_cast<i64>(lhs);
+        auto y = static_cast<i64>(rhs);
+        return (x==y);
+    }
+    auto x = static_cast<f64>(lhs);
+    auto y = static_cast<f64>(rhs);
+    return (x==y);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-
-bool operator==(const Number& lhs, const Number& rhs){}
 bool operator!=(const Number& lhs, const Number& rhs){}
 bool operator<(const Number& lhs, const Number& rhs){}
 bool operator>(const Number& lhs, const Number& rhs){}
