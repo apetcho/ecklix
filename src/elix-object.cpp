@@ -1,4 +1,5 @@
 #include "elix.hpp"
+#include<algorithm>
 #include<sstream>
 #include<iomanip>
 #include<cstring>
@@ -570,23 +571,6 @@ std::string Lambda::str(void) const{
     else{ ss << "lambda  at "; }
     ss << std::hex << std::addressof(*this);
     return ss.str();
-
-    // if(this->named){ ss << "(fun "; }
-    // else{ ss << "(lambda "; }
-    // if(this->params.empty()){ ss << "()"; }
-    // else{
-    //     ss << "(";
-    //     for(size_t i=0; i < this->params.size(); i++){
-    //         if(i>0){ ss << " "; }
-    //         ss << this->params[i].str();
-    //     }
-    //     ss << ")";
-    // }
-    // for(const auto& expr: this->body){
-    //     ss << expr->eval(ELix::visitor).str() << "\n";
-    // }
-    // ss << ")";
-    return ss.str();
 }
 
 // -*-
@@ -698,11 +682,16 @@ i64 List::find(const Object& rhs) const{
     return -1;
 }
 
+// -*-
+List& List::reverse(void){
+    std::reverse(this->items.begin(), this->items.end());
+    return *this;
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-List& List::reverse(void){}
 List& List::concat(const List& args){}
 i64 List::len(void) const{}
 Object List::head(void) const{}
