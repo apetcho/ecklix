@@ -1667,12 +1667,18 @@ Set& Set::add(const Object& key){
     return *this;
 }
 
+Set Set::set_union(const Set& rhs) const{
+    auto result = this->clone();
+    result.concat(rhs);
+    return std::move(result);
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
 
-Set Set::set_union(const Set& rhs) const{}
+
 Set Set::intersection(const Set& rhs) const{}
 Set Set::symmetric_difference(const Set& rhs) const{}
 Set& Set::clear(void){}
