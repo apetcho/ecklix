@@ -1332,33 +1332,22 @@ String& String::ltrim(void){
     return *this;
 }
 
+String& String::rtrim(void){
+    this->text.erase(
+        std::find_if(
+            this->text.rbegin(), this->text.rend(),
+            [](unsigned char c){ return (c!=' '); }
+        ).base(),
+        this->text.end()
+    );
+    return *this;
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
-
-
-
-    /// Remove from the beginning of the string the given character (by default, space).
-inline auto trimleft(std::string str, unsigned char character = ' ') -> std::string
-{
-    str.erase(str.begin(), std::find_if(str.begin(), str.end(),
-                                        [&](unsigned char ch)
-                                        { return ch != character; }));
-    return str;
-}
-
-/// Remove from the end of the string the given character (by default, space).
-inline auto trimright(std::string str, unsigned char character = ' ') -> std::string
-{
-    str.erase(std::find_if(str.rbegin(), str.rend(),
-                           [&](unsigned char ch)
-                           { return ch != character; })
-                  .base(),
-              str.end());
-    return str;
-}
 
 /// Trim the string from both ends
 inline auto trim(std::string str, unsigned char character = ' ') -> std::string
@@ -1367,7 +1356,7 @@ inline auto trim(std::string str, unsigned char character = ' ') -> std::string
 }
 
 
-String& String::rtrim(void){}
+
 String& String::trim(void){}
 String& String::lower(void){}
 String& String::upper(void){}
