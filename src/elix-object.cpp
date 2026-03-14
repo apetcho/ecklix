@@ -1606,14 +1606,17 @@ Dict& Dict::remove(const Object& key){
     return *this;
 }
 
+Vec<Pair> Dict::items(const Vec<Object>& args){
+    Vec<Pair> result{};
+    for(const auto& [key, val]: this->hmap){
+        Pair pair{};
+        pair.key = Object(key);
+        pair.val = Object(val);
+        result.push_back(std::move(pair));
+    };
+}
+
 /*
-// -*-
-struct Dict{ // Dict
-    HashMap hmap;
-
-
-Vec<Pair> Dict::items(const Vec<Object>& args){}
-};
 
 // -*-
 struct Set{
