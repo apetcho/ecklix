@@ -553,13 +553,15 @@ Symbol Symbol::clone(void) const{
     return std::move(sym);
 }
 
+bool operator==(const Symbol& lhs, const Symbol& rhs){
+    return (lhs.value==rhs.value);
+}
+
 /*
 // -*-
 struct Symbol{
     std::string value;
 
-
-bool operator==(const Symbol& lhs, const Symbol& rhs){}
 bool operator!=(const Symbol& lhs, const Symbol& rhs){}
 };
 
