@@ -799,7 +799,9 @@ List& List::clear(void){
     return *this;
 }
 
-// -*-
+// -*---------*-
+// -*- Array -*-
+// -*---------*-
 std::string Array::str(void) const{
     std::stringstream ss;
     if(this->items.empty()){ ss << "[]"; }
@@ -814,11 +816,26 @@ std::string Array::str(void) const{
     return ss.str();
 }
 
+// -
+std::string Array::repr(void) const{
+    std::stringstream ss;
+    if(this->items.empty()){ ss << "[]"; }
+    else{
+        ss << "[";
+        for(size_t i=0; i < this->items.size(); i++){
+            if(i > 0){ ss << " "; }
+            ss << this->items[i].repr();
+        }
+        ss << "]";
+    }
+    return ss.str();
+}
+
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
-std::string Array::repr(void) const{}
 Array Array::clone(void) const{}
 
 i64 Array::find(const Object& arg, i64 from){}
