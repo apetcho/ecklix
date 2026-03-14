@@ -1759,11 +1759,18 @@ bool Set::isdisjoint(const Set& rhs) const{
     return false;
 }
 
+bool Set::issubset(const Set& rhs) const{
+    if(rhs.len() > this->len()){ return false;}
+    for(const auto& key: rhs.hset){
+        if(!this->find(key)){ return false; }
+    }
+    return true;
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
-bool Set::issubset(const Set& rhs) const{}
 bool Set::issuperset(const Set& rhs) const{}
 };
 
