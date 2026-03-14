@@ -1834,13 +1834,21 @@ std::string Macro::repr(void) const{
     return ss.str();
 }
 
+Macro Macro::clone(void) const{
+    Macro macro{};
+    macro.name.value = this->name.value;
+    macro.params = Vec<Symbol>{this->params};
+    macro.ctx = std::make_shared<Env>(*this->ctx);
+
+    return std::move(macro);
+}
+
 /*
 struct Macro{
     Vec<Symbol> params;
     Vec<Expression> body;
     Context ctx;
 
-Macro Macro::clone(void) const{}
 Expression Macro::expand(const Expression& expr, Context& ctx){}
 Object Macro::operator()(const Vec<Object>& args){}
 };
