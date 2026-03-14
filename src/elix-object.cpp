@@ -543,11 +543,14 @@ std::string Symbol::str(void) const{
     return this->value;
 }
 
+std::string Symbol::repr(void) const{
+    return this->str();
+}
+
 /*
 // -*-
 struct Symbol{
     std::string value;
-std::string Symbol::repr(void) const{}
 Symbol Symbol::clone(void) const{}
 
 bool operator==(const Symbol& lhs, const Symbol& rhs){}
