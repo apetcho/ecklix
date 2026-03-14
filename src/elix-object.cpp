@@ -711,12 +711,21 @@ Object List::head(void) const{
     return Object(this->items[0]);
 }
 
+// -*-
+List List::tail(void) const{
+    List xs;
+    xs.items = {};
+    for(auto ptr=this->items.begin()+1; ptr != this->items.end(); ptr++){
+        auto obj = *ptr;
+        xs.items.emplace_back(obj);
+    }
+    return std::move(xs);
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-
-List List::tail(void) const{}
 Object List::first(void) const{}
 Object List::last(void) const{}
 List& List::push(const Object& arg){}
