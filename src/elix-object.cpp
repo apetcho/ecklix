@@ -1446,15 +1446,25 @@ String String::at(i64 idx) const{
     return std::move(result);
 }
 
+// -*-----------------------*-
+// -*- Pair Implementation -*-
+// -*-----------------------*-
+std::string Pair::str(void) const{
+    std::stringstream ss;
+    ss << "#(" << this->key.str() << " " << this->val.str() << "')";
+    return ss.str();
+}
+
+
 /*
 
 // -*-
 struct Pair{
     Object key;
     Object val;
-std::string Pair::str(void) const;
-std::string Pair::repr(void) const;
-String Pair::clone(void) const;
+
+std::string Pair::repr(void) const{}
+String Pair::clone(void) const{}
 };
 
 // -*-
