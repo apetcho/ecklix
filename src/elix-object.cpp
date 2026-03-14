@@ -1218,13 +1218,17 @@ String& String::reverse(void){
     return *this;
 }
 
+// -*-
+String& String::concat(const String& arg){
+    this->text += std::string(arg.text);
+    return *this;
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
-
-String& String::concat(const String& arg){}
 i64 String::len(void) const{}
 
 bool operator+(const String& lhs, const String& rhs){}
