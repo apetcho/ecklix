@@ -1563,13 +1563,19 @@ Dict& Dict::update(const Object& key, const Object& val){
     throw ELixError(ELixError::KeyError, ss.str());
 }
 
+Vec<Object> Dict::keys(void) const{
+    Vec<Object> result{};
+    for(const auto& [key, _]: this->hmap){
+        result.push_back(Object(key));
+    }
+    return std::move(result);
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-
-Vec<Object> Dict::keys(void) const{}
 Vec<Object> Dict::values(void) const{}
 Object Dict::popitem(const Object& key) const{}
 Dict& Dict::clear(void){}
