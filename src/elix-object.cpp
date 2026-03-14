@@ -352,15 +352,24 @@ Number& Number::operator~(){
     return *this;
 }
 
+Number operator+(const Number& lhs, const Number& rhs){
+    if(lhs.is_integer()){
+        auto x = static_cast<i64>(lhs);
+        auto y = static_cast<i64>(rhs);
+        x += y;
+        return Number(x);
+    }
+    auto num = static_cast<f64>(lhs);
+    num += static_cast<f64>(rhs);
+    return Number(num);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-
-
-Number operator+(const Number& lhs, const Number& rhs){}
 Number operator-(const Number& lhs, const Number& rhs){}
 Number operator*(const Number& lhs, const Number& rhs){}
 Number operator/(const Number& lhs, const Number& rhs){}
