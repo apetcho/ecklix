@@ -1554,12 +1554,21 @@ Dict& Dict::set(const Object& key, const Object& val){
     return *this;
 }
 
+Dict& Dict::update(const Object& key, const Object& val){
+    if(this->find(key)){
+        this->hmap[key] = val;
+    }
+    std::stringstream ss;
+    ss << "Cannot update undefined key " << std::quoted(key.str());
+    throw ELixError(ELixError::KeyError, ss.str());
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Dict& Dict::update(const Object& key, const Object& val){}
+
 Vec<Object> Dict::keys(void) const{}
 Vec<Object> Dict::values(void) const{}
 Object Dict::popitem(const Object& key) const{}
