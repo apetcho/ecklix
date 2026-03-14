@@ -1723,12 +1723,18 @@ Set& Set::clear(void){
     return *this;
 }
 
+Set& Set::remove(const Object& key){
+    if(this->find(key)){
+        auto entry = this->hset.find(key);
+        this->hset.erase(entry);
+    }
+    return *this;
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
-
-Set& Set::discard(const Object& key){}
 Object Set::pop(void){}
 bool Set::isdisjoint(const Set& rhs) const{}
 bool Set::issubset(const Set& rhs) const{}
