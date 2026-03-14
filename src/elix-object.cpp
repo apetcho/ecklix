@@ -696,12 +696,14 @@ List& List::concat(const List& rhs){
     return *this;
 }
 
+i64 List::len(void) const{
+    return static_cast<i64>(this->items.size());
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-List& List::concat(const List& args){}
-i64 List::len(void) const{}
 Object List::head(void) const{}
 List List::tail(void) const{}
 Object List::first(void) const{}
