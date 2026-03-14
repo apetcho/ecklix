@@ -1510,13 +1510,24 @@ Dict Dict::clone(void) const{
     return std::move(dict);
 }
 
+Object Dict::find(const Object& key) const{
+    if(!key.is_hashable()){
+        std::stringstream ss;
+        ss << "key " << std::quoted(key.str()) << " is not hashable";
+        throw ELixError(ELixError::KeyError, ss.str());
+    }
+    auto entry = this->hmap.find(key);
+    if(entry == this->hmap.end()){
+        return Object();
+    }
+    return Object(entry->second);
+}
 
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Object Dict::find(const Object& key) const{}
 Dict& Dict::concat(const Dict& dict){}
 i64 Dict::len(void) const{}
 Object Dict::get(const Object& key) const{}
