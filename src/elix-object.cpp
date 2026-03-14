@@ -39,9 +39,9 @@ bool Equal::operator()(const Object& lhs, const Object& rhs) const{
 }//-*- end::namespace::ekasoft::elx::utils   -*-
 // -*-----------------------------------------*-
 
-// --------------
-// -*- Number -*-
-// --------------
+// -*-------------------------*-
+// -*- Number Implementation -*-
+// -*-------------------------*-
 Number::Number(): m_value{i64(0)} {}
 
 Number::Number(i64 num): m_value{num} {}
@@ -537,9 +537,9 @@ bool operator>=(const Number& lhs, const Number& rhs){
     return !(lhs < rhs);
 }
 
-// -*----------*-
-// -*- Symbol -*-
-// -*----------*-
+// -*-------------------------*-
+// -*- Symbol Implementation -*-
+// -*-------------------------*-
 std::string Symbol::str(void) const{
     return this->value;
 }
@@ -562,9 +562,9 @@ bool operator!=(const Symbol& lhs, const Symbol& rhs){
     return !(lhs==rhs);
 }
 
-// -*----------*-
-// -*- Lambda -*-
-// -*----------*-
+// -*-------------------------*-
+// -*- Lambda Implementation -*-
+// -*-------------------------*-
 std::string Lambda::str(void) const{
     std::stringstream ss;
     if(this->named){ ss << "function at "; }
@@ -633,9 +633,9 @@ Object Lambda::operator()(const Vec<Object>& args){
     return result;
 }
 
-// -*--------*-
-// -*- List -*-
-// -*--------*-
+// -*-----------------------*-
+// -*- List Implementation -*-
+// -*-----------------------*-
 std::string List::str(void) const{
     if(this->items.empty()){
         return "()";
@@ -678,14 +678,20 @@ List List::clone(void) const{
 i64 List::find(const Object& rhs, i64 from) const{
     if(from >= this->len()){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying 'list.find'"
+            ELixError::IndexError, "index out or range while applying `List.find'"
         );
     }
     if(from==-1){
-        for(i64 i=0; i < this->items.size(); i++){
+        for(i64 i=(this->len()-1); i >= 0; i--){
             if(this->items[i]==rhs){ return i; }
         }
     }else{
+        if(from < 0){
+            std::stringstream ss;
+            ss << "Invalid value of the second argument to `List.find'.\n";
+            ss << "Expect the value to be either -1 or an appropriate positive value";
+            throw ELixError(ELixError::IndexError, ss.str());
+        }
         for(i64 i=from; i < this->items.size(); i++){
             if(this->items[i]==rhs){ return i; }
         }
@@ -716,7 +722,7 @@ Object List::head(void) const{
     if(this->items.empty()){
         throw ELixError(
             ELixError::ValueError,
-            "Cannot apply `list.head' on an empty list."
+            "Cannot apply `List.head' on an empty list."
         );
     }
     return Object(this->items[0]);
@@ -737,7 +743,7 @@ List List::tail(void) const{
 Object List::first(void) const{
     if(this->items.empty()){
         throw ELixError(
-            ELixError::ValueError, "Cannot apply `list.first' on an empty list"
+            ELixError::ValueError, "Cannot apply `List.first' on an empty list"
         );
     }
     return Object(this->items[0]);
@@ -746,7 +752,7 @@ Object List::first(void) const{
 Object List::last(void) const{
     if(this->items.empty()){
         throw ELixError(
-            ELixError::ValueError, "Cannot apply `list.last' on an empty list"
+            ELixError::ValueError, "Cannot apply `List.last' on an empty list"
         );
     }
     auto idx = this->items.size() - 1;
@@ -761,7 +767,7 @@ List& List::push(const Object& arg){
 List& List::pop(void){
     if(this->items.empty()){
         throw ELixError(
-            ELixError::ValueError, "Cannot apply `list.pop' on an empty list"
+            ELixError::ValueError, "Cannot apply `List.pop' on an empty list"
         );
     }
     this->items.pop_back();
@@ -772,7 +778,7 @@ List& List::insert(i64 idx, const Object& obj){
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying `list.insert'"
+            ELixError::IndexError, "index out or range while applying `List.insert'"
         );
     }
     auto ptr = this->items.begin() + idx;
@@ -785,7 +791,7 @@ Object List::remove(i64 idx){
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying `list.remove'"
+            ELixError::IndexError, "index out or range while applying `List.remove'"
         );
     }
     auto ptr = this->items.begin() + idx;
@@ -799,9 +805,9 @@ List& List::clear(void){
     return *this;
 }
 
-// -*---------*-
-// -*- Array -*-
-// -*---------*-
+// -*------------------------*-
+// -*- Array Implementation -*-
+// -*------------------------*-
 std::string Array::str(void) const{
     std::stringstream ss;
     if(this->items.empty()){ ss << "[]"; }
@@ -844,14 +850,21 @@ Array Array::clone(void) const{
 i64 Array::find(const Object& rhs, i64 from){
     if(from >= this->len()){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying 'array.find'"
+            ELixError::IndexError, "index out or range while applying 'Array.find'"
         );
     }
+    if(this->len()==0){ return -1; }
     if(from==-1){
-        for(i64 i=0; i < this->items.size(); i++){
+        for(i64 i=(this->len()-1); i >= 0; i--){
             if(this->items[i]==rhs){ return i; }
         }
     }else{
+        if(from < 0){
+            std::stringstream ss;
+            ss << "Invalid value of the second argument to `Array.find'.\n";
+            ss << "Expect the value to be either -1 or an appropriate positive value";
+            throw ELixError(ELixError::IndexError, ss.str());
+        }
         for(i64 i=from; i < this->items.size(); i++){
             if(this->items[i]==rhs){ return i; }
         }
@@ -883,14 +896,14 @@ Array Array::slice(i64 i, i64 j) const{
     auto checkIndex = [this](i32 idx){
         if(idx < 0 || idx > this->items.size()){
             throw ELixError(
-                ELixError::IndexError, "Index out of range while apply `array.slice'"
+                ELixError::IndexError, "Index out of range while apply `Array.slice'"
             );
         }
     };
     if(i > j){
         throw ELixError(
             ELixError::SyntaxError,
-            "Incorrect arguments order found while applying `array.slice'"
+            "Incorrect arguments order found while applying `Array.slice'"
         );
     }
     checkIndex(i);
@@ -909,7 +922,7 @@ Array& Array::insert(i64 idx,  const Object& arg){
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying `array.insert'"
+            ELixError::IndexError, "index out or range while applying `Array.insert'"
         );
     }
     auto ptr = this->items.begin() + idx;
@@ -921,7 +934,7 @@ Object Array::get(i64 idx) const{
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying `array.get'"
+            ELixError::IndexError, "index out or range while applying `Array.get'"
         );
     }
     return Object(this->items[idx]);
@@ -931,7 +944,7 @@ Array& Array::set(i64 idx, const Object& arg){
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying `array.set'"
+            ELixError::IndexError, "index out or range while applying `Array.set'"
         );
     }
     this->items[idx] = Object(arg);
@@ -942,7 +955,7 @@ Array& Array::splice(i64 idx, const Array& rhs){
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range while applying `array.splice'"
+            ELixError::IndexError, "index out or range while applying `Array.splice'"
         );
     }
     auto ptr = this->items.begin() + idx;
@@ -959,7 +972,7 @@ bool Array::any(const Object& predicate) const{
     );
     if(!check){
         std::stringstream ss;
-        ss << "Incorrect argument type to `array.any'. Expect a callable object ";
+        ss << "Incorrect argument type to `Array.any'. Expect a callable object ";
         ss << "but got " << std::quoted(predicate.type().str());
         throw ELixError(ELixError::TypeError, ss.str());
     }
@@ -970,7 +983,7 @@ bool Array::any(const Object& predicate) const{
             auto rv = fun(Vec<Object>{arg});
             if(!rv.is_bool()){
                 std::stringstream ss;
-                ss << "Incorrect argument type to `array.any'. Expect a predicate";
+                ss << "Incorrect argument type to `Array.any'. Expect a predicate";
                 throw ELixError(ELixError::TypeError, ss.str());
             }
             if(rv.as_bool()){
@@ -984,7 +997,7 @@ bool Array::any(const Object& predicate) const{
             auto rv = fun(Vec<Object>{arg});
             if(!rv.is_bool()){
                 std::stringstream ss;
-                ss << "Incorrect argument type to `array.any'. Expect a predicate";
+                ss << "Incorrect argument type to `Array.any'. Expect a predicate";
                 throw ELixError(ELixError::TypeError, ss.str());
             }
             if(rv.as_bool()){
@@ -1006,7 +1019,7 @@ bool Array::all(const Object& predicate) const{
     );
     if(!check){
         std::stringstream ss;
-        ss << "Incorrect argument type to `array.all'. Expect a callable object ";
+        ss << "Incorrect argument type to `Array.all'. Expect a callable object ";
         ss << "but got " << std::quoted(predicate.type().str());
         throw ELixError(ELixError::TypeError, ss.str());
     }
@@ -1017,7 +1030,7 @@ bool Array::all(const Object& predicate) const{
             auto rv = fun(Vec<Object>{arg});
             if(!rv.is_bool()){
                 std::stringstream ss;
-                ss << "Incorrect argument type to `array.all'. Expect a predicate";
+                ss << "Incorrect argument type to `Array.all'. Expect a predicate";
                 throw ELixError(ELixError::TypeError, ss.str());
             }
             if(!rv.as_bool()){
@@ -1031,7 +1044,7 @@ bool Array::all(const Object& predicate) const{
             auto rv = fun(Vec<Object>{arg});
             if(!rv.is_bool()){
                 std::stringstream ss;
-                ss << "Incorrect argument type to `array.all'. Expect a predicate";
+                ss << "Incorrect argument type to `Array.all'. Expect a predicate";
                 throw ELixError(ELixError::TypeError, ss.str());
             }
             if(!rv.as_bool()){
@@ -1053,7 +1066,7 @@ Object Array::reduce(const Object& predicate, const Object& initVal) const{
     );
     if(!check){
         std::stringstream ss;
-        ss << "Incorrect argument type to `array.reduce'. Expect a callable object ";
+        ss << "Incorrect argument type to `Array.reduce'. Expect a callable object ";
         ss << "but got " << std::quoted(predicate.type().str());
         throw ELixError(ELixError::TypeError, ss.str());
     }
@@ -1095,7 +1108,7 @@ Array& Array::sort(const Object& predicate){
     );
     if(!check){
         std::stringstream ss;
-        ss << "Incorrect argument type to `array.sort'. Expect a callable object ";
+        ss << "Incorrect argument type to `Array.sort'. Expect a callable object ";
         ss << "but got " << std::quoted(predicate.type().str());
         throw ELixError(ELixError::TypeError, ss.str());
     }
@@ -1105,7 +1118,7 @@ Array& Array::sort(const Object& predicate){
         auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2));
         if(!check.is_bool()){
             std::stringstream ss;
-            ss << "Incorrect argument type to `array.sort'. Expect a predicate.";
+            ss << "Incorrect argument type to `Array.sort'. Expect a predicate.";
             throw ELixError(ELixError::TypeError, ss.str());
         }
         std::sort(
@@ -1121,7 +1134,7 @@ Array& Array::sort(const Object& predicate){
         auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2));
         if(!check.is_bool()){
             std::stringstream ss;
-            ss << "Incorrect argument type to `array.sort'. Expect a predicate.";
+            ss << "Incorrect argument type to `Array.sort'. Expect a predicate.";
             throw ELixError(ELixError::TypeError, ss.str());
         }
         std::sort(
@@ -1150,16 +1163,16 @@ Array& Array::push(const Object& rhs){
 Array& Array::pop(void){
     if(this->items.empty()){
         std::stringstream ss;
-        ss << "Cannot apply `array.pop' to an empty array.";
+        ss << "Cannot apply `Array.pop' to an empty array.";
         throw ELixError(ELixError::ValueError, ss.str());
     }
     this->items.pop_back();
     return *this;
 }
 
-// -*--------------*-
-// -*- String API -*-
-// -*--------------*-
+// -*-------------------------*-
+// -*- String Implementation -*-
+// -*-------------------------*-
 std::string String::str(void) const{
     return this->text;
 }
@@ -1176,12 +1189,36 @@ String String::clone(void) const{
     return std::move(result);
 }
 
+// -*-
+i64 String::find(const String& needle, i64 from) const{
+    if(from >= this->len()){
+        throw ELixError(
+            ELixError::IndexError, "index out or range while applying 'String.find'"
+        );
+    }
+    if(from==-1){
+        auto pos = this->text.find_last_of(needle.text);
+        if(pos==std::string::npos){ return -1; }
+    }else{
+        if(from < 0){
+            std::stringstream ss;
+            ss << "Invalid value of the second argument to `String.find'. ";
+            ss << "Expect the value to be either -1 or an appropriate positive value";
+            throw ELixError(ELixError::IndexError, ss.str());
+        }
+        auto pos = this->text.find(needle.text, from);
+        if(pos==std::string::npos){ return -1; }
+        return static_cast<i64>(pos);
+    }
+}
+
+
 /*
 // -*-
 struct String{
     std::string text;
 
-i64 String::find(const String& needle, i64 from) const{}
+
 String& String::reverse(void){}
 String& String::concat(const String& arg){}
 i64 String::len(void) const{}
