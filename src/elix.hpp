@@ -294,6 +294,9 @@ struct Array final {
     Object reduce(const Object& fn, const Object& initVal) const;
     String& sort(const Object& fn);
     Array& clear(void);
+    Array& push(const Object& rhs);
+    Array& pop(void);
+
 };
 
 // -*-

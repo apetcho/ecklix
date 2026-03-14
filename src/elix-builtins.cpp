@@ -19,7 +19,6 @@ static Object fn_pair(const Vec<Object>& args);
 static Object fn_typeof(const Vec<Object>& args);
 static Object fn_contains(const Vec<Object>& args);
 static Object fn_isinstance(const Vec<Object>& args);
-static Object fn_is(const Vec<Object>& args);
 static Object fn_symbols(const Vec<Object>& args);
 
 static Object fn_add(const Vec<Object>& args);
@@ -52,6 +51,8 @@ static Object fn_filter(const Vec<Object>& args);
 static Object fn_zip(const Vec<Object>& args);
 static Object fn_enumerate(const Vec<Object>& args);
 static Object fn_len(const Vec<Object>& args);
+static Object fn_push(const Vec<Object>& args);
+static Object fn_pop(const Vec<Object>& args);
 static Object fn_clear(const Vec<Object>& args);
 static Object fn_concat(const Vec<Object>& args);
 static Object fn_reverse(const Vec<Object>& args);
@@ -112,6 +113,8 @@ static Object fn_array_any(const Vec<Object>& args);
 static Object fn_array_all(const Vec<Object>& args);
 static Object fn_array_sort(const Vec<Object>& args);
 static Object fn_array_reduce(const Vec<Object>& args);
+static Object fn_array_push(const Vec<Object>& args);
+static Object fn_array_pop(const Vec<Object>& args);
 
 static Object fn_list_find(const Vec<Object>& args);
 static Object fn_list_reverse(const Vec<Object>& args);

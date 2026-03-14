@@ -865,13 +865,19 @@ Array& Array::reverse(void){
     return *this;
 }
 
+// -*-
+Array& Array::concat(const Array& array){
+    for(const auto& item: array.items){
+        this->items.emplace_back(item);
+    }
+    return *this;
+}
 
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-Array& Array::concat(const Array& array){}
 i64 Array::len(void) const{}
 Array Array::slice(i64 i, i64 j) const{}
 Array& Array::insert(i64 idx,  const Object& arg){}
@@ -883,6 +889,8 @@ bool Array::all(const Object& predicate) const{}
 Object Array::reduce(const Object& fn, const Object& initVal) const{}
 String& Array::sort(const Object& fn){}
 Array& Array::clear(void){}
+Array& Array::push(const Object& rhs){}
+Array& Array::pop(void){}
 };
 
 // -*-
