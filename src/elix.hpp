@@ -270,6 +270,7 @@ struct List final{
     List& pop(void);
     List& insert(i64 idx, const Object& obj);
     Object remove(i64 idx);
+    List& clear(void);
 };
 
 // -*-

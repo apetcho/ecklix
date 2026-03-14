@@ -757,12 +757,24 @@ List& List::pop(void){
     return *this;
 }
 
+List& List::insert(i64 idx, const Object& obj){
+    bool check = (idx < 0 || idx >= this->items.size());
+    if(check){
+        throw ELixError(
+            ELixError::IndexError, "index out or range"
+        );
+    }
+    auto ptr = this->items.begin() + idx;
+    this->items.insert(ptr, obj);
+    return *this;
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-List& List::insert(i64 idx, const Object& obj){}
 Object List::remove(i64 idx){}
+List& List::clear(void){}
 };
 
 
