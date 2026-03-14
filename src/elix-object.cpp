@@ -1760,18 +1760,23 @@ bool Set::isdisjoint(const Set& rhs) const{
 }
 
 bool Set::issubset(const Set& rhs) const{
-    if(rhs.len() > this->len()){ return false;}
-    for(const auto& key: rhs.hset){
-        if(!this->find(key)){ return false; }
+    if(rhs.len() < this->len()){ return false;}
+    for(const auto& key: this->hset){
+        if(!rhs.find(key)){ return false; }
     }
     return true;
+}
+
+bool Set::issuperset(const Set& rhs) const{
+    if(rhs.len() < this->len()){ return false; }
+
+    return rhs.issubset(*this);
 }
 
 /*
 // -*-
 struct Set{
     HashSet hset;
-bool Set::issuperset(const Set& rhs) const{}
 };
 
 struct Func{
