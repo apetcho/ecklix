@@ -1673,13 +1673,23 @@ Set Set::set_union(const Set& rhs) const{
     return std::move(result);
 }
 
+Set Set::intersection(const Set& rhs) const{
+    Set result{};
+    result.hset = {};
+    std::set_intersection(
+        this->hset.begin(), this->hset.end(),
+        rhs.hset.begin(), rhs.hset.end(),
+        std::back_inserter(result.hset)
+    );
+
+    return std::move(result);
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
 
-
-Set Set::intersection(const Set& rhs) const{}
 Set Set::symmetric_difference(const Set& rhs) const{}
 Set& Set::clear(void){}
 Set& Set::discard(const Object& key){}
