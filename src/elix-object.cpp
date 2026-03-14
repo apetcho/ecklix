@@ -1304,6 +1304,14 @@ String String::slice(i64 i, i64 j) const{
     return std::move(result);
 }
 
+bool String::startswith(const String& rhs) const{
+    if(this->len() < rhs.len()){ return false; }
+    for(auto i=0; i < rhs.len(); i++){
+        if(this->text[i]!=rhs.text[i]){ return false; }
+    }
+    return true;
+}
+
 /*
 // -*-
 struct String{
@@ -1341,9 +1349,6 @@ inline auto trim(std::string str, unsigned char character = ' ') -> std::string
 
 
 
-
-
-bool String::startswith(const String& rhs) const{}
 bool String::endswith(const String& rhs) const{}
 String& String::ltrim(void){}
 String& String::rtrim(void){}
