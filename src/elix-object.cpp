@@ -722,6 +722,17 @@ List List::tail(void) const{
     return std::move(xs);
 }
 
+// -*-
+Object List::first(void) const{
+    if(this->items.empty()){
+        throw ELixError(
+            ELixError::ValueError,
+            "Cannot apply `list.first' on an empty list"
+        );
+    }
+    return Object(this->items[0]);
+}
+
 /*
 // -*-
 struct List{
