@@ -681,11 +681,19 @@ std::string List::repr(void) const{
     return ss.str();
 }
 
+List List::clone(void) const{
+    List xs{};
+    for(const auto& item: this->items){
+        xs.items.push_back(Object(item));
+    }
+
+    return std::move(xs);
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-List List::clone(void) const{}
 i64 List::find(const Object& args) const{}
 List& List::reverse(void){}
 List& List::concat(const List& args){}
