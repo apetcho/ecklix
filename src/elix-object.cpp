@@ -1786,11 +1786,17 @@ std::string Func::repr(void) const{
     return this->str();
 }
 
+Func Func::clone(void) const{
+    Func func{};
+    func.fn = this->fn;
+    return func;
+}
+
 /*
 struct Func{
     Fn fn;
 
-Func Func::clone(void) const{}
+
 Object Func::operator()(const Vec<Object>& args){}
 };
 
