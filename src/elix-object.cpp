@@ -524,13 +524,15 @@ bool operator>(const Number& lhs, const Number& rhs){
     return !((lhs==rhs) || (lhs < rhs));
 }
 
+bool operator<=(const Number& lhs, const Number& rhs){
+    return !(lhs > rhs);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
-
-bool operator<=(const Number& lhs, const Number& rhs){}
 bool operator>=(const Number& lhs, const Number& rhs){}
 
 private:
