@@ -1224,12 +1224,17 @@ String& String::concat(const String& arg){
     return *this;
 }
 
+// -*-
+i64 String::len(void) const{
+    return static_cast<i64>(this->text.length());
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
-i64 String::len(void) const{}
+
 
 bool operator+(const String& lhs, const String& rhs){}
 bool operator==(const String& lhs, const String& rhs){}
