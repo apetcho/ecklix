@@ -1212,6 +1212,11 @@ i64 String::find(const String& needle, i64 from) const{
     }
 }
 
+// -*-
+String& String::reverse(void){
+    std::reverse(this->text.begin(), this->text.end());
+    return *this;
+}
 
 /*
 // -*-
@@ -1219,7 +1224,6 @@ struct String{
     std::string text;
 
 
-String& String::reverse(void){}
 String& String::concat(const String& arg){}
 i64 String::len(void) const{}
 
