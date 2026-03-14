@@ -1241,12 +1241,15 @@ bool operator==(const String& lhs, const String& rhs){
     return (lhs.text==rhs.text);
 }
 
+bool operator!=(const String& lhs, const String& rhs){
+    return !(lhs==rhs);
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
-bool operator!=(const String& lhs, const String& rhs){}
 bool operator<=(const String& lhs, const String& rhs){}
 bool operator>=(const String& lhs, const String& rhs){}
 bool operator<(const String& lhs, const String& rhs){}
