@@ -1170,14 +1170,16 @@ std::string String::repr(void) const{
     return ss.str();
 }
 
+String String::clone(void) const{
+    String result{};
+    result.text = std::string(this->text);
+    return std::move(result);
+}
+
 /*
 // -*-
 struct String{
     std::string text;
-
-
-
-String String::clone(void) const{}
 
 i64 String::find(const String& needle, i64 from) const{}
 String& String::reverse(void){}
