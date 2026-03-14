@@ -927,12 +927,22 @@ Object Array::get(i64 idx) const{
     return Object(this->items[idx]);
 }
 
+Array& Array::set(i64 idx, const Object& arg){
+    bool check = (idx < 0 || idx >= this->items.size());
+    if(check){
+        throw ELixError(
+            ELixError::IndexError, "index out or range while applying `array.set'"
+        );
+    }
+    this->items[idx] = Object(arg);
+    return *this;
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-Array& Array::set(i64 idx, const Object& arg){}
 Array& Array::splice(i64 idx, const Object& arg){}
 bool Array::any(const Object& predicate) const{}
 bool Array::all(const Object& predicate) const{}
