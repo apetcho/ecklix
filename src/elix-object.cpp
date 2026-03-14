@@ -1321,6 +1321,17 @@ bool String::endswith(const String& rhs) const{
     return true;
 }
 
+String& String::ltrim(void){
+    this->text.erase(
+        this->text.begin(),
+        std::find_if(
+            this->text.begin(), this->text.end(),
+            [](unsigned char c){ return (c!=' ');}
+        )
+    );
+    return *this;
+}
+
 /*
 // -*-
 struct String{
@@ -1356,7 +1367,6 @@ inline auto trim(std::string str, unsigned char character = ' ') -> std::string
 }
 
 
-String& String::ltrim(void){}
 String& String::rtrim(void){}
 String& String::trim(void){}
 String& String::lower(void){}
