@@ -1146,13 +1146,23 @@ Array& Array::push(const Object& rhs){
     return *this;
 }
 
+// -*-
+Array& Array::pop(void){
+    if(this->items.empty()){
+        std::stringstream ss;
+        ss << "Cannot apply `array.pop' to an empty array.";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    this->items.pop_back();
+    return *this;
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
 
-Array& Array::pop(void){}
 };
 
 // -*-
