@@ -1540,8 +1540,18 @@ Object Dict::get(const Object& key) const{
         return Object(entry->second);
     }
     std::stringstream ss;
-    ss << "key " << std::quoted(key.str()) << " not found";
+    ss << "key " << std::quoted(key.str()) << " not found.";
     throw ELixError(ELixError::KeyError, ss.str());
+}
+
+Dict& Dict::set(const Object& key, const Object& val){
+    if(!key.is_hashable()){
+        std::stringstream ss;
+        ss << "key " << std::quoted(key.str()) << " is not hashable";
+        throw ELixError(ELixError::KeyError, ss.str());
+    }
+    this->hmap[key] = val;
+    return *this;
 }
 
 /*
@@ -1549,7 +1559,6 @@ Object Dict::get(const Object& key) const{
 struct Dict{ // Dict
     HashMap hmap;
 
-Dict& Dict::set(const Object& key, const Object& val){}
 Dict& Dict::update(const Object& key, const Object& val){}
 Vec<Object> Dict::keys(void) const{}
 Vec<Object> Dict::values(void) const{}
