@@ -547,11 +547,17 @@ std::string Symbol::repr(void) const{
     return this->str();
 }
 
+Symbol Symbol::clone(void) const{
+    Symbol sym{};
+    sym.value = this->value;
+    return std::move(sym);
+}
+
 /*
 // -*-
 struct Symbol{
     std::string value;
-Symbol Symbol::clone(void) const{}
+
 
 bool operator==(const Symbol& lhs, const Symbol& rhs){}
 bool operator!=(const Symbol& lhs, const Symbol& rhs){}
