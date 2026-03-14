@@ -1415,13 +1415,21 @@ String& String::replace(const String& old, const String& neo){
     return *this;
 }
 
+String& String::replace_all(const String& old, const String& neo){
+    std::replace(
+        this->text.begin(), this->text.end(),
+        old.text, neo.text
+    );
+
+    return *this;
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
 
-String& String::replace_all(void){}
 String String::chr(void) const{}
 i64 String::ord(void) const{}
 String String::substr(i64 i, i64 j) const{}

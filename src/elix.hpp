@@ -334,7 +334,7 @@ struct String final{
     String& title(void);
     Vec<i64> find_all(const String& needle);
     String& replace(const String& old, const String& neo);
-    String& replace_all(void);
+    String& replace_all(const String& old, const String& neo);
     String chr(void) const;
     i64 ord(void) const;
     String substr(i64 i, i64 j) const;
