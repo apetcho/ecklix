@@ -1424,14 +1424,24 @@ String& String::replace_all(const String& old, const String& neo){
     return *this;
 }
 
+
+i64 String::ord(void) const{
+    if(this->len() != 1){
+        std::stringstream ss;
+        ss << "`ord` is only applicable on string with length==1";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    auto c = this->text[0];
+    return static_cast<i64>(c);
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
 
-String String::chr(void) const{}
-i64 String::ord(void) const{}
+String String::at(i64 idx) const{}
 };
 
 // -*-

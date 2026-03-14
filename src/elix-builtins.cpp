@@ -44,6 +44,8 @@ static Object fn_pair_value(const Vec<Object>& args);
 
 static Object fn_symbol_eq(const Vec<Object>& args);
 static Object fn_symbol_ne(const Vec<Object>& args);
+static Object fn_ascii_chr(const Vec<Object>& args);
+static Object fn_ascii_ord(const Vec<Object>& args);
 
 static Object fn_clone(const Vec<Object>& args);
 static Object fn_map(const Vec<Object>& args);
@@ -96,8 +98,6 @@ static Object fn_str_title(const Vec<Object>& args);
 static Object fn_str_find_all(const Vec<Object>& args);
 static Object fn_str_replace(const Vec<Object>& args);
 static Object fn_str_replace_all(const Vec<Object>& args);
-static Object fn_str_chr(const Vec<Object>& args);
-static Object fn_str_ord(const Vec<Object>& args);
 static Object fn_str_substr(const Vec<Object>& args);
 static Object fn_str_at(const Vec<Object>& args);
 
