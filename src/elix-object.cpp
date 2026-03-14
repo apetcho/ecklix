@@ -1645,12 +1645,20 @@ Set Set::clone(void) const{
     return std::move(result);
 }
 
+bool Set::find(const Object& needle) const{
+    auto entry = this->hset.find(needle);
+    if(entry == this->hset.end()){
+        return false;
+    }
+    return true;
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
 
-bool Set::find(const Object& needle) const{}
+
 Set& Set::concat(const Set& args){}
 i64 Set::len(void) const{}
 Set& Set::add(const Object& key){}
