@@ -97,7 +97,7 @@ using isize = std::int64_t;
 using Loader = std::shared_ptr<ModuleLoader>;
 using Context = std::shared_ptr<Env>;
 using Expression = std::unique_ptr<ExprBase>;
-using Fn = std::function<Object(const Vec<Object>&, Context)>;
+using Fn = std::function<Object(const Vec<Object>&)>;
 //using Visitor = std::unique_ptr<ExprVisitor>;
 typedef ExprVisitor* Visitor;
 

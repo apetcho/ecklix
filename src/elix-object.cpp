@@ -1789,15 +1789,32 @@ std::string Func::repr(void) const{
 Func Func::clone(void) const{
     Func func{};
     func.fn = this->fn;
+    func.minArgc = this->minArgc;
+    func.maxArgc = this->maxArgc;
     return func;
+}
+
+Object Func::operator()(const Vec<Object>& args){
+    if(this->minArgc==-1 && this->maxArgc==-1){ // variadic case
+        return this->fn(args);
+    }
+    auto argc = args.size();
+    if(argc < this->minArgc || argc > this->maxArgc){
+        std::stringstream ss;
+        ss << "Invalid number of arguments. Expect at least " << this->minArgc;
+        ss << " and at most " << this->maxArgc << " arguments but got " << argc;
+        throw ELixError(ELixError::RuntimeError, ss.str());
+    }
+
+    return this->fn(args);
 }
 
 /*
 struct Func{
     Fn fn;
+i32 minArgc;
+    i32 maxArgc;
 
-
-Object Func::operator()(const Vec<Object>& args){}
 };
 
 struct Macro{
