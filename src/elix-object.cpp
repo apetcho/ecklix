@@ -1593,12 +1593,17 @@ Pair Dict::popitem(const Object& key){
     throw ELixError(ELixError::KeyError, ss.str());
 }
 
+Dict& Dict::clear(void){
+    this->hmap.clear();
+    return *this;
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Dict& Dict::clear(void){}
+Dict& Dict::remove(const Object& key){}
 Vec<Pair> Dict::items(const Vec<Object>& args){}
 };
 

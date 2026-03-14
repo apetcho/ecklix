@@ -140,6 +140,7 @@ static Object fn_dict_keys(const Vec<Object>& args);
 static Object fn_dict_values(const Vec<Object>& args);
 static Object fn_dict_popitem(const Vec<Object>& args);
 static Object fn_dict_clear(const Vec<Object>& args);
+static Object fn_dict_remove(const Vec<Object>& args);
 static Object fn_dict_items(const Vec<Object>& args);
 
 static Object fn_hashset_find(const Vec<Object>& args);
@@ -150,7 +151,7 @@ static Object fn_hashset_union(const Vec<Object>& args);
 static Object fn_hashset_intersection(const Vec<Object>& args);
 static Object fn_hashset_symmetric_difference(const Vec<Object>& args);
 static Object fn_hashset_clear(const Vec<Object>& args);
-static Object fn_hashset_discard(const Vec<Object>& args);
+static Object fn_hashset_remove(const Vec<Object>& args);
 static Object fn_hashset_pop(const Vec<Object>& args);
 static Object fn_hashset_isdisjoint(const Vec<Object>& args);
 static Object fn_hashset_issubset(const Vec<Object>& args);

@@ -359,6 +359,7 @@ struct Dict final{ // Dict
     Vec<Object> keys(void) const;
     Vec<Object> values(void) const;
     Pair popitem(const Object& key);
+    Dict& remove(const Object& key);
     Dict& clear(void);
     Vec<Pair> items(const Vec<Object>& args);
 };
@@ -378,7 +379,7 @@ struct Set final{
     Set intersection(const Set& rhs) const;
     Set symmetric_difference(const Set& rhs) const;
     Set& clear(void);
-    Set& discard(const Object& key);
+    Set& remove(const Object& key);
     Object pop(void);
     bool isdisjoint(const Set& rhs) const;
     bool issubset(const Set& rhs) const;
