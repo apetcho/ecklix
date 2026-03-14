@@ -288,7 +288,7 @@ struct Array final {
     Array& insert(i64 idx,  const Object& arg);
     Object get(i64 idx) const;
     Array& set(i64 idx, const Object& arg);
-    Array& splice(i64 idx, const Object& arg);
+    Array& splice(i64 idx, const Array& rhs);
     bool any(const Object& predicate) const;
     bool all(const Object& predicate) const;
     Object reduce(const Object& fn, const Object& initVal) const;

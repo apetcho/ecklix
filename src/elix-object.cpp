@@ -938,12 +938,23 @@ Array& Array::set(i64 idx, const Object& arg){
     return *this;
 }
 
+Array& Array::splice(i64 idx, const Array& rhs){
+    bool check = (idx < 0 || idx >= this->items.size());
+    if(check){
+        throw ELixError(
+            ELixError::IndexError, "index out or range while applying `array.set'"
+        );
+    }
+    auto ptr = this->items.begin() + idx;
+    this->items.insert(ptr, rhs.items.cbegin(), rhs.items.cend());
+    return *this;
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-Array& Array::splice(i64 idx, const Object& arg){}
 bool Array::any(const Object& predicate) const{}
 bool Array::all(const Object& predicate) const{}
 Object Array::reduce(const Object& fn, const Object& initVal) const{}
