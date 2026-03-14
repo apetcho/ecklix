@@ -1653,13 +1653,18 @@ bool Set::find(const Object& needle) const{
     return true;
 }
 
+Set& Set::concat(const Set& args){
+    this->hset.insert(args.hset.begin(), args.hset.end());
+    return *this;
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
 
 
-Set& Set::concat(const Set& args){}
+
 i64 Set::len(void) const{}
 Set& Set::add(const Object& key){}
 Set Set::set_union(const Set& rhs) const{}
