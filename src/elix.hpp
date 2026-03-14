@@ -98,7 +98,8 @@ using Loader = std::shared_ptr<ModuleLoader>;
 using Context = std::shared_ptr<Env>;
 using Expression = std::unique_ptr<ExprBase>;
 using Fn = std::function<Object(const Vec<Object>&, Context)>;
-using Visitor = std::unique_ptr<ExprVisitor>;
+//using Visitor = std::unique_ptr<ExprVisitor>;
+typedef ExprVisitor* Visitor;
 
 // -*-----------------------------------------*-
 // -*- begin::namespace::ekasoft::elx::utils -*-
@@ -330,13 +331,7 @@ struct String final{
 };
 
 // -*-
-struct Pair final{
-    Object key;
-    Object val;
-    std::string str(void) const;
-    std::string repr(void) const;
-    String clone(void) const;
-};
+struct Pair;
 
 // -*-
 struct Dict final{ // Dict
@@ -469,6 +464,15 @@ private:
 
     Value m_value;
 };
+
+struct Pair final{
+    Object key;
+    Object val;
+    std::string str(void) const;
+    std::string repr(void) const;
+    String clone(void) const;
+};
+
 
 // -*-
 class ELixError final: public std::runtime_error {
@@ -675,6 +679,7 @@ public:
     // static Context datetimeModule; // "DateTime"
     // static Context jsonModule;     // "JSON"
 
+    static ExprVisitor* visitor;
     static Context prelude;
     explicit ELix(Context ctx);
     Object eval(Expression expr); // evalExprRaw
