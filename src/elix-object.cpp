@@ -514,13 +514,18 @@ bool operator!=(const Number& lhs, const Number& rhs){
     return !(lhs==rhs);
 }
 
+bool operator<(const Number& lhs, const Number& rhs){
+    auto x = static_cast<f64>(lhs);
+    auto y = static_cast<f64>(rhs);
+    return (x < y);
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 
-bool operator<(const Number& lhs, const Number& rhs){}
 bool operator>(const Number& lhs, const Number& rhs){}
 bool operator<=(const Number& lhs, const Number& rhs){}
 bool operator>=(const Number& lhs, const Number& rhs){}
