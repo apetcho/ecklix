@@ -318,14 +318,19 @@ bool Number::isfinite(void) const{
     return std::isfinite(static_cast<f64>(*this));
 }
 
+Number& Number::operator!(){
+    bool val{};
+    this->value(val);
+    this->m_value = (val ? i64(0) : i64(1));
+    return *this;
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-bool Number::isfinite(void) const{}
-bool Number::operator!(){}
 Number& Number::operator-(){}
 Number& Number::operator~(){}
 

@@ -179,7 +179,7 @@ public:
     bool isnan(void) const;
     bool isinf(void) const;
     bool isfinite(void) const;
-    bool operator!();
+    Number& operator!();
     Number& operator-();
     Number& operator~();
 
@@ -215,6 +215,14 @@ private:
 
     void value(f64& num){
         num = std::get<f64>(this->m_value);
+    }
+
+    void value(bool& val){
+        if(std::holds_alternative<i64>(this->m_value)){
+            val = (std::get<i64>(this->m_value)==0);
+        }else{
+            val = (std::get<f64>(this->m_value)==0.0);
+        }
     }
 };
 
