@@ -726,8 +726,7 @@ List List::tail(void) const{
 Object List::first(void) const{
     if(this->items.empty()){
         throw ELixError(
-            ELixError::ValueError,
-            "Cannot apply `list.first' on an empty list"
+            ELixError::ValueError, "Cannot apply `list.first' on an empty list"
         );
     }
     return Object(this->items[0]);
@@ -736,8 +735,7 @@ Object List::first(void) const{
 Object List::last(void) const{
     if(this->items.empty()){
         throw ELixError(
-            ELixError::ValueError,
-            "Cannot apply `list.last' on an empty list"
+            ELixError::ValueError, "Cannot apply `list.last' on an empty list"
         );
     }
     auto idx = this->items.size() - 1;
@@ -749,11 +747,20 @@ List& List::push(const Object& arg){
     return *this;
 }
 
+List& List::pop(void){
+    if(this->items.empty()){
+        throw ELixError(
+            ELixError::ValueError, "Cannot apply `list.pop' on an empty list"
+        );
+    }
+    this->items.pop_back();
+    return *this;
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-List& List::pop(void){}
 List& List::insert(i64 idx, const Object& obj){}
 Object List::remove(i64 idx){}
 };
