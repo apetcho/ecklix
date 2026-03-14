@@ -782,14 +782,13 @@ Object List::remove(i64 idx){
     return *this;
 }
 
-/*
 // -*-
-struct List{
-    Vec<Object> items;
-List& List::clear(void){}
-};
+List& List::clear(void){
+    this->items.clear();
+    return *this;
+}
 
-
+/*
 // -*-
 struct Array{
     Vec<Object> items;
