@@ -338,13 +338,27 @@ Number& Number::operator-(){
     return *this;
 }
 
+Number& Number::operator~(){
+    if(std::holds_alternative<i64>(this->m_value)){
+        i64 num{};
+        this->value(num);
+        this->m_value = (~num);
+    }else{
+        std::stringstream ss;
+        ss << "cannot apply '~' operator on floating-point value ";
+        ss << this->str();
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    return *this;
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number& Number::operator~(){}
+
 
 Number operator+(const Number& lhs, const Number& rhs){}
 Number operator-(const Number& lhs, const Number& rhs){}
