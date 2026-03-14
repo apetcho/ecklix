@@ -528,19 +528,15 @@ bool operator<=(const Number& lhs, const Number& rhs){
     return !(lhs > rhs);
 }
 
+bool operator>=(const Number& lhs, const Number& rhs){
+    return !(lhs < rhs);
+}
+
+bool operator>=(const Number& lhs, const Number& rhs){
+    return !(lhs < rhs);
+}
+
 /*
-// -*-
-class Number:: final{
-public:
-
-bool operator>=(const Number& lhs, const Number& rhs){}
-
-private:
-    using Value = std::variant<i64, f64>;
-
-    Value m_value;
-};
-
 // -*-
 struct Symbol{
     std::string value;
