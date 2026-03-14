@@ -292,7 +292,7 @@ struct Array final {
     bool any(const Object& predicate) const;
     bool all(const Object& predicate) const;
     Object reduce(const Object& fn, const Object& initVal) const;
-    String& sort(const Object& fn);
+    Array& sort(const Object& fn);
     Array& clear(void);
     Array& push(const Object& rhs);
     Array& pop(void);

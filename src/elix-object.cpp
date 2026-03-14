@@ -1076,13 +1076,71 @@ Object Array::reduce(const Object& predicate, const Object& initVal) const{
     return Object(acc);
 }
 
+// -*-
+Array& Array::sort(const Object& predicate){
+    if(predicate.is_nil()){
+        std::sort(
+            this->items.begin(), this->items.end(),
+            [](const Object& x, const Object& y){ return (x < y);}
+        );
+        return *this;
+    }
+    if(this->len() < 2){
+        return *this;
+    }
+    auto check = (
+        predicate.is_func() ||
+        predicate.is_lambda() ||
+        predicate.is_function()
+    );
+    if(!check){
+        std::stringstream ss;
+        ss << "Incorrect argument type to `array.sort'. Expect a callable object ";
+        ss << "but got " << std::quoted(predicate.type().str());
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    if(predicate.is_func()){
+        auto func = predicate.as_func();
+        // check func is a predicate
+        auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2));
+        if(!check.is_bool()){
+            std::stringstream ss;
+            ss << "Incorrect argument type to `array.sort'. Expect a predicate.";
+            throw ELixError(ELixError::TypeError, ss.str());
+        }
+        std::sort(
+            this->items.begin(), this->items.end(),
+            [&func](const Object& x, const Object& y){
+                return func(Vec<Object>{x, y});
+            }
+        );
+        return *this;
+    }else{
+        auto func = predicate.as_lambda();
+        // check func is a predicate
+        auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2));
+        if(!check.is_bool()){
+            std::stringstream ss;
+            ss << "Incorrect argument type to `array.sort'. Expect a predicate.";
+            throw ELixError(ELixError::TypeError, ss.str());
+        }
+        std::sort(
+            this->items.begin(), this->items.end(),
+            [&func](const Object& x, const Object& y){
+                return func(Vec<Object>{x, y});
+            }
+        );
+        return *this;
+    }
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
 
-String& Array::sort(const Object& fn){}
+
 Array& Array::clear(void){}
 Array& Array::push(const Object& rhs){}
 Array& Array::pop(void){}
