@@ -5,6 +5,7 @@
 #include<cstring>
 #include<cerrno>
 #include<cctype>
+#include<random>
 #include<cfenv>
 #include<cmath>
 
@@ -1731,11 +1732,29 @@ Set& Set::remove(const Object& key){
     return *this;
 }
 
+Object Set::pop(void){
+    if(this->len()==0){
+        std::stringstream ss;
+        ss << "Cannot apply `Set.pop' on empty set.";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<i64> dist(0, this->len());
+    auto idx = dist(rng);
+    idx = idx==this->len() ? (idx-1) : idx;
+    Vec<Object> vec(this->hset.begin(), this->hset.end());
+    auto key = vec[idx];
+    auto entry = this->hset.find(key);
+    this->hset.erase(entry);
+    
+    return Object(key);
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
-Object Set::pop(void){}
 bool Set::isdisjoint(const Set& rhs) const{}
 bool Set::issubset(const Set& rhs) const{}
 bool Set::issuperset(const Set& rhs) const{}
