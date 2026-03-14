@@ -405,14 +405,29 @@ Number operator/(const Number& lhs, const Number& rhs){
     return Number((x/y));
 }
 
+Number operator%(const Number& lhs, const Number& rhs){
+    if(lhs.is_integer()){
+        auto x = static_cast<i64>(lhs);
+        auto y = static_cast<i64>(rhs);
+        if(y==0){
+            throw ELixError(ELixError::ValueError, "division by zero");
+        }
+        return Number((x%y));
+    }
+    auto x = static_cast<f64>(lhs);
+    auto y = static_cast<f64>(rhs);
+    if(y==0.0){
+        throw ELixError(ELixError::ValueError, "division by zero");
+    }
+    return Number(std::fmod(x, y));
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number operator/(const Number& lhs, const Number& rhs){}
-Number operator%(const Number& lhs, const Number& rhs){}
 
 Number operator&(const Number& lhs, const Number& rhs){}
 Number operator|(const Number& lhs, const Number& rhs){}
