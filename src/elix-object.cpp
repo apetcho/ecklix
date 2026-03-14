@@ -1487,14 +1487,27 @@ std::string Dict::str(void) const{
     return ss.str();
 }
 
+std::string Dict::repr(void) const{
+    if(this->len()==0){ return "{}"; }
+
+    std::stringstream ss;
+    ss << "{\n";
+    for(const auto& [key, val]: this->hmap){
+        Pair pair{};
+        pair.key = Object(key);
+        pair.val = Object(val);
+        ss << pair.repr() << " ";
+    }
+    ss << "\n}";
+    return ss.str();
+}
+
 /*
 
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-
-std::string Dict::repr(void) const{}
 Dict Dict::clone(void) const{}
 
 Object Dict::find(const Object& key) const{}
