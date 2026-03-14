@@ -536,16 +536,22 @@ bool operator>=(const Number& lhs, const Number& rhs){
     return !(lhs < rhs);
 }
 
+// -*----------*-
+// -*- Symbol -*-
+// -*----------*-
+std::string Symbol::str(void) const{
+    return this->value;
+}
+
 /*
 // -*-
 struct Symbol{
     std::string value;
-std::string Symbol::str(void) const;
-std::string Symbol::repr(void) const;
-Symbol Symbol::clone(void) const;
+std::string Symbol::repr(void) const{}
+Symbol Symbol::clone(void) const{}
 
-bool operator==(const Symbol& lhs, const Symbol& rhs);
-bool operator!=(const Symbol& lhs, const Symbol& rhs);
+bool operator==(const Symbol& lhs, const Symbol& rhs){}
+bool operator!=(const Symbol& lhs, const Symbol& rhs){}
 };
 
 // -*-
