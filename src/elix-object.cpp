@@ -873,12 +873,16 @@ Array& Array::concat(const Array& array){
     return *this;
 }
 
+// -*-
+i64 Array::len(void) const{
+    return static_cast<i64>(this->items.size());
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-i64 Array::len(void) const{}
 Array Array::slice(i64 i, i64 j) const{}
 Array& Array::insert(i64 idx,  const Object& arg){}
 Object Array::get(i64 idx) const{}
