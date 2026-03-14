@@ -688,6 +688,14 @@ List& List::reverse(void){
     return *this;
 }
 
+// -*-
+List& List::concat(const List& rhs){
+    for(const auto& arg: rhs.items){
+        this->items.emplace_back(arg);
+    }
+    return *this;
+}
+
 /*
 // -*-
 struct List{
