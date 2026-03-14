@@ -1773,18 +1773,22 @@ bool Set::issuperset(const Set& rhs) const{
     return rhs.issubset(*this);
 }
 
-/*
-// -*-
-struct Set{
-    HashSet hset;
-};
+// -*-----------------------*-
+// -*- Func Implementation -*-
+// -*-----------------------*-
+std::string Func::str(void) const{
+    std::stringstream ss;
+    ss << "<Builtin function at " << std::hex << std::addressof(*this) << ">";
+    return ss.str();
+}
 
+/*
 struct Func{
     Fn fn;
-std::string Func::str(void) const;
-std::string Func::repr(void) const;
-Func Func::clone(void) const;
-Object Func::operator()(const Vec<Object>& args);
+
+std::string Func::repr(void) const{}
+Func Func::clone(void) const{}
+Object Func::operator()(const Vec<Object>& args){}
 };
 
 struct Macro{
