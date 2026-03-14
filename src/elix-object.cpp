@@ -1523,12 +1523,19 @@ Object Dict::find(const Object& key) const{
     return Object(entry->second);
 }
 
+Dict& Dict::concat(const Dict& dict){
+    for(const auto& [key, val]: dict.hmap){
+        this->hmap[key] = val;
+    }
+    return *this;
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Dict& Dict::concat(const Dict& dict){}
+
 i64 Dict::len(void) const{}
 Object Dict::get(const Object& key) const{}
 Dict& Dict::set(const Object& key, const Object& val){}
