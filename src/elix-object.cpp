@@ -1598,12 +1598,20 @@ Dict& Dict::clear(void){
     return *this;
 }
 
+Dict& Dict::remove(const Object& key){
+    if(this->find(key)){
+        auto entry = this->hmap.find(key);
+        this->hmap.erase(key);
+    }
+    return *this;
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Dict& Dict::remove(const Object& key){}
+
 Vec<Pair> Dict::items(const Vec<Object>& args){}
 };
 
