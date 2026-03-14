@@ -487,10 +487,16 @@ Number operator>>(const Number& lhs, const Number& rhs){
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
-bool operator&&(const Number& lhs, const Number& rhs){
+bool operator||(const Number& lhs, const Number& rhs){
     auto x = static_cast<bool>(lhs);
     auto y = static_cast<bool>(rhs);
     return (x || y);
+}
+
+bool operator&&(const Number& lhs, const Number& rhs){
+    auto x = static_cast<bool>(lhs);
+    auto y = static_cast<bool>(rhs);
+    return (x && y);
 }
 
 /*
@@ -498,8 +504,6 @@ bool operator&&(const Number& lhs, const Number& rhs){
 class Number:: final{
 public:
 
-// -
-bool operator&&(const Number& lhs, const Number& rhs){}
 
 bool operator==(const Number& lhs, const Number& rhs){}
 bool operator!=(const Number& lhs, const Number& rhs){}
