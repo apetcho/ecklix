@@ -325,13 +325,25 @@ Number& Number::operator!(){
     return *this;
 }
 
+Number& Number::operator-(){
+    if(std::holds_alternative<i64>(this->m_value)){
+        i64 num{};
+        this->value(num);
+        this->m_value = num;
+    }else{
+        f64 num{};
+        this->value(num);
+        this->m_value = num;
+    }
+    return *this;
+}
+
 /*
 // -*-
 class Number:: final{
 public:
 
 // -
-Number& Number::operator-(){}
 Number& Number::operator~(){}
 
 Number operator+(const Number& lhs, const Number& rhs){}
