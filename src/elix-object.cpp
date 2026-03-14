@@ -1571,12 +1571,19 @@ Vec<Object> Dict::keys(void) const{
     return std::move(result);
 }
 
+Vec<Object> Dict::values(void) const{
+    Vec<Object> result{};
+    for(const auto& [_, val]: this->hmap){
+        result.push_back(Object(val));
+    }
+    return std::move(result);
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Vec<Object> Dict::values(void) const{}
 Object Dict::popitem(const Object& key) const{}
 Dict& Dict::clear(void){}
 Vec<Pair> Dict::items(const Vec<Object>& args){}
