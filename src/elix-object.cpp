@@ -636,7 +636,7 @@ Object Lambda::operator()(const Vec<Object>& args){
     Object result{};
     auto visitor = ELix::visitor;
     auto runtime = ELix::runtime;
-    
+
     auto self = std::make_unique<ELix>();
     ELix::runtime = this->ctx;
     ELix::visitor = self.get();
@@ -649,33 +649,41 @@ Object Lambda::operator()(const Vec<Object>& args){
     return result;
 }
 
+// -*--------*-
+// -*- List -*-
+// -*--------*-
+std::string List::str(void) const{
+    if(this->items.empty()){
+        return "()";
+    }
+    std::stringstream ss;
+    ss << "(";
+    for(size_t i=0; i < this->items.size(); i++){
+        if(i > 0){ ss << " "; }
+        ss << this->items[i].str();
+    }
+    ss << ")";
+    return ss.str();
+}
+
 /*
-// -*-
-struct Lambda{
-    Vec<Symbol> params;
-    Vec<Expression> body;
-    Context ctx;
-
-};
-
 // -*-
 struct List{
     Vec<Object> items;
-std::string List::str(void) const;
-std::string List::repr(void) const;
-List List::clone(void) const;
-i64 List::find(const Object& args) const;
-List& List::reverse(void);
-List& List::concat(const List& args);
-i64 List::len(void) const;
-Object List::head(void) const;
-List List::tail(void) const;
-Object List::first(void) const;
-Object List::last(void) const;
-List& List::push(const Object& arg);
-List& List::pop(void);
-List& List::insert(i64 idx, const Object& obj);
-Object List::remove(i64 idx);
+std::string List::repr(void) const{}
+List List::clone(void) const{}
+i64 List::find(const Object& args) const{}
+List& List::reverse(void){}
+List& List::concat(const List& args){}
+i64 List::len(void) const{}
+Object List::head(void) const{}
+List List::tail(void) const{}
+Object List::first(void) const{}
+Object List::last(void) const{}
+List& List::push(const Object& arg){}
+List& List::pop(void){}
+List& List::insert(i64 idx, const Object& obj){}
+Object List::remove(i64 idx){}
 };
 
 
