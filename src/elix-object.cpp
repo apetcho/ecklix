@@ -997,12 +997,58 @@ bool Array::any(const Object& predicate) const{
     return ans;
 }
 
+// -*-
+bool Array::all(const Object& predicate) const{
+    auto check = (
+        predicate.is_func() ||
+        predicate.is_lambda() ||
+        predicate.is_function()
+    );
+    if(!check){
+        std::stringstream ss;
+        ss << "Incorrect argument type to `array.all'. Expect a callable object ";
+        ss << "but got " << std::quoted(predicate.type().str());
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    bool ans{true};
+    if(predicate.is_lambda() || predicate.is_function()){
+        auto fun = predicate.as_lambda();
+        for(const auto& arg: this->items){
+            auto rv = fun(Vec<Object>{arg});
+            if(!rv.is_bool()){
+                std::stringstream ss;
+                ss << "Incorrect argument type to `array.all'. Expect a predicate";
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            if(!rv.as_bool()){
+                ans = false;
+                break;
+            }
+        }
+    }else{
+        auto fun = predicate.as_func();
+        for(const auto& arg: this->items){
+            auto rv = fun(Vec<Object>{arg});
+            if(!rv.is_bool()){
+                std::stringstream ss;
+                ss << "Incorrect argument type to `array.all'. Expect a predicate";
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            if(!rv.as_bool()){
+                ans = false;
+                break;
+            }
+        }
+    }
+
+    return ans;
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-bool Array::all(const Object& predicate) const{}
 Object Array::reduce(const Object& fn, const Object& initVal) const{}
 String& Array::sort(const Object& fn){}
 Array& Array::clear(void){}
