@@ -831,12 +831,19 @@ std::string Array::repr(void) const{
     return ss.str();
 }
 
+// -*-
+Array Array::clone(void) const{
+    Array xs{};
+    for(const auto& item: this->items){
+        xs.items.emplace_back(item);
+    }
+    return std::move(xs);
+}
 
 /*
 // -*-
 struct Array{
     Vec<Object> items;
-Array Array::clone(void) const{}
 
 i64 Array::find(const Object& arg, i64 from){}
 Array& Array::reverse(void){}
