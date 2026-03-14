@@ -840,12 +840,30 @@ Array Array::clone(void) const{
     return std::move(xs);
 }
 
+// -*-
+i64 Array::find(const Object& rhs, i64 from){
+    if(from >= this->len()){
+        throw ELixError(
+            ELixError::IndexError, "index out or range while applying 'array.find'"
+        );
+    }
+    if(from==-1){
+        for(i64 i=0; i < this->items.size(); i++){
+            if(this->items[i]==rhs){ return i; }
+        }
+    }else{
+        for(i64 i=from; i < this->items.size(); i++){
+            if(this->items[i]==rhs){ return i; }
+        }
+    }
+    return -1;
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-i64 Array::find(const Object& arg, i64 from){}
 Array& Array::reverse(void){}
 Array& Array::concat(const Array& array){}
 i64 Array::len(void) const{}
