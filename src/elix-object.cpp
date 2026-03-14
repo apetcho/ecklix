@@ -1257,13 +1257,17 @@ bool operator<(const String& lhs, const String& rhs){
     return !(lhs >= rhs);
 }
 
+bool operator>(const String& lhs, const String& rhs){
+    return !(lhs <= rhs);
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
 
-bool operator>(const String& lhs, const String& rhs){}
+
 
 Vec<String> String::split(const String delim){}
 String String::slice(i64 i, i64 j) const{}
