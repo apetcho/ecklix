@@ -1229,14 +1229,18 @@ i64 String::len(void) const{
     return static_cast<i64>(this->text.length());
 }
 
+// -*-
+String operator+(const String& lhs, const String& rhs){
+    String str{};
+    str.text = (lhs.text + rhs.text);
+    return std::move(str);
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
-
-
-bool operator+(const String& lhs, const String& rhs){}
 bool operator==(const String& lhs, const String& rhs){}
 bool operator!=(const String& lhs, const String& rhs){}
 bool operator<=(const String& lhs, const String& rhs){}

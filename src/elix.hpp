@@ -312,7 +312,7 @@ struct String final{
     String& concat(const String& arg);
     i64 len(void) const;
 
-    friend bool operator+(const String& lhs, const String& rhs);
+    friend String operator+(const String& lhs, const String& rhs);
     friend bool operator==(const String& lhs, const String& rhs);
     friend bool operator!=(const String& lhs, const String& rhs);
     friend bool operator<=(const String& lhs, const String& rhs);
