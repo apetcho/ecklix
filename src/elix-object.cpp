@@ -522,11 +522,11 @@ bool operator<(const Number& lhs, const Number& rhs){
 }
 
 bool operator>(const Number& lhs, const Number& rhs){
-    return !((lhs==rhs) || (lhs < rhs));
+    return !(lhs<=rhs);
 }
 
 bool operator<=(const Number& lhs, const Number& rhs){
-    return !(lhs > rhs);
+    return ((lhs < rhs) || (lhs == rhs));
 }
 
 bool operator>=(const Number& lhs, const Number& rhs){
@@ -1245,12 +1245,15 @@ bool operator!=(const String& lhs, const String& rhs){
     return !(lhs==rhs);
 }
 
+bool operator<=(const String& lhs, const String& rhs){
+    return ((lhs < rhs) || (lhs == rhs));
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
-bool operator<=(const String& lhs, const String& rhs){}
 bool operator>=(const String& lhs, const String& rhs){}
 bool operator<(const String& lhs, const String& rhs){}
 bool operator>(const String& lhs, const String& rhs){}
