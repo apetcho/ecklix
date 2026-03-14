@@ -733,12 +733,21 @@ Object List::first(void) const{
     return Object(this->items[0]);
 }
 
+Object List::last(void) const{
+    if(this->items.empty()){
+        throw ELixError(
+            ELixError::ValueError,
+            "Cannot apply `list.last' on an empty list"
+        );
+    }
+    auto idx = this->items.size() - 1;
+    return Object(this->items[idx]);
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-Object List::first(void) const{}
-Object List::last(void) const{}
 List& List::push(const Object& arg){}
 List& List::pop(void){}
 List& List::insert(i64 idx, const Object& obj){}
