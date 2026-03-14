@@ -350,7 +350,7 @@ struct Dict final{ // Dict
     std::string repr(void) const;
     Dict clone(void) const;
 
-    Object find(const Object& key) const;
+    bool find(const Object& key) const;
     Dict& concat(const Dict& dict);
     i64 len(void) const;
     Object get(const Object& key) const;

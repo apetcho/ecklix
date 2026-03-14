@@ -1510,7 +1510,7 @@ Dict Dict::clone(void) const{
     return std::move(dict);
 }
 
-Object Dict::find(const Object& key) const{
+bool Dict::find(const Object& key) const{
     if(!key.is_hashable()){
         std::stringstream ss;
         ss << "key " << std::quoted(key.str()) << " is not hashable";
@@ -1518,9 +1518,9 @@ Object Dict::find(const Object& key) const{
     }
     auto entry = this->hmap.find(key);
     if(entry == this->hmap.end()){
-        return Object();
+        return false;
     }
-    return Object(entry->second);
+    return true;
 }
 
 Dict& Dict::concat(const Dict& dict){
@@ -1534,12 +1534,21 @@ i64 Dict::len(void) const{
     return static_cast<i64>(this->hmap.size());
 }
 
+Object Dict::get(const Object& key) const{
+    if(this->find(key)){
+        auto entry = this->hmap.find(key);
+        return Object(entry->second);
+    }
+    std::stringstream ss;
+    ss << "key " << std::quoted(key.str()) << " not found";
+    throw ELixError(ELixError::KeyError, ss.str());
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Object Dict::get(const Object& key) const{}
 Dict& Dict::set(const Object& key, const Object& val){}
 Dict& Dict::update(const Object& key, const Object& val){}
 Vec<Object> Dict::keys(void) const{}
