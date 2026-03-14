@@ -258,7 +258,7 @@ struct List final{
     std::string repr(void) const;
     List clone(void) const;
 
-    i64 find(const Object& args) const;
+    i64 find(const Object& args, i64 from=0) const;
     List& reverse(void);
     List& concat(const List& args);
     i64 len(void) const;
@@ -293,6 +293,7 @@ struct Array final {
     bool all(const Object& predicate) const;
     Object reduce(const Object& fn, const Object& initVal) const;
     String& sort(const Object& fn);
+    Array& clear(void);
 };
 
 // -*-

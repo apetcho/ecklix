@@ -52,9 +52,11 @@ static Object fn_filter(const Vec<Object>& args);
 static Object fn_zip(const Vec<Object>& args);
 static Object fn_enumerate(const Vec<Object>& args);
 static Object fn_len(const Vec<Object>& args);
+static Object fn_clear(const Vec<Object>& args);
 static Object fn_concat(const Vec<Object>& args);
 static Object fn_reverse(const Vec<Object>& args);
 static Object fn_find(const Vec<Object>& args);
+static Object fn_is_empty(const Vec<Object>& args);
 
 static Object fn_println(const Vec<Object>& args);
 static Object fn_eprintln(const Vec<Object>& args);

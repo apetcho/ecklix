@@ -675,9 +675,20 @@ List List::clone(void) const{
 }
 
 // -*-
-i64 List::find(const Object& rhs) const{
-    for(i64 i=0; i < this->items.size(); i++){
-        if(this->items[i]==rhs){ return i; }
+i64 List::find(const Object& rhs, i64 from) const{
+    if(from >= this->len()){
+        throw ELixError(
+            ELixError::IndexError, "index out or range while applying 'list.find'"
+        );
+    }
+    if(from==-1){
+        for(i64 i=0; i < this->items.size(); i++){
+            if(this->items[i]==rhs){ return i; }
+        }
+    }else{
+        for(i64 i=from; i < this->items.size(); i++){
+            if(this->items[i]==rhs){ return i; }
+        }
     }
     return -1;
 }
@@ -761,7 +772,7 @@ List& List::insert(i64 idx, const Object& obj){
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range"
+            ELixError::IndexError, "index out or range while applying `list.insert'"
         );
     }
     auto ptr = this->items.begin() + idx;
@@ -774,7 +785,7 @@ Object List::remove(i64 idx){
     bool check = (idx < 0 || idx >= this->items.size());
     if(check){
         throw ELixError(
-            ELixError::IndexError, "index out or range"
+            ELixError::IndexError, "index out or range while applying `list.remove'"
         );
     }
     auto ptr = this->items.begin() + idx;
@@ -788,27 +799,42 @@ List& List::clear(void){
     return *this;
 }
 
+// -*-
+std::string Array::str(void) const{
+    std::stringstream ss;
+    if(this->items.empty()){ ss << "[]"; }
+    else{
+        ss << "[";
+        for(size_t i=0; i < this->items.size(); i++){
+            if(i > 0){ ss << " "; }
+            ss << this->items[i].str();
+        }
+        ss << "]";
+    }
+    return ss.str();
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
-std::string Array::str(void) const;
-std::string Array::repr(void) const;
-Array Array::clone(void) const;
+std::string Array::repr(void) const{}
+Array Array::clone(void) const{}
 
-i64 Array::find(const Object& arg, i64 from=0);
-Array& Array::reverse(void);
-Array& Array::concat(const Array& array);
-i64 Array::len(void) const;
-Array Array::slice(i64 i, i64 j) const;
-Array& Array::insert(i64 idx,  const Object& arg);
-Object Array::get(i64 idx) const;
-Array& Array::set(i64 idx, const Object& arg);
-Array& Array::splice(i64 idx, const Object& arg);
-bool Array::any(const Object& predicate) const;
-bool Array::all(const Object& predicate) const;
-Object Array::reduce(const Object& fn, const Object& initVal) const;
-String& Array::sort(const Object& fn);
+i64 Array::find(const Object& arg, i64 from){}
+Array& Array::reverse(void){}
+Array& Array::concat(const Array& array){}
+i64 Array::len(void) const{}
+Array Array::slice(i64 i, i64 j) const{}
+Array& Array::insert(i64 idx,  const Object& arg){}
+Object Array::get(i64 idx) const{}
+Array& Array::set(i64 idx, const Object& arg){}
+Array& Array::splice(i64 idx, const Object& arg){}
+bool Array::any(const Object& predicate) const{}
+bool Array::all(const Object& predicate) const{}
+Object Array::reduce(const Object& fn, const Object& initVal) const{}
+String& Array::sort(const Object& fn){}
+Array& Array::clear(void){}
 };
 
 // -*-
