@@ -1044,12 +1044,44 @@ bool Array::all(const Object& predicate) const{
     return ans;
 }
 
+// -*-
+Object Array::reduce(const Object& predicate, const Object& initVal) const{
+    auto check = (
+        predicate.is_func() ||
+        predicate.is_lambda() ||
+        predicate.is_function()
+    );
+    if(!check){
+        std::stringstream ss;
+        ss << "Incorrect argument type to `array.reduce'. Expect a callable object ";
+        ss << "but got " << std::quoted(predicate.type().str());
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    Object acc{initVal};
+    if(this->items.empty()){
+        return Object(acc);
+    }
+    if(predicate.is_func()){
+        auto func = predicate.as_func();
+        for(const auto& val: this->items){
+            acc = func(Vec<Object>{acc, val});
+        }
+    }else{
+        auto func = predicate.as_lambda();
+        for(const auto& val: this->items){
+            acc = func(Vec<Object>{acc, val});
+        }
+    }
+
+    return Object(acc);
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-Object Array::reduce(const Object& fn, const Object& initVal) const{}
+
 String& Array::sort(const Object& fn){}
 Array& Array::clear(void){}
 Array& Array::push(const Object& rhs){}
