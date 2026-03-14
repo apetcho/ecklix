@@ -700,11 +700,22 @@ i64 List::len(void) const{
     return static_cast<i64>(this->items.size());
 }
 
+// -*-
+Object List::head(void) const{
+    if(this->items.empty()){
+        throw ELixError(
+            ELixError::ValueError,
+            "Cannot apply `list.head' on an empty list."
+        );
+    }
+    return Object(this->items[0]);
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-Object List::head(void) const{}
+
 List List::tail(void) const{}
 Object List::first(void) const{}
 Object List::last(void) const{}
