@@ -878,12 +878,37 @@ i64 Array::len(void) const{
     return static_cast<i64>(this->items.size());
 }
 
+// -*-
+Array Array::slice(i64 i, i64 j) const{
+    auto checkIndex = [this](i32 idx){
+        if(idx < 0 || idx > this->items.size()){
+            throw ELixError(
+                ELixError::IndexError, "Index out of range while apply `array.slice'"
+            );
+        }
+    };
+    if(i > j){
+        throw ELixError(
+            ELixError::SyntaxError,
+            "Incorrect arguments order found while applying `array.slice'"
+        );
+    }
+    checkIndex(i);
+    checkIndex(j);
+    Array array{};
+    array.items = {};
+    if(i==j){ return std::move(array); }
+    for(auto idx=i; idx < j; idx++){
+        array.items.emplace_back(this->items[idx]);
+    }
+    return std::move(array);
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-Array Array::slice(i64 i, i64 j) const{}
 Array& Array::insert(i64 idx,  const Object& arg){}
 Object Array::get(i64 idx) const{}
 Array& Array::set(i64 idx, const Object& arg){}
