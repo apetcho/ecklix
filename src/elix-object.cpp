@@ -1662,12 +1662,16 @@ i64 Set::len(void) const{
     return static_cast<i64>(this->hset.size());
 }
 
+Set& Set::add(const Object& key){
+    this->hset.insert(key);
+    return *this;
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
 
-Set& Set::add(const Object& key){}
 Set Set::set_union(const Set& rhs) const{}
 Set Set::intersection(const Set& rhs) const{}
 Set Set::symmetric_difference(const Set& rhs) const{}
