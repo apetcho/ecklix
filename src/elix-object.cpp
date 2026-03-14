@@ -1530,13 +1530,15 @@ Dict& Dict::concat(const Dict& dict){
     return *this;
 }
 
+i64 Dict::len(void) const{
+    return static_cast<i64>(this->hmap.size());
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-
-i64 Dict::len(void) const{}
 Object Dict::get(const Object& key) const{}
 Dict& Dict::set(const Object& key, const Object& val){}
 Dict& Dict::update(const Object& key, const Object& val){}
