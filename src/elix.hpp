@@ -376,7 +376,9 @@ struct Set final{
 };
 
 struct Func final{
-    Fn fn = nullptr;
+    Fn fn;
+    i32 minArgc;
+    i32 maxArgc;
     std::string str(void) const;
     std::string repr(void) const;
     Func clone(void) const;
@@ -664,7 +666,7 @@ private:
 // ------------------------------
 // -*- ELix : the interpreter -*-
 // ------------------------------
-class ELix final: protected ExprVisitor{
+class ELix final: public ExprVisitor{
 public:
     struct Module{
         UniquePtr<Symbol> name;
@@ -693,8 +695,9 @@ public:
 
     static bool is_reserved_word(const std::string& word);
 
+    static Context runtime;
+
 private:
-    Context m_runtime;
     Loader m_loader;
 
     Object eval(LiteralExpr& expr) override;

@@ -621,13 +621,41 @@ Lambda Lambda::clone(void) const{
     return std::move(result);
 }
 
+// -*-
+Object Lambda::operator()(const Vec<Object>& args){
+    if(this->params.size() != args.size()){
+        std::stringstream ss;
+        ss << "Incorrect number of arguments.\n";
+        ss << "Expect " << this->params.size() << " but got " << args.size();
+    }
+    for(size_t i=0; i < args.size(); i++){
+        auto key = this->params[i].str();
+        auto val = args[i];
+        this->ctx->define(key, val);
+    }
+    Object result{};
+    auto visitor = ELix::visitor;
+    auto runtime = ELix::runtime;
+    
+    auto self = std::make_unique<ELix>();
+    ELix::runtime = this->ctx;
+    ELix::visitor = self.get();
+
+    for(auto&& expr: this->body){
+        result = expr->eval(ELix::visitor);
+    }
+    ELix::visitor = visitor;
+    ELix::runtime = runtime;
+    return result;
+}
+
 /*
 // -*-
 struct Lambda{
     Vec<Symbol> params;
     Vec<Expression> body;
     Context ctx;
-Object Lambda::operator()(const Vec<Object>& args){}
+
 };
 
 // -*-
