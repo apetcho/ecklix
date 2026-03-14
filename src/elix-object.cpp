@@ -859,12 +859,18 @@ i64 Array::find(const Object& rhs, i64 from){
     return -1;
 }
 
+// -*-
+Array& Array::reverse(void){
+    std::reverse(this->items.begin(), this->items.end());
+    return *this;
+}
+
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-Array& Array::reverse(void){}
 Array& Array::concat(const Array& array){}
 i64 Array::len(void) const{}
 Array Array::slice(i64 i, i64 j) const{}
