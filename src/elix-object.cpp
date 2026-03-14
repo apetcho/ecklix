@@ -1455,6 +1455,11 @@ std::string Pair::str(void) const{
     return ss.str();
 }
 
+std::string Pair::repr(void) const{
+    std::stringstream ss;
+    ss << "#(" << this->key.repr() << " " << this->val.repr() << "')";
+    return ss.str();
+}
 
 /*
 
@@ -1463,7 +1468,7 @@ struct Pair{
     Object key;
     Object val;
 
-std::string Pair::repr(void) const{}
+
 String Pair::clone(void) const{}
 };
 
