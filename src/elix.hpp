@@ -513,52 +513,54 @@ private:
 struct ExprBase{
     virtual ~ExprBase() = default;
     virtual Object eval(Visitor visitor) = 0;
+    virtual std::string str(void) const;
+    virtual std::string repr(void) const;
 };
 
 // -*-
 struct LiteralExpr: public ExprBase{
     Object obj;
-    // explicit LiteralExpr(Object&& obj);
     virtual Object eval(Visitor visitor) override;
+    std::string repr(void) const override;
 };
 
 // -*-
 struct SymbolExpr: public ExprBase{
     Symbol name;
-    // explicit SymbolExpr(Symbol&& sym);
     virtual Object eval(Visitor visitor) override;
+    std::string repr(void) const override;
 };
 
 struct ListExpr: public ExprBase{
     Vec<Expression> items;
-    //explicit ListExpr(Vec<Expression>&& exprs);
     virtual Object eval(Visitor visitor) override;
+    std::string repr(void) const override;
 };
 
 // -*-
 struct ArrayExpr: public ExprBase{
     Vec<Expression> items;
-    //explicit ArrayExpr(Vec<Expression>&& exprs);
     virtual Object eval(Visitor visitor) override;
+    std::string repr(void) const override;
 };
 
 struct PairExpr: public ExprBase{
     Expression key;
     Expression val;
-    //explicit PairExpr(Expression key, Expression val);
     virtual Object eval(Visitor visitor) override;
+    std::string repr(void) const override;
 };
 
 struct DictExpr: public ExprBase{
     Vec<Expression> items;
-    //explicit MapExpr(Vec<Expression> items);
     virtual Object eval(Visitor visitor) override;
+    std::string repr(void) const override;
 };
 
 struct SetExpr: public ExprBase{
     Vec<Expression> items;
-    //explicit SetExpr(Vec<Expression>&& items);
     virtual Object eval(Visitor visitor) override;
+    std::string repr(void) const override;
 };
 
 struct ExprVisitor{

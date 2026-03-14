@@ -566,6 +566,32 @@ bool operator!=(const Symbol& lhs, const Symbol& rhs){
 // -*----------*-
 std::string Lambda::str(void) const{
     std::stringstream ss;
+    if(this->named){ ss << "function at "; }
+    else{ ss << "lambda  at "; }
+    ss << std::hex << std::addressof(*this);
+    return ss.str();
+
+    // if(this->named){ ss << "(fun "; }
+    // else{ ss << "(lambda "; }
+    // if(this->params.empty()){ ss << "()"; }
+    // else{
+    //     ss << "(";
+    //     for(size_t i=0; i < this->params.size(); i++){
+    //         if(i>0){ ss << " "; }
+    //         ss << this->params[i].str();
+    //     }
+    //     ss << ")";
+    // }
+    // for(const auto& expr: this->body){
+    //     ss << expr->eval(ELix::visitor).str() << "\n";
+    // }
+    // ss << ")";
+    return ss.str();
+}
+
+// -*-
+std::string Lambda::repr(void) const{
+    std::stringstream ss;
     if(this->named){ ss << "(fun "; }
     else{ ss << "(lambda "; }
     if(this->params.empty()){ ss << "()"; }
@@ -578,7 +604,7 @@ std::string Lambda::str(void) const{
         ss << ")";
     }
     for(const auto& expr: this->body){
-        ss << expr->eval(ELix::visitor).str() << "\n";
+        ss << expr->repr() << "\n";
     }
     ss << ")";
     return ss.str();
@@ -590,7 +616,6 @@ struct Lambda{
     Vec<Symbol> params;
     Vec<Expression> body;
     Context ctx;
-std::string Lambda::repr(void) const{}
 Lambda Lambda::clone(void) const{}
 Object Lambda::operator()(const Vec<Object>& args){}
 };
