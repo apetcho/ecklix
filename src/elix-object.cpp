@@ -744,11 +744,15 @@ Object List::last(void) const{
     return Object(this->items[idx]);
 }
 
+List& List::push(const Object& arg){
+    this->items.emplace_back(arg);
+    return *this;
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-List& List::push(const Object& arg){}
 List& List::pop(void){}
 List& List::insert(i64 idx, const Object& obj){}
 Object List::remove(i64 idx){}
