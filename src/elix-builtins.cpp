@@ -84,7 +84,6 @@ static Object fn_str_len(const Vec<Object>& args);
 static Object fn_str_eq(const Vec<Object>& args);
 static Object fn_str_ne(const Vec<Object>& args);
 static Object fn_str_split(const Vec<Object>& args);
-static Object fn_str_slice(const Vec<Object>& args);
 static Object fn_str_startswith(const Vec<Object>& args);
 static Object fn_str_endswith(const Vec<Object>& args);
 static Object fn_str_ltrim(const Vec<Object>& args);
@@ -100,6 +99,7 @@ static Object fn_str_replace_all(const Vec<Object>& args);
 static Object fn_str_chr(const Vec<Object>& args);
 static Object fn_str_ord(const Vec<Object>& args);
 static Object fn_str_substr(const Vec<Object>& args);
+static Object fn_str_at(const Vec<Object>& args);
 
 static Object fn_array_find(const Vec<Object>& args);
 static Object fn_array_reverse(const Vec<Object>& args);

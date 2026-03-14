@@ -322,7 +322,7 @@ struct String final{
 
 
     Vec<String> split(const String delim=String{});
-    String slice(i64 i, i64 j) const;
+    //String slice(i64 i, i64 j) const;
     bool startswith(const String& rhs) const;
     bool endswith(const String& rhs) const;
     String& ltrim(void);
@@ -338,6 +338,7 @@ struct String final{
     String chr(void) const;
     i64 ord(void) const;
     String substr(i64 i, i64 j) const;
+    String at(i64 i) const;    
 };
 
 // -*-
