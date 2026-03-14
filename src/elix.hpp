@@ -458,6 +458,31 @@ public:
     bool is_hashable(void) const;
     Symbol type(void) const;
 
+    friend bool operator==(const Object& lhs, const Object& rhs);
+    friend bool operator!=(const Object& lhs, const Object& rhs);
+    friend bool operator<=(const Object& lhs, const Object& rhs);
+    friend bool operator>=(const Object& lhs, const Object& rhs);
+    friend bool operator<(const Object& lhs, const Object& rhs);
+    friend bool operator>(const Object& lhs, const Object& rhs);
+    friend Object operator+(const Object& lhs, const Object& rhs);
+    friend Object operator-(const Object& lhs, const Object& rhs);
+    friend Object operator*(const Object& lhs, const Object& rhs);
+    friend Object operator/(const Object& lhs, const Object& rhs);
+    friend Object operator%(const Object& lhs, const Object& rhs);
+
+    friend Object operator<<(const Object& lhs, const Object& rhs);
+    friend Object operator>>(const Object& lhs, const Object& rhs);
+    friend Object operator|(const Object& lhs, const Object& rhs);
+    friend Object operator&(const Object& lhs, const Object& rhs);
+    friend Object operator^(const Object& lhs, const Object& rhs);
+
+    friend Object operator||(const Object& lhs, const Object& rhs);
+    friend Object operator&&(const Object& lhs, const Object& rhs);
+
+    Object logical_not(void) const;
+    Object genate(void) const;
+    Object bitwise_not(void) const;
+
 private:
     using Value = std::variant<
         Nil, bool, Number, String, Symbol, Func, Lambda, Macro,

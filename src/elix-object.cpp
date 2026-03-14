@@ -690,11 +690,18 @@ List List::clone(void) const{
     return std::move(xs);
 }
 
+// -*-
+i64 List::find(const Object& rhs) const{
+    for(i64 i=0; i < this->items.size(); i++){
+        if(this->items[i]==rhs){ return i; }
+    }
+    return -1;
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-i64 List::find(const Object& args) const{}
 List& List::reverse(void){}
 List& List::concat(const List& args){}
 i64 List::len(void) const{}
@@ -897,7 +904,34 @@ std::string Object::str(void) const;
 std::string Object::repr(void) const;
 Object Object::clone(void) const;
 
-bool Object::is_hashable(void) const;
+bool is_hashable(void) const;
+    Symbol type(void) const;
+
+bool operator==(const Object& lhs, const Object& rhs);
+bool operator!=(const Object& lhs, const Object& rhs);
+bool operator<=(const Object& lhs, const Object& rhs);
+bool operator>=(const Object& lhs, const Object& rhs);
+bool operator<(const Object& lhs, const Object& rhs);
+bool operator>(const Object& lhs, const Object& rhs);
+Object operator+(const Object& lhs, const Object& rhs);
+Object operator-(const Object& lhs, const Object& rhs);
+Object operator*(const Object& lhs, const Object& rhs);
+Object operator/(const Object& lhs, const Object& rhs);
+Object operator%(const Object& lhs, const Object& rhs);
+
+Object operator<<(const Object& lhs, const Object& rhs);
+Object operator>>(const Object& lhs, const Object& rhs);
+Object operator|(const Object& lhs, const Object& rhs);
+Object operator&(const Object& lhs, const Object& rhs);
+Object operator^(const Object& lhs, const Object& rhs);
+
+Object operator||(const Object& lhs, const Object& rhs);
+Object operator&&(const Object& lhs, const Object& rhs);
+
+Object Object::logical_not(void) const;
+Object Object::genate(void) const;
+Object Object::bitwise_not(void) const;
+
 
 private:
     using Value = std::variant<
