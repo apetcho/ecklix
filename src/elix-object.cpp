@@ -1358,13 +1358,22 @@ String& String::lower(void){
     return *this;
 }
 
+String& String::upper(void){
+    std::transform(
+        this->text.cbegin(), this->text.cend(),
+        this->text.begin(),
+        [](unsigned char c){ return std::toupper(c);}
+    );
+    return *this;
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
 
-String& String::upper(void){}
+
 String& String::capitalize(void){}
 String& String::title(void){}
 Vec<i64> String::find_all(const String& needle){}
