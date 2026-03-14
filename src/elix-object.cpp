@@ -1718,12 +1718,16 @@ Set Set::difference(const Set& rhs) const{
     return std::move(result);
 }
 
+Set& Set::clear(void){
+    this->hset.clear();
+    return *this;
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
 
-Set& Set::clear(void){}
 Set& Set::discard(const Object& key){}
 Object Set::pop(void){}
 bool Set::isdisjoint(const Set& rhs) const{}
