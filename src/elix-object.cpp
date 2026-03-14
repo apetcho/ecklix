@@ -1164,13 +1164,19 @@ std::string String::str(void) const{
     return this->text;
 }
 
+std::string String::repr(void) const{
+    std::stringstream ss;
+    ss << std::quoted(this->str());
+    return ss.str();
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
 
-std::string String::repr(void) const{}
+
 String String::clone(void) const{}
 
 i64 String::find(const String& needle, i64 from) const{}
