@@ -1343,6 +1343,11 @@ String& String::rtrim(void){
     return *this;
 }
 
+String& String::trim(void){
+    this->ltrim().rtrim();
+    return *this;
+}
+
 /*
 // -*-
 struct String{
@@ -1357,7 +1362,7 @@ inline auto trim(std::string str, unsigned char character = ' ') -> std::string
 
 
 
-String& String::trim(void){}
+
 String& String::lower(void){}
 String& String::upper(void){}
 String& String::capitalize(void){}
