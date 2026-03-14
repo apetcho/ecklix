@@ -666,11 +666,25 @@ std::string List::str(void) const{
     return ss.str();
 }
 
+// -
+std::string List::repr(void) const{
+    if(this->items.empty()){
+        return "()";
+    }
+    std::stringstream ss;
+    ss << "(";
+    for(size_t i=0; i < this->items.size(); i++){
+        if(i > 0){ ss << " "; }
+        ss << this->items[i].repr();
+    }
+    ss << ")";
+    return ss.str();
+}
+
 /*
 // -*-
 struct List{
     Vec<Object> items;
-std::string List::repr(void) const{}
 List List::clone(void) const{}
 i64 List::find(const Object& args) const{}
 List& List::reverse(void){}
