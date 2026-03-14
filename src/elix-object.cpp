@@ -1377,6 +1377,23 @@ String& String::capitalize(void){
     return *this;
 }
 
+String& String::title(void){
+    this->capitalize();
+    bool space{false};
+    for(auto& c: this->text){
+        if(std::isspace(c)){
+            space = true;
+            continue;
+        }
+        if(space==true && std::isalpha(c)){
+            c = std::toupper(c);
+            space = false;
+            continue;
+        }
+    }
+    return *this;
+}
+
 /*
 // -*-
 struct String{
@@ -1384,7 +1401,6 @@ struct String{
 
 
 
-String& String::title(void){}
 Vec<i64> String::find_all(const String& needle){}
 String& String::replace(const String& needle, i64 from=){}
 String& String::replace_all(void){}
