@@ -435,6 +435,19 @@ Number operator&(const Number& lhs, const Number& rhs){
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
+Number operator|(const Number& lhs, const Number& rhs){
+    if(lhs.is_integer() && rhs.is_integer()){
+        auto x = static_cast<i64>(lhs);
+        auto y = static_cast<i64>(rhs);
+        return Number((x | y));
+    }
+    std::stringstream ss;
+    ss << "incompatible type for operator (|). Arguments types are ";
+    ss << (lhs.is_integer()? "Integer" : "Float") << " and ";
+    ss << (rhs.is_integer()? "Integer" : "Float");
+    throw ELixError(ELixError::TypeError, ss.str());
+}
+
 /*
 // -*-
 class Number:: final{
