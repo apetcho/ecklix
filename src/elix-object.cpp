@@ -1236,12 +1236,16 @@ String operator+(const String& lhs, const String& rhs){
     return std::move(str);
 }
 
+// -*-
+bool operator==(const String& lhs, const String& rhs){
+    return (lhs.text==rhs.text);
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
-bool operator==(const String& lhs, const String& rhs){}
 bool operator!=(const String& lhs, const String& rhs){}
 bool operator<=(const String& lhs, const String& rhs){}
 bool operator>=(const String& lhs, const String& rhs){}
