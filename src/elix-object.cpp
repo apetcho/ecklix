@@ -1502,13 +1502,19 @@ std::string Dict::repr(void) const{
     return ss.str();
 }
 
-/*
+Dict Dict::clone(void) const{
+    Dict dict{};
+    for(const auto& [key, val]: this->hmap){
+        dict.hmap[Object(key)] = Object(val);
+    }
+    return std::move(dict);
+}
 
+
+/*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
-
-Dict Dict::clone(void) const{}
 
 Object Dict::find(const Object& key) const{}
 Dict& Dict::concat(const Dict& dict){}
