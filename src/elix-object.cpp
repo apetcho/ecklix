@@ -1819,12 +1819,6 @@ std::string Macro::str(void) const{
     return ss.str();
 }
 
-/*
-
-struct Macro{
-    Vec<Symbol> params;
-    Vec<Expression> body;
-    Context ctx;
 std::string Macro::repr(void) const{
     std::stringstream ss;
     ss << "(macro " << this->name.str() << "(";
@@ -1839,6 +1833,13 @@ std::string Macro::repr(void) const{
     ss << "\n)";
     return ss.str();
 }
+
+/*
+struct Macro{
+    Vec<Symbol> params;
+    Vec<Expression> body;
+    Context ctx;
+
 Macro Macro::clone(void) const{}
 Expression Macro::expand(const Expression& expr, Context& ctx){}
 Object Macro::operator()(const Vec<Object>& args){}
