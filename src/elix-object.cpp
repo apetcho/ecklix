@@ -1630,12 +1630,23 @@ std::string Set::str(void) const{
     return ss.str();
 }
 
+std::string Set::repr(void) const{
+    if(this->len()==0){ return "#{}"; }
+    std::stringstream ss;
+    ss << "#{\n";
+    for(const auto& key: this->hset){
+        ss << key.repr() << " ";
+    }
+    ss << "\n}";
+    return ss.str();
+}
+
 /*
 // -*-
 struct Set{
     HashSet hset;
 
-std::string Set::repr(void) cons{}
+
 Set Set::clone(void) const{}
 
 bool Set::find(const Object& needle) const{}
