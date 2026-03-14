@@ -4,6 +4,7 @@
 #include<iomanip>
 #include<cstring>
 #include<cerrno>
+#include<cctype>
 #include<cfenv>
 #include<cmath>
 
@@ -1348,22 +1349,21 @@ String& String::trim(void){
     return *this;
 }
 
+String& String::lower(void){
+    std::transform(
+        this->text.cbegin(), this->text.cend(),
+        this->text.begin(),
+        [](unsigned char c){ return std::tolower(c);}
+    );
+    return *this;
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
 
-/// Trim the string from both ends
-inline auto trim(std::string str, unsigned char character = ' ') -> std::string
-{
-    return trimleft(trimright(str, character), character);
-}
-
-
-
-
-String& String::lower(void){}
 String& String::upper(void){}
 String& String::capitalize(void){}
 String& String::title(void){}
