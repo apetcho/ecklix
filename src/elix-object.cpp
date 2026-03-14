@@ -557,12 +557,14 @@ bool operator==(const Symbol& lhs, const Symbol& rhs){
     return (lhs.value==rhs.value);
 }
 
+bool operator!=(const Symbol& lhs, const Symbol& rhs){
+    return !(lhs==rhs);
+}
+
 /*
 // -*-
 struct Symbol{
     std::string value;
-
-bool operator!=(const Symbol& lhs, const Symbol& rhs){}
 };
 
 // -*-
