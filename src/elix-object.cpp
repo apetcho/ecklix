@@ -917,13 +917,21 @@ Array& Array::insert(i64 idx,  const Object& arg){
     return *this;    
 }
 
+Object Array::get(i64 idx) const{
+    bool check = (idx < 0 || idx >= this->items.size());
+    if(check){
+        throw ELixError(
+            ELixError::IndexError, "index out or range while applying `array.get'"
+        );
+    }
+    return Object(this->items[idx]);
+}
+
 /*
 // -*-
 struct Array{
     Vec<Object> items;
 
-
-Object Array::get(i64 idx) const{}
 Array& Array::set(i64 idx, const Object& arg){}
 Array& Array::splice(i64 idx, const Object& arg){}
 bool Array::any(const Object& predicate) const{}
