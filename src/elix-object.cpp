@@ -1435,14 +1435,18 @@ i64 String::ord(void) const{
     return static_cast<i64>(c);
 }
 
+String String::at(i64 idx) const{
+    if(idx < 0 || idx >= this->len()){
+        std::stringstream ss;
+        ss << "Invalid argument value found while applying `String.at'.";
+        throw ELixError(ELixError::IndexError, ss.str());
+    }
+    String result{};
+    result.text = std::string(1, this->text[idx]);
+    return std::move(result);
+}
+
 /*
-// -*-
-struct String{
-    std::string text;
-
-
-String String::at(i64 idx) const{}
-};
 
 // -*-
 struct Pair{
