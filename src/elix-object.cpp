@@ -1408,14 +1408,19 @@ Vec<i64> String::find_all(const String& needle){
     return std::move(result);
 }
 
+String& String::replace(const String& old, const String& neo){
+    auto pos = this->text.find(old.text);
+    if(pos==std::string::npos){ return *this; }
+    this->text.replace(pos, old.len(), neo.text);
+    return *this;
+}
+
 /*
 // -*-
 struct String{
     std::string text;
 
 
-
-String& String::replace(const String& needle, i64 from=){}
 String& String::replace_all(void){}
 String String::chr(void) const{}
 i64 String::ord(void) const{}

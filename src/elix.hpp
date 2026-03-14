@@ -333,7 +333,7 @@ struct String final{
     String& capitalize(void);
     String& title(void);
     Vec<i64> find_all(const String& needle);
-    String& replace(const String& needle, i64 from=0);
+    String& replace(const String& old, const String& neo);
     String& replace_all(void);
     String chr(void) const;
     i64 ord(void) const;
