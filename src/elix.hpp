@@ -351,7 +351,7 @@ struct Dict final{ // Dict
     Dict clone(void) const;
 
     Object find(const Object& key) const;
-    Dict& concat(const Dict&& dict);
+    Dict& concat(const Dict& dict);
     i64 len(void) const;
     Object get(const Object& key) const;
     Dict& set(const Object& key, const Object& val);

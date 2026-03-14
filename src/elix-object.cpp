@@ -1469,36 +1469,45 @@ Pair Pair::clone(void) const{
     return std::move(pair);
 }
 
+// -*-----------------------*-
+// -*- Dict Implementation -*-
+// -*-----------------------*-
+std::string Dict::str(void) const{
+    if(this->len()==0){ return "{}"; }
+
+    std::stringstream ss;
+    ss << "{\n";
+    for(const auto& [key, val]: this->hmap){
+        Pair pair{};
+        pair.key = Object(key);
+        pair.val = Object(val);
+        ss << pair.str() << " ";
+    }
+    ss << "\n}";
+    return ss.str();
+}
+
 /*
-
-// -*-
-struct Pair{
-    Object key;
-    Object val;
-
-
-
-};
 
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-std::string Dict::str(void) const;
-std::string Dict::repr(void) const;
-Dict Dict::clone(void) const;
 
-Object Dict::find(const Object& key) const;
-Dict& Dict::concat(const Dict&& dict);
-i64 Dict::len(void) const;
-Object Dict::get(const Object& key) const;
-Dict& Dict::set(const Object& key, const Object& val);
-Dict& Dict::update(const Object& key, const Object& val);
-Vec<Object> Dict::keys(void) const;
-Vec<Object> Dict::values(void) const;
-Object Dict::popitem(const Object& key) const;
-Dict& Dict::clear(void);
-Vec<Pair> Dict::items(const Vec<Object>& args);
+std::string Dict::repr(void) const{}
+Dict Dict::clone(void) const{}
+
+Object Dict::find(const Object& key) const{}
+Dict& Dict::concat(const Dict& dict){}
+i64 Dict::len(void) const{}
+Object Dict::get(const Object& key) const{}
+Dict& Dict::set(const Object& key, const Object& val){}
+Dict& Dict::update(const Object& key, const Object& val){}
+Vec<Object> Dict::keys(void) const{}
+Vec<Object> Dict::values(void) const{}
+Object Dict::popitem(const Object& key) const{}
+Dict& Dict::clear(void){}
+Vec<Pair> Dict::items(const Vec<Object>& args){}
 };
 
 // -*-
