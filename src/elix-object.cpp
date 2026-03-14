@@ -1394,6 +1394,20 @@ String& String::title(void){
     return *this;
 }
 
+Vec<i64> String::find_all(const String& needle){
+    if(this->len() < needle.len()){ return Vec<i64>{}; }
+    auto sandbox = this->text;
+    Vec<i64> result{};
+    i64 idx = 0;
+    while(true){
+        auto pos = sandbox.find(needle.text, idx);
+        if(pos==std::string::npos){ break; }
+        result.push_back(static_cast<i64>(pos));
+        idx = pos + needle.len();
+    }
+    return std::move(result);
+}
+
 /*
 // -*-
 struct String{
@@ -1401,7 +1415,6 @@ struct String{
 
 
 
-Vec<i64> String::find_all(const String& needle){}
 String& String::replace(const String& needle, i64 from=){}
 String& String::replace_all(void){}
 String String::chr(void) const{}
