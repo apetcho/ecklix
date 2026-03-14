@@ -1809,23 +1809,39 @@ Object Func::operator()(const Vec<Object>& args){
     return this->fn(args);
 }
 
-/*
-struct Func{
-    Fn fn;
-i32 minArgc;
-    i32 maxArgc;
+// -*------------------------*-
+// -*- Macro Implementation -*-
+// -*------------------------*-
+std::string Macro::str(void) const{
+    std::stringstream ss;
+    ss << "<macro " << this->name.str() << " at ";
+    ss << std::hex << std::addressof(*this) << ")";
+    return ss.str();
+}
 
-};
+/*
 
 struct Macro{
     Vec<Symbol> params;
     Vec<Expression> body;
     Context ctx;
-std::string Macro::str(void) const;
-std::string Macro::repr(void) const;
-Macro Macro::clone(void) const;
-Expression Macro::expand(const Expression& expr, Context& ctx);
-Object Macro::operator()(const Vec<Object>& args);
+std::string Macro::repr(void) const{
+    std::stringstream ss;
+    ss << "(macro " << this->name.str() << "(";
+    for(auto i=0; i < params.size(); i++){
+        if(i > 0){ ss << " "; }
+        ss << params[i].str();
+    }
+    ss << ")\n";
+    for(auto& expr: body){
+        ss << " " << expr->repr() << "\n";
+    }
+    ss << "\n)";
+    return ss.str();
+}
+Macro Macro::clone(void) const{}
+Expression Macro::expand(const Expression& expr, Context& ctx){}
+Object Macro::operator()(const Vec<Object>& args){}
 };
 
 // -*-

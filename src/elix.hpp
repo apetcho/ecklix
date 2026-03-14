@@ -403,6 +403,7 @@ struct Func final{
 };
 
 struct Macro final{
+    Symbol name{};
     Vec<Symbol> params{};
     Vec<Expression> body{};
     Context ctx{};
