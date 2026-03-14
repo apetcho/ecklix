@@ -510,7 +510,7 @@ struct Pair final{
     Object val;
     std::string str(void) const;
     std::string repr(void) const;
-    String clone(void) const;
+    Pair clone(void) const;
 };
 
 

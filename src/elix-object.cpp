@@ -1461,6 +1461,14 @@ std::string Pair::repr(void) const{
     return ss.str();
 }
 
+Pair Pair::clone(void) const{
+    Pair pair{};
+    pair.key = Object(this->key);
+    pair.val = Object(this->val);
+
+    return std::move(pair);
+}
+
 /*
 
 // -*-
@@ -1469,7 +1477,7 @@ struct Pair{
     Object val;
 
 
-String Pair::clone(void) const{}
+
 };
 
 // -*-
