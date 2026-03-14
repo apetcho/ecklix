@@ -430,6 +430,7 @@ public:
     ~Object(){}
 
     bool is_nil(void) const;
+    bool is_bool(void) const;
     bool is_integer(void) const;
     bool is_float(void) const;
     bool is_number(void) const;
@@ -439,10 +440,12 @@ public:
     bool is_list(void) const;
     bool is_macro(void) const;
     bool is_lambda(void) const;
+    bool is_function(void) const;
     bool is_func(void) const;
     bool is_callable(void) const;
     bool is_pair(void) const;
 
+    bool as_bool(void) const;
     i64 as_integer(void) const;
     f64 as_float(void) const;
     Symbol as_symbol(void) const;
