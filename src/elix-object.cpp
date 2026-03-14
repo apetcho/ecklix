@@ -1579,12 +1579,25 @@ Vec<Object> Dict::values(void) const{
     return std::move(result);
 }
 
+Pair Dict::popitem(const Object& key){
+    if(this->find(key)){
+        Pair pair{};
+        auto entry = this->hmap.find(key);
+        pair.key = Object(entry->first);
+        pair.val = Object(entry->second);
+        this->hmap.erase(entry);
+        return std::move(pair);
+    }
+    std::stringstream ss;
+    ss << "Cannot pop item with undefined key " << std::quoted(key.str());
+    throw ELixError(ELixError::KeyError, ss.str());
+}
+
 /*
 // -*-
 struct Dict{ // Dict
     HashMap hmap;
 
-Object Dict::popitem(const Object& key) const{}
 Dict& Dict::clear(void){}
 Vec<Pair> Dict::items(const Vec<Object>& args){}
 };
