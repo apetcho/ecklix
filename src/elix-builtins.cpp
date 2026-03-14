@@ -66,6 +66,7 @@ static Object fn_eprint(const Vec<Object>& args);
 static Object fn_panic(const Vec<Object>& args);
 static Object fn_input(const Vec<Object>& args);
 static Object fn_format(const Vec<Object>& args);
+static Object fn_help(const Vec<Object>& args);
 
 static Object fn_min(const Vec<Object>& args);
 static Object fn_max(const Vec<Object>& args);

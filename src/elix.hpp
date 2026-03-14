@@ -315,6 +315,11 @@ struct String final{
     friend bool operator+(const String& lhs, const String& rhs);
     friend bool operator==(const String& lhs, const String& rhs);
     friend bool operator!=(const String& lhs, const String& rhs);
+    friend bool operator<=(const String& lhs, const String& rhs);
+    friend bool operator>=(const String& lhs, const String& rhs);
+    friend bool operator<(const String& lhs, const String& rhs);
+    friend bool operator>(const String& lhs, const String& rhs);
+
 
     Vec<String> split(const String delim=String{});
     String slice(i64 i, i64 j) const;
@@ -705,6 +710,9 @@ public:
         UniquePtr<Symbol> name;
         Context ctx;
     };
+    
+    static std::map<std::string, Vec<std::string>> docs;
+
     static UniquePtr<Symbol> Quote;
     static UniquePtr<Symbol> Unquote;
     static UniquePtr<Symbol> Quasiquote;

@@ -1157,48 +1157,52 @@ Array& Array::pop(void){
     return *this;
 }
 
+// -*--------------*-
+// -*- String API -*-
+// -*--------------*-
+std::string String::str(void) const{
+    return this->text;
+}
+
 /*
-// -*-
-struct Array{
-    Vec<Object> items;
-
-
-};
-
 // -*-
 struct String{
     std::string text;
 
-std::string String::str(void) const;
-std::string String::repr(void) const;
-String String::clone(void) const;
 
-i64 String::find(const String& needle, i64 from=0) const;
-String& String::reverse(void);
-String& String::concat(const String& arg);
-i64 String::len(void) const;
+std::string String::repr(void) const{}
+String String::clone(void) const{}
 
-bool operator+(const String& lhs, const String& rhs);
-bool operator==(const String& lhs, const String& rhs);
-bool operator!=(const String& lhs, const String& rhs);
+i64 String::find(const String& needle, i64 from) const{}
+String& String::reverse(void){}
+String& String::concat(const String& arg){}
+i64 String::len(void) const{}
 
-Vec<String> String::split(const String delim=String(" "));
-String String::slice(i64 i, i64 j) const;
-bool String::startswith(const String& rhs) const;
-bool String::endswith(const String& rhs) const;
-String& String::ltrim(void);
-String& String::rtrim(void);
-String& String::trim(void);
-String& String::lower(void);
-String& String::upper(void);
-String& String::capitalize(void);
-String& String::title(void);
-Vec<i64> String::find_all(const String& needle);
-String& String::replace(const String& needle, i64 from=0);
-String& String::replace_all(void);
-String String::chr(void) const;
-i64 String::ord(void) const;
-String String::substr(i64 i, i64 j) const;
+bool operator+(const String& lhs, const String& rhs){}
+bool operator==(const String& lhs, const String& rhs){}
+bool operator!=(const String& lhs, const String& rhs){}
+bool operator<=(const String& lhs, const String& rhs){}
+bool operator>=(const String& lhs, const String& rhs){}
+bool operator<(const String& lhs, const String& rhs){}
+bool operator>(const String& lhs, const String& rhs){}
+
+Vec<String> String::split(const String delim){}
+String String::slice(i64 i, i64 j) const{}
+bool String::startswith(const String& rhs) const{}
+bool String::endswith(const String& rhs) const{}
+String& String::ltrim(void){}
+String& String::rtrim(void){}
+String& String::trim(void){}
+String& String::lower(void){}
+String& String::upper(void){}
+String& String::capitalize(void){}
+String& String::title(void){}
+Vec<i64> String::find_all(const String& needle){}
+String& String::replace(const String& needle, i64 from=){}
+String& String::replace_all(void){}
+String String::chr(void) const{}
+i64 String::ord(void) const{}
+String String::substr(i64 i, i64 j) const{}
 };
 
 // -*-
