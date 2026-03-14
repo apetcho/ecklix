@@ -1282,6 +1282,28 @@ Vec<String> String::split(const String delim){
     return std::move(result);
 }
 
+String String::slice(i64 i, i64 j) const{
+    auto checkIndex = [this](i32 idx){
+        if(idx < 0 || idx > this->text.length()){
+            throw ELixError(
+                ELixError::IndexError, "Index out of range while apply `Array.slice'"
+            );
+        }
+    };
+    if(i > j){
+        throw ELixError(
+            ELixError::SyntaxError,
+            "Incorrect arguments order found while applying `Array.slice'"
+        );
+    }
+    checkIndex(i);
+    checkIndex(j);
+    String result{};
+    auto txt = this->text.substr(i, j);
+    result.text = std::string(txt);
+    return std::move(result);
+}
+
 /*
 // -*-
 struct String{
@@ -1320,7 +1342,7 @@ inline auto trim(std::string str, unsigned char character = ' ') -> std::string
 
 
 
-String String::slice(i64 i, i64 j) const{}
+
 bool String::startswith(const String& rhs) const{}
 bool String::endswith(const String& rhs) const{}
 String& String::ltrim(void){}
