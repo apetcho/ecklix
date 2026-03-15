@@ -2110,12 +2110,13 @@ Object& Object::operator=(Object&& obj) noexcept{
     return *this;
 }
 
+// -*-
+Object::~Object(){}
+
 /*
 // -*-
 class Object final{
 public:
-
-Object::~Object(){}
 
 bool Object::is_nil(void) const{}
 bool Object::is_bool(void) const{}
