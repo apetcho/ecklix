@@ -411,7 +411,7 @@ struct Macro final{
     std::string repr(void) const;
     Macro clone(void) const;
 
-    Expression expand(const Expression& expr, Context& ctx);
+    Expression expand(const Vec<Object>& args, ELix& elix);
 };
 
 // -*-
@@ -439,7 +439,7 @@ public:
     Object& operator=(const Object& obj) noexcept;
     Object& operator=(Object&& obj) noexcept;
 
-    ~Object(){}
+    ~Object(); //{}
 
     bool is_nil(void) const;
     bool is_bool(void) const;
@@ -778,13 +778,14 @@ private:
     Object handle_for(Vec<Expression> exprs);
     Object handle_fun(Vec<Expression> exprs);
     Object handle_macro(Vec<Expression> exprs);
-    Object handle_quote(Vec<Expression> exprs);
-    Object handle_quasiquote(Vec<Expression> exprs);
-    Object handle_unquote(Vec<Expression> exprs);
-    Object handle_unquote_splicing(Vec<Expression> exprs);
+    Expression handle_quote(Vec<Expression> exprs);
+    Expression handle_quasiquote(Vec<Expression> exprs);
+    Expression handle_unquote(Vec<Expression> exprs);
+    Expression handle_unquote_splicing(Vec<Expression> exprs);
     Object handle_list(Vec<Expression> exprs); // function-call
 
     friend class ModuleLoader;
+    friend struct Macro;
 };
 
 

@@ -1,5 +1,8 @@
 #include "elix.hpp"
 #include<algorithm>
+#include<type_traits>
+#include<typeindex>
+#include<typeinfo>
 #include<sstream>
 #include<iomanip>
 #include<cstring>
@@ -1843,13 +1846,123 @@ Macro Macro::clone(void) const{
     return std::move(macro);
 }
 
+// -*-
+Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
+    if(this->params.size()!=args.size()){
+        std::stringstream ss;
+        ss << "Invalid number or arguments encountered while expanding ";
+        ss << "macro " << std::quoted(this->name.str()) << "\n";
+        ss << "Expecting " << this->params.size() << " arguments but got ";
+        ss << args.size();
+        throw ELixError(ELixError::RuntimeError, ss.str());
+    }
+    Context ctx_ = this->ctx;
+    this->ctx = std::make_shared<Env>(ctx_);
+    for(auto i=0; i < this->params.size(); i++){
+        auto key = this->params[i].str();
+        this->ctx->define(key, args[i]);
+    }
+
+    std::map<std::type_index, std::string> typesmap;
+    typesmap[std::type_index(typeid(ListExpr))] = "ListExpr";
+    typesmap[std::type_index(typeid(ArrayExpr))] = "ArrayExpr";
+    typesmap[std::type_index(typeid(DictExpr))] = "DictExpr";
+    typesmap[std::type_index(typeid(SetExpr))] = "SetExpr";
+    typesmap[std::type_index(typeid(LiteralExpr))] = "LiteralExpr";
+    typesmap[std::type_index(typeid(SymbolExpr))] = "SymbolExpr";
+    typesmap[std::type_index(typeid(PairExpr))] = "PairExpr";
+
+    decltype(this->body) expanded{};
+    auto argc = body.size();
+    for(auto i=0; i < argc; i++){
+        auto& expr = this->body[i];
+        if(typesmap[std::type_index(typeid(expr))]=="SymbolExpr"){
+            auto self = *dynamic_cast<SymbolExpr*>(expr.get());
+            auto sym = self.name.str();
+            if(ELix::is_reserved_word(sym)){
+                if(sym=="quote"){
+                    if(i+1 >= argc){
+                        std::stringstream ss;
+                        ss << "Malformed quote expression. Expect an argument but ";
+                        ss << "got none.";
+                        throw ELixError(ELixError::SyntaxError, ss.str());
+                    }else{
+                        auto& arg = this->body[(i+1)];
+                        auto xs = Vec<Expression>{};
+                        xs.push_back(std::move(this->body[(i+1)]));
+                        i += 1;
+                        expanded.push_back(std::move(elix.handle_quote(xs)));
+                        continue;
+                    }
+                }
+                else if(sym=="unquote"){
+                    if(i+1 >= argc){
+                        std::stringstream ss;
+                        ss << "Malformed unquote expression. Expect an argument but ";
+                        ss << "got none.";
+                        throw ELixError(ELixError::SyntaxError, ss.str());
+                    }else{
+                        auto& arg = this->body[(i+1)];
+                        auto xs = Vec<Expression>{};
+                        xs.push_back(std::move(this->body[(i+1)]));
+                        i += 1;
+                        expanded.push_back(std::move(elix.handle_unquote(xs)));
+                        continue;
+                    }
+                }
+                else if(sym=="quasiquote"){
+                    if(i+1 >= argc){
+                        std::stringstream ss;
+                        ss << "Malformed quasiquote expression. Expect an argument but ";
+                        ss << "got none.";
+                        throw ELixError(ELixError::SyntaxError, ss.str());
+                    }else{
+                        auto& arg = this->body[(i+1)];
+                        auto xs = Vec<Expression>{};
+                        xs.push_back(std::move(this->body[(i+1)]));
+                        i += 1;
+                        expanded.push_back(std::move(elix.handle_quasiquote(xs)));
+                        continue;
+                    }
+                }
+                else if(sym=="unquote-splicing"){
+                    if(i+1 >= argc){
+                        std::stringstream ss;
+                        ss << "Malformed unquote-splicing expression. Expect an argument but ";
+                        ss << "got none.";
+                        throw ELixError(ELixError::SyntaxError, ss.str());
+                    }else{
+                        auto& arg = this->body[(i+1)];
+                        auto xs = Vec<Expression>{};
+                        xs.push_back(std::move(this->body[(i+1)]));
+                        i += 1;
+                        expanded.push_back(std::move(elix.handle_unquote_splicing(xs)));
+                        continue;
+                    }
+                }else if(sym=="macro"){
+                    std::stringstream ss;
+                    ss << "Cannot define a macro inside a macro body. Expect an argument but ";
+                    throw ELixError(ELixError::SyntaxError, ss.str());
+                }
+            }
+        }else{
+            expanded.push_back(std::move(expr));
+        }
+    }
+
+    auto result = std::make_unique<ListExpr>();
+    result->items = std::move(expanded);
+    this->ctx = ctx_;
+    return std::move(result);
+}
+
 /*
 struct Macro{
     Vec<Symbol> params;
     Vec<Expression> body;
     Context ctx;
 
-Expression Macro::expand(const Expression& expr, Context& ctx){}
+
 Object Macro::operator()(const Vec<Object>& args){}
 };
 
