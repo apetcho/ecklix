@@ -3106,12 +3106,23 @@ bool operator<(const Object& lhs, const Object& rhs){
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
+// -*-
+bool operator<=(const Object& lhs, const Object& rhs){
+    try{
+        return (lhs< rhs || lhs == rhs);
+    }catch(...){
+        std::stringstream ss;
+        ss << "`<=' is not supported for " << std::quoted(lhs.type().str()) << " type";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool operator<=(const Object& lhs, const Object& rhs){}
+
 bool operator>=(const Object& lhs, const Object& rhs){}
 bool operator>(const Object& lhs, const Object& rhs){}
 Object operator+(const Object& lhs, const Object& rhs){}
