@@ -2054,13 +2054,17 @@ Object::Object(const Set& mset)
 , m_value{mset}
 {}
 
+// -*-
+Object::Object(const Pair& mpair)
+: m_type{Symbol{"Pair"}}
+, m_value{mpair}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-Object::Object(const Pair& mpair){}
 Object::Object(const Lambda& lambda){}
 Object::Object(const Macro& macro){}
 Object::Object(const Func& func){}
