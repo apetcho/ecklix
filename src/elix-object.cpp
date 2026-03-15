@@ -2786,13 +2786,71 @@ Func Object::as_func(void) const{
     return result;
 }
 
+// -*-
+Pair Object::as_pair(void) const{
+    Pair result{};
+    if(this->is_pair()){
+        result = std::any_cast<Pair>(this->m_value);
+    }else if(this->is_list()){
+        auto xs = std::any_cast<List>(this->m_value);
+        if(xs.len() > 2){
+            std::stringstream ss;
+            ss << "cannot only convert list with more than two elements to a pair.\n";
+            ss << "Then current list contains " << xs.len() << " elements";
+            throw ELixError(ELixError::ValueError, ss.str());
+        }else if(xs.len()==2){
+            result.key = Object(xs.items[0]);
+            result.val = Object(xs.items[1]);
+        }else if(xs.len()==1){
+            result.key = Object(xs.items[0]);
+            result.val = Object();
+        }else{
+            result.key = Object();
+            result.val = Object();
+        }
+    }else if(this->is_array()){
+        auto xs = std::any_cast<Array>(this->m_value);
+        if(xs.len() > 2){
+            std::stringstream ss;
+            ss << "cannot only convert array with more than two elements to a pair.\n";
+            ss << "Then current array contains " << xs.len() << " elements";
+            throw ELixError(ELixError::ValueError, ss.str());
+        }else if(xs.len()==2){
+            result.key = Object(xs.items[0]);
+            result.val = Object(xs.items[1]);
+        }else if(xs.len()==1){
+            result.key = Object(xs.items[0]);
+            result.val = Object();
+        }else{
+            result.key = Object();
+            result.val = Object();
+        }
+    }else if(this->is_dict()){
+        auto xs = std::any_cast<Dict>(this->m_value);
+        if(xs.len() > 1){
+            std::stringstream ss;
+            ss << "cannot only convert dict object with more than 1 entry to a pair.\n";
+            ss << "Then current dict object contains " << xs.len() << " elements";
+            throw ELixError(ELixError::ValueError, ss.str());
+        }else if(xs.len()==1){
+            result = xs.items()[0];
+        }else{
+            result.key = Object();
+            result.val = Object();
+        }
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a pair.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    return result;
+}
 
 /*
 // -*-
 class Object final{
 public:
 
-Pair Object::as_pair(void) const{}
 
 std::string Object::str(void) const{}
 std::string Object::repr(void) const{}
