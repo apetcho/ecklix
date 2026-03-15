@@ -3320,13 +3320,18 @@ Object operator&&(const Object& lhs, const Object& rhs){
     return Object(ans);
 }
 
+// -*-
+Object Object::logical_not(void) const{
+    auto ans = !this->as_bool();
+    return Object(ans);
+}
+
 /*
 // -*-
 class Object final{
 public:
 
 
-Object Object::logical_not(void) const{}
 Object Object::negate(void) const{}
 Object Object::bitwise_not(void) const{}
 
