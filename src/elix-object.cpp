@@ -3139,14 +3139,53 @@ bool operator>(const Object& lhs, const Object& rhs){
     }
 }
 
+// -*-
+Object operator+(const Object& lhs, const Object& rhs){
+    if(lhs.is_number() && rhs.is_number()){
+        auto x = std::any_cast<Number>(lhs.m_value);
+        auto y = std::any_cast<Number>(rhs.m_value);
+        auto num = x + y;
+        return Object(num);
+    }
+    if(lhs.type()==rhs.type()){
+        if(lhs.is_string()){
+            auto x = lhs.as_string();
+            auto y = rhs.as_string();
+            auto ans = x + y;
+            return Object(ans);
+        }else if(lhs.is_array()){
+            auto self = lhs.as_array();
+            auto y = rhs.as_array();
+            self.concat(y);
+            return Object(self);
+        }else if(lhs.is_list()){
+            auto self = lhs.as_list();
+            auto y = rhs.as_list();
+            self.concat(y);
+            return Object(self);
+        }else if(lhs.is_dict()){
+            auto self = lhs.as_dict();
+            auto y = rhs.as_dict();
+            self.concat(y);
+            return Object(self);
+        }else if(lhs.is_set()){
+            auto self = lhs.as_set();
+            auto y = rhs.as_set();
+            self.concat(y);
+            return Object(self);
+        }
+    }
+
+    std::stringstream ss;
+    ss << "`+' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
 
 /*
 // -*-
 class Object final{
 public:
 
-
-Object operator+(const Object& lhs, const Object& rhs){}
 Object operator-(const Object& lhs, const Object& rhs){}
 Object operator*(const Object& lhs, const Object& rhs){}
 Object operator/(const Object& lhs, const Object& rhs){}
