@@ -1555,7 +1555,7 @@ Object Dict::get(const Object& key) const{
 }
 
 void Dict::put(const Object& key, const Object& val){
-    //! @todo
+    this->hmap[key] = val;
 }
 
 Dict& Dict::set(const Object& key, const Object& val){
