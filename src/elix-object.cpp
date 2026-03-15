@@ -3351,11 +3351,18 @@ ELixError::ELixError()
 , m_kind{Symbol{"ELixError"}}
 {}
 
+// -*-
+ELixError::ELixError(const Symbol& sym)
+: ELixError{}
+{
+    this->m_kind = sym;
+}
+
 /*
 // -*-
 class ELixError: public std::runtime_error {
 public:
-ELixError::ELixError(const Symbol& sym){}
+
 ELixError::ELixError(const Symbol& sym, const std::string& msg){}
 
 std::string ELixError::describe(void) const{}
