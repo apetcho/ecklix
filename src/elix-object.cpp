@@ -2042,12 +2042,17 @@ Object::Object(const List& xs)
 , m_value{xs}
 {}
 
+// -*-
+Object::Object(const Dict& mdict)
+: m_type{Symbol{"Dict"}}
+, m_value{mdict}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(const Dict& mdict){}
 Object::Object(const Set& mset){}
 Object::Object(const Pair& mpair){}
 Object::Object(const Lambda& lambda){}
