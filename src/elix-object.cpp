@@ -3096,7 +3096,7 @@ bool operator==(const Object& lhs, const Object& rhs){
         return (lhs.as_string()==rhs.as_string());
     }
     std::stringstream ss;
-    ss << "`==' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    ss << "operator `==' is not supported for " << std::quoted(lhs.type().str()) << " type.";
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
@@ -3106,7 +3106,7 @@ bool operator!=(const Object& lhs, const Object& rhs){
         return !(lhs==rhs);
     }catch(...){
         std::stringstream ss;
-        ss << "`!=' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+        ss << "operator `!=' is not supported for " << std::quoted(lhs.type().str()) << " type.";
         throw ELixError(ELixError::TypeError, ss.str());
     }
 }
@@ -3123,7 +3123,7 @@ bool operator<(const Object& lhs, const Object& rhs){
         return (x < y);
     }
     std::stringstream ss;
-    ss << "`<' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    ss << "operator `<' is not supported for " << std::quoted(lhs.type().str()) << " type.";
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
@@ -3133,7 +3133,7 @@ bool operator<=(const Object& lhs, const Object& rhs){
         return (lhs< rhs || lhs == rhs);
     }catch(...){
         std::stringstream ss;
-        ss << "`<=' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+        ss << "operator `<=' is not supported for " << std::quoted(lhs.type().str()) << " type.";
         throw ELixError(ELixError::TypeError, ss.str());
     }
 }
@@ -3144,7 +3144,7 @@ bool operator>=(const Object& lhs, const Object& rhs){
         return (lhs > rhs || lhs == rhs);
     }catch(...){
         std::stringstream ss;
-        ss << "`>=' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+        ss << "operator `>=' is not supported for " << std::quoted(lhs.type().str()) << " type.";
         throw ELixError(ELixError::TypeError, ss.str());
     }
 }
@@ -3155,7 +3155,7 @@ bool operator>(const Object& lhs, const Object& rhs){
         return !(lhs >= rhs);
     }catch(...){
         std::stringstream ss;
-        ss << "`>' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+        ss << "operator `>' is not supported for " << std::quoted(lhs.type().str()) << " type.";
         throw ELixError(ELixError::TypeError, ss.str());
     }
 }
@@ -3196,7 +3196,7 @@ Object operator+(const Object& lhs, const Object& rhs){
     }
 
     std::stringstream ss;
-    ss << "`+' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    ss << "operator `+' is not supported for " << std::quoted(lhs.type().str()) << " type.";
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
@@ -3208,17 +3208,29 @@ Object operator-(const Object& lhs, const Object& rhs){
     }
 
     std::stringstream ss;
-    ss << "`-' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    ss << "operator `-' is not supported for " << std::quoted(lhs.type().str()) << " type.";
     throw ELixError(ELixError::TypeError, ss.str());
 }
+
+// -*-
+Object operator*(const Object& lhs, const Object& rhs){
+    if(lhs.is_number() && rhs.is_number()){
+        auto num = lhs.as_number() * rhs.as_number();
+        return Object(num);
+    }
+
+    std::stringstream ss;
+    ss << "operator `*' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
+
+
 
 /*
 // -*-
 class Object final{
 public:
 
-
-Object operator*(const Object& lhs, const Object& rhs){}
 Object operator/(const Object& lhs, const Object& rhs){}
 Object operator%(const Object& lhs, const Object& rhs){}
 
