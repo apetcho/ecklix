@@ -3393,11 +3393,24 @@ void Env::define(const std::string& name, const Object& obj){
     this->m_bindings[name] = obj;
 }
 
+// -*-
+bool Env::update(const std::string& name, const Object& obj){
+    auto entry = this->m_bindings.find(name);
+    if(entry != this->m_bindings.end()){
+        this->m_bindings[name] = obj;
+        return true;
+    }else{
+        if(this->m_parent){
+            return this->m_parent->update(name, obj);
+        }
+    }
+    return false;
+}
+
 /*
 class Env : public std::enable_shared_from_this<Env> {
 public:
 
-bool Env::update(const std::string& name, const Object& obj){}
 Object Env::get(const std::string& name){}
 
 private:
