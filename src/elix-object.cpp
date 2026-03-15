@@ -2133,13 +2133,16 @@ bool Object::is_float(void) const{
     return this->m_type==Symbol{"Float"};
 }
 
+// -*-
+bool Object::is_number(void) const{
+    return (this->is_integer() || this->is_float());
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-bool Object::is_number(void) const{}
 bool Object::is_symbol(void) const{}
 bool Object::is_string(void) const{}
 bool Object::is_array(void) const{}
