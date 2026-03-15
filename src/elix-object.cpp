@@ -2123,12 +2123,16 @@ bool Object::is_bool(void) const{
     return this->m_type==Symbol{"Bool"};
 }
 
+// -*-
+bool Object::is_integer(void) const{
+    return this->m_type==Symbol{"Integer"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool Object::is_integer(void) const{}
 bool Object::is_float(void) const{}
 bool Object::is_number(void) const{}
 bool Object::is_symbol(void) const{}
