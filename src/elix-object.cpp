@@ -2158,8 +2158,12 @@ bool Object::is_list(void) const{
     return this->m_type==Symbol{"List"};
 }
 
+// -*-
+bool Object::is_dict(void) const{
+    return this->m_type==Symbol{"Dict"};
+}
+
 /*
-bool Object::is_dict(void) const{}
 bool Object::is_set(void) const{}
 */
 
