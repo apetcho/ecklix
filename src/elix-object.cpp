@@ -2163,12 +2163,16 @@ bool Object::is_macro(void) const{
     return this->m_type==Symbol{"Macro"};
 }
 
+bool Object::is_lambda(void) const{
+    return this->m_type==Symbol{"Lambda"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool Object::is_lambda(void) const{}
+
 bool Object::is_function(void) const{}
 bool Object::is_func(void) const{}
 bool Object::is_callable(void) const{}
