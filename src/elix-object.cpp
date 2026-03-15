@@ -2167,13 +2167,16 @@ bool Object::is_lambda(void) const{
     return this->m_type==Symbol{"Lambda"};
 }
 
+// -*-
+bool Object::is_function(void) const{
+    return this->m_type==Symbol{"Function"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-bool Object::is_function(void) const{}
 bool Object::is_func(void) const{}
 bool Object::is_callable(void) const{}
 bool Object::is_pair(void) const{}
