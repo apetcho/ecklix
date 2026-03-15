@@ -2660,12 +2660,48 @@ Dict Object::as_dict(void) const{
     return result;
 }
 
+// -*-
+List Object::as_list(void) const{
+    List result{};
+    if(this->is_array()){
+        result = std::any_cast<List>(this->m_value);
+    }else if(this->is_list()){
+        auto xs = std::any_cast<Array>(this->m_value);
+        result.items = Vec<Object>(xs.items.cbegin(), xs.items.cend());
+    }else if(this->is_pair()){
+        auto xs = std::any_cast<Pair>(this->m_value);
+        result.items = Vec<Object>{Object(xs.key), Object(xs.val)};
+    }else if(this->is_dict()){
+        auto xs = std::any_cast<Dict>(this->m_value);
+        for(const auto& pair: xs.items()){
+            result.push(Object(pair));
+        }
+    }else if(this->is_set()){
+        auto xs = std::any_cast<Set>(this->m_value);
+        for(const auto& key: xs.hset){
+            result.push(Object(key));
+        }
+    }else if(this->is_string()){
+        auto xs = std::any_cast<String>(this->m_value);
+        for(const auto& c: xs.text){
+            auto txt = std::string(1, c);
+            auto mstr = String{txt};
+            result.push(Object(mstr));
+        }
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to an array object.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-List Object::as_list(void) const{}
 Set Object::as_set(void) const{}
 Lambda Object::as_lambda(void) const{}
 Macro Object::as_macro(void) const{}
