@@ -2008,14 +2008,20 @@ Object::Object(const Symbol& sym)
 {}
 
 // -*-
-
+Object::Object(const char* cstr)
+: m_type{Symbol{"String"}}
+{
+    String mstr{};
+    mstr.text = std::string(cstr);
+    this->m_value = std::move(mstr);
+}
 
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(const char* cstr){}
+
 Object::Object(const std::string& str){}
 Object::Object(const String& str){}
 Object::Object(const Array& array){}
