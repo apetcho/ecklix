@@ -3038,13 +3038,25 @@ bool Object::is_hashable(void) const{
     return false;
 }
 
+// -*-
+bool Object::is_iterable(void) const{
+    bool ok = (
+        this->is_string() ||
+        this->is_list() ||
+        this->is_array() ||
+        this->is_set() ||
+        this->is_dict()
+    );
+    if(ok){ return true; }
+    return false;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
 
-bool Object::is_iterable(void) const{}
 Symbol Object::type(void) const{}
 
 bool operator==(const Object& lhs, const Object& rhs){}
