@@ -3332,12 +3332,17 @@ Object Object::negate(void) const{
     return Object(ans);
 }
 
+// -*-
+Object Object::bitwise_not(void) const{
+    auto ans = ~this->as_number();
+    return Object(ans);
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object Object::bitwise_not(void) const{}
 
 private:
     using Value = std::variant<
