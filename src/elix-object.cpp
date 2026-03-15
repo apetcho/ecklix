@@ -3051,13 +3051,16 @@ bool Object::is_iterable(void) const{
     return false;
 }
 
+// -*-
+Symbol Object::type(void) const{
+    return this->m_type;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-Symbol Object::type(void) const{}
 
 bool operator==(const Object& lhs, const Object& rhs){}
 bool operator!=(const Object& lhs, const Object& rhs){}
