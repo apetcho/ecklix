@@ -2172,12 +2172,16 @@ bool Object::is_function(void) const{
     return this->m_type==Symbol{"Function"};
 }
 
+// -*-
+bool Object::is_func(void) const{
+    return this->m_type==Symbol{"Func"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool Object::is_func(void) const{}
 bool Object::is_callable(void) const{}
 bool Object::is_pair(void) const{}
 
