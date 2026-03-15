@@ -2048,12 +2048,18 @@ Object::Object(const Dict& mdict)
 , m_value{mdict}
 {}
 
+// -*-
+Object::Object(const Set& mset)
+: m_type{Symbol{"Set"}}
+, m_value{mset}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(const Set& mset){}
+
 Object::Object(const Pair& mpair){}
 Object::Object(const Lambda& lambda){}
 Object::Object(const Macro& macro){}
