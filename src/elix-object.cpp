@@ -2036,16 +2036,20 @@ Object::Object(const Array& array)
 , m_value{array}
 {}
 
+// -*-
+Object::Object(const List& xs)
+: m_type{Symbol{"List"}}
+, m_value{xs}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-Object::Object(const List& xs){}
-Object::Object(const Dict& xmap){}
-Object::Object(const Set& xset){}
-Object::Object(const Pair& pair){}
+Object::Object(const Dict& mdict){}
+Object::Object(const Set& mset){}
+Object::Object(const Pair& mpair){}
 Object::Object(const Lambda& lambda){}
 Object::Object(const Macro& macro){}
 Object::Object(const Func& func){}
