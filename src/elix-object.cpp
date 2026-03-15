@@ -2846,13 +2846,62 @@ Pair Object::as_pair(void) const{
     return result;
 }
 
+// -*-
+std::string Object::str(void) const{
+    std::string result{};
+    if(this->is_nil()){
+        auto xs = std::any_cast<Nil>(this->m_value);
+        result = "nil";
+    }else if(this->is_bool()){
+        auto xs = std::any_cast<bool>(this->m_value);
+        result = (xs ? "true" : "false" );
+    }else if(this->is_symbol()){
+        auto xs = std::any_cast<Symbol>(this->m_value);
+        result = xs.str();
+    }else if(this->is_number()){
+        auto xs = std::any_cast<Number>(this->m_value);
+        result = xs.str();
+    }else if(this->is_string()){
+        auto xs = std::any_cast<String>(this->m_value);
+        result = xs.str();
+    }else if(this->is_array()){
+        auto xs = std::any_cast<Array>(this->m_value);
+        result = xs.str();
+    }else if(this->is_list()){
+        auto xs = std::any_cast<List>(this->m_value);
+        result = xs.str();
+    }else if(this->is_dict()){
+        auto xs = std::any_cast<Dict>(this->m_value);
+        result = xs.str();
+    }else if(this->is_set()){
+        auto xs = std::any_cast<Set>(this->m_value);
+        result = xs.str();
+    }else if(this->is_pair()){
+        auto xs = std::any_cast<Pair>(this->m_value);
+        result = xs.str();
+    }else if(this->is_lambda() || this->is_function()){
+        auto xs = std::any_cast<Lambda>(this->m_value);
+        result = xs.str();
+    }else if(this->is_func()){
+        auto xs = std::any_cast<Func>(this->m_value);
+        result = xs.str();
+    }else if(this->is_macro()){
+        auto xs = std::any_cast<Symbol>(this->m_value);
+        result = xs.str();
+    }else{
+        std::stringstream ss;
+        ss << "Unknown type encountered. Cannot convert to raw string.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-std::string Object::str(void) const{}
 std::string Object::repr(void) const{}
 Object Object::clone(void) const{}
 
