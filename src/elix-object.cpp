@@ -2118,12 +2118,16 @@ bool Object::is_nil(void) const{
     return this->m_type==Symbol{"Nil"};
 }
 
+// -*-
+bool Object::is_bool(void) const{
+    return this->m_type==Symbol{"Bool"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool Object::is_bool(void) const{}
 bool Object::is_integer(void) const{}
 bool Object::is_float(void) const{}
 bool Object::is_number(void) const{}
