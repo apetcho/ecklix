@@ -2163,9 +2163,10 @@ bool Object::is_dict(void) const{
     return this->m_type==Symbol{"Dict"};
 }
 
-/*
-bool Object::is_set(void) const{}
-*/
+// -*-
+bool Object::is_set(void) const{
+    return this->m_type==Symbol{"Set"};
+}
 
 // -*-
 bool Object::is_macro(void) const{
