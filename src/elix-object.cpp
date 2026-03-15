@@ -2746,13 +2746,24 @@ Lambda Object::as_lambda(void) const{
     return result;
 }
 
+// -*-
+Macro Object::as_macro(void) const{
+    Macro result{};
+    if(this->is_macro()){
+        result = std::any_cast<Macro>(this->m_value);
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a macro object.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-Macro Object::as_macro(void) const{}
 Lambda Object::as_function(void) const{}
 Func Object::as_func(void) const{}
 Pair Object::as_pair(void) const{}
