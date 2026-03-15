@@ -2143,12 +2143,16 @@ bool Object::is_symbol(void) const{
     return this->m_type==Symbol{"Symbol"};
 }
 
+// -*-
+bool Object::is_string(void) const{
+    return this->m_type==Symbol{"String"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool Object::is_string(void) const{}
 bool Object::is_array(void) const{}
 bool Object::is_list(void) const{}
 bool Object::is_macro(void) const{}
