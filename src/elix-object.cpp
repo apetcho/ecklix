@@ -1971,11 +1971,16 @@ Object::Object()
 , m_value{Nil{}}
 {}
 
+// -
+Object::Object(bool b)
+: m_type{Symbol{"Bool"}}
+, m_value{b}
+{}
+
 /*
 // -*-
 class Object final{
 public:
-Object::Object(bool b){}
 Object::Object(i64 num){}
 Object::Object(f64 num){}
 Object::Object(const Number& num){}
