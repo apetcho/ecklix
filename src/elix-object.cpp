@@ -3224,6 +3224,17 @@ Object operator*(const Object& lhs, const Object& rhs){
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
+// -*-
+Object operator/(const Object& lhs, const Object& rhs){
+    if(lhs.is_number() && rhs.is_number()){
+        auto num = lhs.as_number() / rhs.as_number();
+        return Object(num);
+    }
+
+    std::stringstream ss;
+    ss << "operator `/' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
 
 
 /*
@@ -3231,7 +3242,6 @@ Object operator*(const Object& lhs, const Object& rhs){
 class Object final{
 public:
 
-Object operator/(const Object& lhs, const Object& rhs){}
 Object operator%(const Object& lhs, const Object& rhs){}
 
 Object operator<<(const Object& lhs, const Object& rhs){}
