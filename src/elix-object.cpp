@@ -3372,7 +3372,11 @@ std::string ELixError::describe(void) const{
 }
 
 // -*-
-Symbol ELixError::kind(void) const{
+const Symbol& ELixError::kind(void) const{
+    return this->m_kind;
+}
+
+Symbol& ELixError::kind(void){
     return this->m_kind;
 }
 

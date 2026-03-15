@@ -543,7 +543,8 @@ public:
     static Symbol IndexError;
 
     std::string describe(void) const;
-    Symbol kind(void) const;
+    const Symbol& kind(void) const;
+    Symbol& kind(void);
 
 private:
     Symbol m_kind;
