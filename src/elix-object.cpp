@@ -5,6 +5,7 @@
 #include<typeinfo>
 #include<sstream>
 #include<iomanip>
+#include<variant>
 #include<cstring>
 #include<cerrno>
 #include<cctype>
@@ -1962,102 +1963,102 @@ Object Macro::operator()(const Vec<Object>& args, ELix& elix){
     return expaned->eval(&elix);
 }
 
+// -*------------------------------*-
+// -*- Core Object Implementation -*-
+// -*------------------------------*-
+Object::Object()
+: m_type{Symbol{"Nil"}}
+, m_value{Nil{}}
+{}
+
 /*
-struct Macro{
-    Vec<Symbol> params;
-    Vec<Expression> body;
-    Context ctx;
-
-
-
-};
-
 // -*-
 class Object final{
 public:
-Object::Object();
-Object::Object(bool b);
-Object::Object(i64 num);
-Object::Object(f64 num);
-Object::Object(const Number& num);
-Object::Object(const Symbol& sym);
-Object::Object(const char* cstr);
-Object::Object(const std::string& str);
-Object::Object(const String& str);
-Object::Object(const Array& array);
-Object::Object(const List& xs);
-Object::Object(const Dict& xmap);
-Object::Object(const Set& xset);
-Object::Object(const Pair& pair);
-Object::Object(const Lambda& lambda);
-Object::Object(const Macro& macro);
-Object::Object(const Func& func);
-Object::Object(const Object& obj) noexcept;
-Object::Object(Object&& obj) noexcept;
-Object& Object::operator=(const Object& obj) noexcept;
-Object& Object::operator=(Object&& obj) noexcept;
+Object::Object(bool b){}
+Object::Object(i64 num){}
+Object::Object(f64 num){}
+Object::Object(const Number& num){}
+Object::Object(const Symbol& sym){}
+Object::Object(const char* cstr){}
+Object::Object(const std::string& str){}
+Object::Object(const String& str){}
+Object::Object(const Array& array){}
+Object::Object(const List& xs){}
+Object::Object(const Dict& xmap){}
+Object::Object(const Set& xset){}
+Object::Object(const Pair& pair){}
+Object::Object(const Lambda& lambda){}
+Object::Object(const Macro& macro){}
+Object::Object(const Func& func){}
+Object::Object(const Object& obj) noexcept{}
+Object::Object(Object&& obj) noexcept{}
+Object& Object::operator=(const Object& obj) noexcept{}
+Object& Object::operator=(Object&& obj) noexcept{}
 
-~Object(){}
+Object::~Object(){}
 
-bool Object::is_nil(void) const;
-bool Object::is_integer(void) const;
-bool Object::is_float(void) const;
-bool Object::is_number(void) const;
-bool Object::is_symbol(void) const;
-bool Object::is_string(void) const;
-bool Object::is_array(void) const;
-bool Object::is_list(void) const;
-bool Object::is_macro(void) const;
-bool Object::is_lambda(void) const;
-bool Object::is_func(void) const;
-bool Object::is_callable(void) const;
-bool Object::is_pair(void) const;
+bool Object::is_nil(void) const{}
+bool Object::is_bool(void) const{}
+bool Object::is_integer(void) const{}
+bool Object::is_float(void) const{}
+bool Object::is_number(void) const{}
+bool Object::is_symbol(void) const{}
+bool Object::is_string(void) const{}
+bool Object::is_array(void) const{}
+bool Object::is_list(void) const{}
+bool Object::is_macro(void) const{}
+bool Object::is_lambda(void) const{}
+bool Object::is_function(void) const{}
+bool Object::is_func(void) const{}
+bool Object::is_callable(void) const{}
+bool Object::is_pair(void) const{}
 
-i64 Object::as_integer(void) const;
-f64 Object::as_float(void) const;
-Symbol Object::as_symbol(void) const;
-String Object::as_string(void) const;
-Array Object::as_array(void) const;
-Dict Object::as_dict(void) const;
-List Object::as_list(void) const;
-Set Object::as_set(void) const;
-Lambda Object::as_lambda(void) const;
-Macro Object::as_macro(void) const;
-Func Object::as_func(void) const;
-Pair Object::as_pair(void) const;
+bool Object::as_bool(void) const{}
+i64 Object::as_integer(void) const{}
+f64 Object::as_float(void) const{}
+Symbol Object::as_symbol(void) const{}
+String Object::as_string(void) const{}
+Array Object::as_array(void) const{}
+Dict Object::as_dict(void) const{}
+List Object::as_list(void) const{}
+Set Object::as_set(void) const{}
+Lambda Object::as_lambda(void) const{}
+Macro Object::as_macro(void) const{}
+Func Object::as_func(void) const{}
+Pair Object::as_pair(void) const{}
 
-std::string Object::str(void) const;
-std::string Object::repr(void) const;
-Object Object::clone(void) const;
+std::string Object::str(void) const{}
+std::string Object::repr(void) const{}
+Object Object::clone(void) const{}
 
-bool is_hashable(void) const;
-    Symbol type(void) const;
+bool Object::is_hashable(void) const{}
+Symbol Object::type(void) const{}
 
-bool operator==(const Object& lhs, const Object& rhs);
-bool operator!=(const Object& lhs, const Object& rhs);
-bool operator<=(const Object& lhs, const Object& rhs);
-bool operator>=(const Object& lhs, const Object& rhs);
-bool operator<(const Object& lhs, const Object& rhs);
-bool operator>(const Object& lhs, const Object& rhs);
-Object operator+(const Object& lhs, const Object& rhs);
-Object operator-(const Object& lhs, const Object& rhs);
-Object operator*(const Object& lhs, const Object& rhs);
-Object operator/(const Object& lhs, const Object& rhs);
-Object operator%(const Object& lhs, const Object& rhs);
+bool operator==(const Object& lhs, const Object& rhs){}
+bool operator!=(const Object& lhs, const Object& rhs){}
+bool operator<=(const Object& lhs, const Object& rhs){}
+bool operator>=(const Object& lhs, const Object& rhs){}
+bool operator<(const Object& lhs, const Object& rhs){}
+bool operator>(const Object& lhs, const Object& rhs){}
+Object operator+(const Object& lhs, const Object& rhs){}
+Object operator-(const Object& lhs, const Object& rhs){}
+Object operator*(const Object& lhs, const Object& rhs){}
+Object operator/(const Object& lhs, const Object& rhs){}
+Object operator%(const Object& lhs, const Object& rhs){}
 
-Object operator<<(const Object& lhs, const Object& rhs);
-Object operator>>(const Object& lhs, const Object& rhs);
-Object operator|(const Object& lhs, const Object& rhs);
-Object operator&(const Object& lhs, const Object& rhs);
-Object operator^(const Object& lhs, const Object& rhs);
+Object operator<<(const Object& lhs, const Object& rhs){}
+Object operator>>(const Object& lhs, const Object& rhs){}
+Object operator|(const Object& lhs, const Object& rhs){}
+Object operator&(const Object& lhs, const Object& rhs){}
+Object operator^(const Object& lhs, const Object& rhs){}
 
-Object operator||(const Object& lhs, const Object& rhs);
-Object operator&&(const Object& lhs, const Object& rhs);
+Object operator||(const Object& lhs, const Object& rhs){}
+Object operator&&(const Object& lhs, const Object& rhs){}
 
-Object Object::logical_not(void) const;
-Object Object::genate(void) const;
-Object Object::bitwise_not(void) const;
-
+Object Object::logical_not(void) const{}
+Object Object::negate(void) const{}
+Object Object::bitwise_not(void) const{}
 
 private:
     using Value = std::variant<

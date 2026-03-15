@@ -8,11 +8,11 @@
 #include<filesystem>
 #include<stdexcept>
 #include<cstdint>
-#include<variant>
 #include<utility>
 #include<memory>
 #include<string>
 #include<vector>
+#include<any>
 #include<map>
 #include<set>
 
@@ -501,15 +501,15 @@ public:
     friend Object operator&&(const Object& lhs, const Object& rhs);
 
     Object logical_not(void) const;
-    Object genate(void) const;
+    Object negate(void) const;
     Object bitwise_not(void) const;
 
 private:
-    using Value = std::variant<
-        Nil, bool, Number, String, Symbol, Func, Lambda, Macro,
-        Pair, List, Array, Dict, Set
-    >;
+    // using Value = std::variant<Nil, bool, Number, String, Symbol, Func, Lambda, Macro,
+    //     Pair, List, Array, Dict, Set>;
 
+    using Value = std::any;
+    Symbol m_type;
     Value m_value;
 };
 
