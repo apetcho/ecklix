@@ -2002,12 +2002,19 @@ Object::Object(const Number& num)
 }
 
 // -*-
+Object::Object(const Symbol& sym)
+: m_type{Symbol{"Symbol"}}
+, m_value{sym}
+{}
+
+// -*-
+
 
 /*
 // -*-
 class Object final{
 public:
-Object::Object(const Symbol& sym){}
+
 Object::Object(const char* cstr){}
 Object::Object(const std::string& str){}
 Object::Object(const String& str){}
