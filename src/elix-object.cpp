@@ -2732,13 +2732,26 @@ Set Object::as_set(void) const{
     return result;
 }
 
+// -*-
+Lambda Object::as_lambda(void) const{
+    Lambda result{};
+    if(this->is_lambda() || this->is_function()){
+        result = std::any_cast<Lambda>(this->m_value);
+        result.named = false;
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a lambda object.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
 
-Lambda Object::as_lambda(void) const{}
 Macro Object::as_macro(void) const{}
 Lambda Object::as_function(void) const{}
 Func Object::as_func(void) const{}
