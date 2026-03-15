@@ -365,7 +365,7 @@ struct Dict final{ // Dict
     Pair popitem(const Object& key);
     Dict& remove(const Object& key);
     Dict& clear(void);
-    Vec<Pair> items(const Vec<Object>& args);
+    Vec<Pair> items(void) const;
 };
 
 // -*-
