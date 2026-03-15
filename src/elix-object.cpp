@@ -2697,12 +2697,47 @@ List Object::as_list(void) const{
     return result;
 }
 
+// -*-
+Set Object::as_set(void) const{
+    Set result{};
+    if(this->is_set()){
+        result = std::any_cast<Set>(this->m_value);
+    }else if(this->is_dict()){
+        auto xs = std::any_cast<Dict>(this->m_value);
+        for(const auto pair: xs.items()){
+            result.add(Object(pair));
+        }
+    }else if(this->is_list()){
+        auto xs = std::any_cast<List>(this->m_value);
+        for(const auto& key: xs.items){
+            result.add(key);
+        }
+    }else if(this->is_array()){
+        auto xs = std::any_cast<Array>(this->m_value);
+        for(const auto& key: xs.items){
+            result.add(key);
+        }
+    }else if(this->is_string()){
+        auto xs = std::any_cast<String>(this->m_value);
+        for(const auto& c: xs.text){
+            std::string txt(1, c);
+            result.add(Object(txt));
+        }
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a set object.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-Set Object::as_set(void) const{}
+
 Lambda Object::as_lambda(void) const{}
 Macro Object::as_macro(void) const{}
 Lambda Object::as_function(void) const{}
