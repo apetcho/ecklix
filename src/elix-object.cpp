@@ -1989,11 +1989,24 @@ Object::Object(f64 num)
 , m_value{Number{num}}
 {}
 
+// -*-
+Object::Object(const Number& num)
+: m_type{Symbol{""}}
+, m_value{num}
+{
+    if(num.is_integer()){
+        this->m_type = Symbol{"Integer"};
+    }else{
+        this->m_type = Symbol{"Float"};
+    }
+}
+
+// -*-
+
 /*
 // -*-
 class Object final{
 public:
-Object::Object(const Number& num){}
 Object::Object(const Symbol& sym){}
 Object::Object(const char* cstr){}
 Object::Object(const std::string& str){}
