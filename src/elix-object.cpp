@@ -93,7 +93,9 @@ std::string Number::str(void) const{
 }
 
 std::string Number::repr(void) const{
-    return this->str();
+    std::stringstream ss;
+    ss << std::quoted(this->str());
+    return ss.str();
 }
 
 // -*-
@@ -558,7 +560,9 @@ std::string Symbol::str(void) const{
 }
 
 std::string Symbol::repr(void) const{
-    return this->str();
+    std::stringstream ss;
+    ss << std::quoted(this->str());
+    return ss.str();
 }
 
 Symbol Symbol::clone(void) const{
@@ -588,22 +592,25 @@ std::string Lambda::str(void) const{
 
 // -*-
 std::string Lambda::repr(void) const{
-    std::stringstream ss;
-    if(this->named){ ss << "(fun "; }
-    else{ ss << "(lambda "; }
-    if(this->params.empty()){ ss << "()"; }
+    std::stringstream xs;
+    if(this->named){ xs << "(fun "; }
+    else{ xs << "(lambda "; }
+    if(this->params.empty()){ xs << "()"; }
     else{
-        ss << "(";
+        xs << "(";
         for(size_t i=0; i < this->params.size(); i++){
-            if(i>0){ ss << " "; }
-            ss << this->params[i].str();
+            if(i>0){ xs << " "; }
+            xs << this->params[i].repr();
         }
-        ss << ")";
+        xs << ")";
     }
     for(const auto& expr: this->body){
-        ss << expr->repr() << "\n";
+        xs << expr->repr() << "\n";
     }
-    ss << ")";
+    xs << ")";
+
+    std::stringstream ss;
+    ss << std::quoted(xs.str());
     return ss.str();
 }
 
@@ -666,15 +673,19 @@ std::string List::str(void) const{
 // -
 std::string List::repr(void) const{
     if(this->items.empty()){
-        return "()";
+        std::stringstream ss;
+        ss << std::quoted(this->str());
+        return ss.str();
     }
-    std::stringstream ss;
-    ss << "(";
+    std::stringstream xs;
+    xs << "(";
     for(size_t i=0; i < this->items.size(); i++){
-        if(i > 0){ ss << " "; }
-        ss << this->items[i].repr();
+        if(i > 0){ xs << " "; }
+        xs << this->items[i].repr();
     }
-    ss << ")";
+    xs << ")";
+    std::stringstream ss;
+    ss << std::quoted(xs.str());
     return ss.str();
 }
 
@@ -837,16 +848,21 @@ std::string Array::str(void) const{
 
 // -
 std::string Array::repr(void) const{
-    std::stringstream ss;
-    if(this->items.empty()){ ss << "[]"; }
-    else{
-        ss << "[";
+    std::stringstream xs;
+    if(this->items.empty()){
+        std::stringstream ss;
+        ss << std::quoted(this->str());
+        return ss.str();
+    }else{
+        xs << "[";
         for(size_t i=0; i < this->items.size(); i++){
-            if(i > 0){ ss << " "; }
-            ss << this->items[i].repr();
+            if(i > 0){ xs << " "; }
+            xs << this->items[i].repr();
         }
-        ss << "]";
+        xs << "]";
     }
+    std::stringstream ss;
+    ss << std::quoted(xs.str());
     return ss.str();
 }
 
@@ -1468,8 +1484,10 @@ std::string Pair::str(void) const{
 }
 
 std::string Pair::repr(void) const{
+    std::stringstream xs;
+    xs << "#(" << this->key.repr() << " " << this->val.repr() << ")";
     std::stringstream ss;
-    ss << "#(" << this->key.repr() << " " << this->val.repr() << "')";
+    ss << std::quoted(xs.str());
     return ss.str();
 }
 
@@ -1500,17 +1518,23 @@ std::string Dict::str(void) const{
 }
 
 std::string Dict::repr(void) const{
-    if(this->len()==0){ return "{}"; }
+    if(this->len()==0){
+        std::stringstream ss;
+        ss << std::quoted(this->str());
+        return ss.str();
+    }
 
-    std::stringstream ss;
-    ss << "{\n";
+    std::stringstream xs;
+    xs << "{\n";
     for(const auto& [key, val]: this->hmap){
         Pair pair{};
         pair.key = Object(key);
         pair.val = Object(val);
-        ss << pair.repr() << " ";
+        xs << pair.repr() << " ";
     }
-    ss << "\n}";
+    xs << "\n}";
+    std::stringstream ss;
+    ss << std::quoted(xs.str());
     return ss.str();
 }
 
@@ -1645,13 +1669,19 @@ std::string Set::str(void) const{
 }
 
 std::string Set::repr(void) const{
-    if(this->len()==0){ return "#{}"; }
-    std::stringstream ss;
-    ss << "#{\n";
-    for(const auto& key: this->hset){
-        ss << key.repr() << " ";
+    if(this->len()==0){
+        std::stringstream ss;
+        ss << std::quoted(this->str());
+        return ss.str();
     }
-    ss << "\n}";
+    std::stringstream xs;
+    xs << "#{\n";
+    for(const auto& key: this->hset){
+        xs << key.repr() << " ";
+    }
+    xs << "\n}";
+    std::stringstream ss;
+    ss << std::quoted(xs.str());
     return ss.str();
 }
 
@@ -1829,17 +1859,19 @@ std::string Macro::str(void) const{
 }
 
 std::string Macro::repr(void) const{
-    std::stringstream ss;
-    ss << "(macro " << this->name.str() << "(";
+    std::stringstream xs;
+    xs << "(macro " << this->name.repr() << "(";
     for(auto i=0; i < params.size(); i++){
-        if(i > 0){ ss << " "; }
-        ss << params[i].str();
+        if(i > 0){ xs << " "; }
+        xs << params[i].repr();
     }
-    ss << ")\n";
+    xs << ")\n";
     for(auto& expr: body){
-        ss << " " << expr->repr() << "\n";
+        xs << " " << expr->repr() << "\n";
     }
-    ss << "\n)";
+    xs << "\n)";
+    std::stringstream ss;
+    ss << std::quoted(xs.str());
     return ss.str();
 }
 
@@ -2897,12 +2929,68 @@ std::string Object::str(void) const{
     return result;
 }
 
+// -*-
+std::string Object::repr(void) const{
+    std::string result{};
+    if(this->is_nil()){
+        auto xs = std::any_cast<Nil>(this->m_value);
+        std::stringstream ss;
+        ss << std::quoted("nil");
+        result = ss.str();
+    }else if(this->is_bool()){
+        auto xs = std::any_cast<bool>(this->m_value);
+        std::stringstream ss;
+        ss <<  std::quoted(xs ? "true" : "false" );
+        result = ss.str();
+    }else if(this->is_symbol()){
+        auto xs = std::any_cast<Symbol>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_number()){
+        auto xs = std::any_cast<Number>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_string()){
+        auto xs = std::any_cast<String>(this->m_value);
+        std::stringstream ss;
+        ss << std::quoted(xs.str());
+        result = xs.repr();
+    }else if(this->is_array()){
+        auto xs = std::any_cast<Array>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_list()){
+        auto xs = std::any_cast<List>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_dict()){
+        auto xs = std::any_cast<Dict>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_set()){
+        auto xs = std::any_cast<Set>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_pair()){
+        auto xs = std::any_cast<Pair>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_lambda() || this->is_function()){
+        auto xs = std::any_cast<Lambda>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_func()){
+        auto xs = std::any_cast<Func>(this->m_value);
+        result = xs.repr();
+    }else if(this->is_macro()){
+        auto xs = std::any_cast<Symbol>(this->m_value);
+        result = xs.repr();
+    }else{
+        std::stringstream ss;
+        ss << "Unknown type encountered. Cannot convert to raw string.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-std::string Object::repr(void) const{}
 Object Object::clone(void) const{}
 
 bool Object::is_hashable(void) const{}
