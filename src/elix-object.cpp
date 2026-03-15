@@ -3407,18 +3407,20 @@ bool Env::update(const std::string& name, const Object& obj){
     return false;
 }
 
-/*
-class Env : public std::enable_shared_from_this<Env> {
-public:
-
-Object Env::get(const std::string& name){}
-
-private:
-std::map<std::string, Object> m_bindings;
-Context m_parent;
-};
-
-*/
+// -*-
+Object Env::get(const std::string& name){
+    auto entry = this->m_bindings.find(name);
+    if(entry != this->m_bindings.end()){
+        return this->m_bindings[name];
+    }else{
+        if(this->m_parent){
+            return this->m_parent->get(name);
+        }
+    }
+    std::stringstream ss;
+    ss << "Undefined symbol: " << std::quoted(name);
+    throw ELixError(ELixError::KeyError, ss.str());
+}
 
 // -*--------------------------------------------------------------------------*-
 }//-*- end::namespace::ekasoft::elx                                           -*-
