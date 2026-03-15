@@ -2030,12 +2030,18 @@ Object::Object(const String& str)
 , m_value{str}
 {}
 
+// -*-
+Object::Object(const Array& array)
+: m_type{Symbol{"Array"}}
+, m_value{array}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(const Array& array){}
+
 Object::Object(const List& xs){}
 Object::Object(const Dict& xmap){}
 Object::Object(const Set& xset){}
