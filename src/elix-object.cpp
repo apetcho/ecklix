@@ -1991,13 +1991,11 @@ Object::Object(f64 num)
 
 // -*-
 Object::Object(const Number& num)
-: m_type{Symbol{""}}
+: m_type{Symbol{"Float"}}
 , m_value{num}
 {
     if(num.is_integer()){
         this->m_type = Symbol{"Integer"};
-    }else{
-        this->m_type = Symbol{"Float"};
     }
 }
 
@@ -2060,12 +2058,21 @@ Object::Object(const Pair& mpair)
 , m_value{mpair}
 {}
 
+// -*-
+Object::Object(const Lambda& lambda)
+: m_type{Symbol{"Lambda"}}
+, m_value{lambda}
+{
+    if(lambda.named){
+        this->m_type = Symbol{"Function"};
+    }
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(const Lambda& lambda){}
 Object::Object(const Macro& macro){}
 Object::Object(const Func& func){}
 Object::Object(const Object& obj) noexcept{}
