@@ -3364,12 +3364,19 @@ ELixError::ELixError(const Symbol& sym, const std::string& msg)
 , m_kind{sym}
 {}
 
+// -*-
+std::string ELixError::describe(void) const{
+    std::stringstream ss;
+    ss << this->m_kind.str() << ": " << this->what();
+    return ss.str();
+}
+
 /*
 // -*-
 class ELixError: public std::runtime_error {
 public:
 
-std::string ELixError::describe(void) const{}
+Symbol ELixError::kind(void) const{}
 private:
     Symbol m_kind;
 };
