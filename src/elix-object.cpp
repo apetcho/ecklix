@@ -2991,13 +2991,59 @@ Object Object::clone(void) const{
     return result;
 }
 
+// -*-
+bool Object::is_hashable(void) const{
+    bool check = (
+        this->is_nil() || this->is_integer() ||
+        this->is_symbol() || this->is_string()
+    );
+    if(check){ return true; }
+    else if(this->is_pair()){
+        auto pair = this->as_pair();
+        if(pair.key.is_hashable() && pair.val.is_hashable()){
+            return true;
+        }else{
+            return false;
+        }
+    }else if(this->is_array()){
+        auto xs = this->as_array();
+        for(const auto& item: xs.items){
+            if(!item.is_hashable()){ return false; }
+        }
+        return true;
+    }else if(this->is_list()){
+        auto xs = this->as_list();
+        for(const auto& item: xs.items){
+            if(!item.is_hashable()){ return false; }
+        }
+        return true;
+    }else if(this->is_dict()){
+        auto xs = this->as_dict().items();
+        for(const auto& pair: xs){
+            if(!pair.key.is_hashable() || !pair.val.is_hashable()){
+                return false;
+            }
+        }
+        return true;
+    }else if(this->is_set()){
+        auto xs = this->as_set();
+        for(const auto& key: xs.hset){
+            if(!key.is_hashable()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    return false;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
 
-bool Object::is_hashable(void) const{}
 bool Object::is_iterable(void) const{}
 Symbol Object::type(void) const{}
 
