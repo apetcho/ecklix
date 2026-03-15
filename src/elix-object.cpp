@@ -1983,12 +1983,16 @@ Object::Object(i64 num)
 , m_value{Number{num}}
 {}
 
+// -*-
+Object::Object(f64 num)
+: m_type{Symbol{"Float"}}
+, m_value{Number{num}}
+{}
 
 /*
 // -*-
 class Object final{
 public:
-Object::Object(f64 num){}
 Object::Object(const Number& num){}
 Object::Object(const Symbol& sym){}
 Object::Object(const char* cstr){}
