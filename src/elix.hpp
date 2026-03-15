@@ -94,7 +94,6 @@ using f64 = double;
 using usize = std::uint64_t;
 using isize = std::int64_t;
 
-using Loader = std::shared_ptr<ModuleLoader>;
 using Context = std::shared_ptr<Env>;
 using Expression = std::unique_ptr<ExprBase>;
 using Fn = std::function<Object(const Vec<Object>&)>;
@@ -570,14 +569,15 @@ private:
 struct ExprBase{
     virtual ~ExprBase() = default;
     virtual Object eval(Visitor visitor) = 0;
-    virtual std::string str(void) const;
-    virtual std::string repr(void) const;
+    virtual std::string str(void) const = 0;
+    virtual std::string repr(void) const = 0;
 };
 
 // -*-
 struct LiteralExpr: public ExprBase{
     Object obj;
     virtual Object eval(Visitor visitor) override;
+    std::string str(void) const override;
     std::string repr(void) const override;
 };
 
@@ -585,12 +585,14 @@ struct LiteralExpr: public ExprBase{
 struct SymbolExpr: public ExprBase{
     Symbol name;
     virtual Object eval(Visitor visitor) override;
+    std::string str(void) const override;
     std::string repr(void) const override;
 };
 
 struct ListExpr: public ExprBase{
     Vec<Expression> items;
     virtual Object eval(Visitor visitor) override;
+    std::string str(void) const override;
     std::string repr(void) const override;
 };
 
@@ -598,6 +600,7 @@ struct ListExpr: public ExprBase{
 struct ArrayExpr: public ExprBase{
     Vec<Expression> items;
     virtual Object eval(Visitor visitor) override;
+    std::string str(void) const override;
     std::string repr(void) const override;
 };
 
@@ -605,21 +608,27 @@ struct PairExpr: public ExprBase{
     Expression key;
     Expression val;
     virtual Object eval(Visitor visitor) override;
+    std::string str(void) const override;
     std::string repr(void) const override;
 };
 
 struct DictExpr: public ExprBase{
     Vec<Expression> items;
     virtual Object eval(Visitor visitor) override;
+    std::string str(void) const override;
     std::string repr(void) const override;
 };
 
 struct SetExpr: public ExprBase{
     Vec<Expression> items;
     virtual Object eval(Visitor visitor) override;
+    std::string str(void) const override;
     std::string repr(void) const override;
 };
 
+// -*---------------------------------------------------------------------*-
+// -*- ExprVisitor interface: a constract implementer by the interpreter -*-
+// -*---------------------------------------------------------------------*-
 struct ExprVisitor{
     virtual ~ExprVisitor() = default;
     virtual Object eval(LiteralExpr& ) = 0;
@@ -754,7 +763,7 @@ public:
     static Context runtime;
 
 private:
-    Loader m_loader;
+    ModuleLoader m_moduleLoader;
 
     Object eval(LiteralExpr& expr) override;
     Object eval(SymbolExpr& expr) override;
@@ -763,10 +772,15 @@ private:
     Object eval(DictExpr& expr) override;
     Object eval(SetExpr& expr) override;
 
-    static void install_builtin(void);
-    static void initialize_math(void);
+    static void initialize_constructors(void);
+    static void initialize_predicates(void);
+    static void initialize_operators(void);
+    static void initialize_functional(void);
+    static void initialize_basic_io(void);
+    static void initialize_misc(void);
     static void initialize_string(void);
     static void initialize_symbol(void);
+    static void initialize_pair(void);
     static void initialize_array(void);
     static void initialize_list(void);
     static void initialize_dict(void);
@@ -806,10 +820,10 @@ public:
 
     void load(const Symbol& name,  Context ctx, Context targetCtx);
     void load(const fs::path& scritpepath, Context targetCtx);
-    void setup(ELix* elix);
+    static void setup(ELix* elix);
 
 private:
-    ELix* m_elix;
+    static ELix* m_elix;
     std::map<std::string, Context> m_cache;
 };
 
