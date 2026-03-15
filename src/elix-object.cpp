@@ -2101,13 +2101,19 @@ Object& Object::operator=(const Object& obj) noexcept{
     return *this;
 }
 
+// -*-
+Object& Object::operator=(Object&& obj) noexcept{
+    if(this != &obj){
+        this->m_type = std::move(obj.m_type);
+        this->m_value = std::move(obj.m_value);
+    }
+    return *this;
+}
+
 /*
 // -*-
 class Object final{
 public:
-
-
-Object& Object::operator=(Object&& obj) noexcept{}
 
 Object::~Object(){}
 
