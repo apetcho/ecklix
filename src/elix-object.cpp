@@ -2773,12 +2773,25 @@ Lambda Object::as_function(void) const{
     return result;
 }
 
+// -*-
+Func Object::as_func(void) const{
+    Func result{};
+    if(this->is_macro()){
+        result = std::any_cast<Func>(this->m_value);
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a func (i.e builtin function) object.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    return result;
+}
+
+
 /*
 // -*-
 class Object final{
 public:
 
-Func Object::as_func(void) const{}
 Pair Object::as_pair(void) const{}
 
 std::string Object::str(void) const{}
