@@ -2158,6 +2158,11 @@ bool Object::is_list(void) const{
     return this->m_type==Symbol{"List"};
 }
 
+/*
+bool Object::is_dict(void) const{}
+bool Object::is_set(void) const{}
+*/
+
 // -*-
 bool Object::is_macro(void) const{
     return this->m_type==Symbol{"Macro"};
@@ -2192,6 +2197,40 @@ bool Object::is_pair(void) const{
     return this->m_type==Symbol{"Pair"};
 }
 
+// -*-
+bool Object::as_bool(void) const{
+    bool result{};
+    if(this->is_bool()){
+        result = std::any_cast<bool>(this->m_value);
+    }else if(this->is_number()){
+        auto num = std::any_cast<Number>(this->m_value);
+        result = static_cast<bool>(num);
+    }else if(this->is_nil()){
+        result = false;
+    }else if(this->is_string()){
+        auto xs = std::any_cast<String>(this->m_value);
+        result = (xs.len()==0);
+    }else if(this->is_array()){
+        auto xs = std::any_cast<Array>(this->m_value);
+        result = (xs.len()==0);
+    }else if(this->is_list()){
+        auto xs = std::any_cast<List>(this->m_value);
+        result = (xs.len()==0);
+    }else if(this->is_dict()){
+        auto xs = std::any_cast<Dict>(this->m_value);
+        result = (xs.len()==0);
+    }else if(this->is_set()){
+        auto xs = std::any_cast<Set>(this->m_value);
+        result = (xs.len()==0);
+    }else if(this->is_pair()){
+        auto xs = std::any_cast<Pair>(this->m_value);
+        result = (xs.key.is_nil() && xs.val.is_nil());
+    }else{
+        result = true;
+    }
+
+    return result;
+}
 
 
 /*
@@ -2199,7 +2238,6 @@ bool Object::is_pair(void) const{
 class Object final{
 public:
 
-bool Object::as_bool(void) const{}
 i64 Object::as_integer(void) const{}
 f64 Object::as_float(void) const{}
 Symbol Object::as_symbol(void) const{}
@@ -2219,6 +2257,7 @@ std::string Object::repr(void) const{}
 Object Object::clone(void) const{}
 
 bool Object::is_hashable(void) const{}
+bool Object::is_iterable(void) const{}
 Symbol Object::type(void) const{}
 
 bool operator==(const Object& lhs, const Object& rhs){}

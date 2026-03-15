@@ -451,6 +451,8 @@ public:
     bool is_string(void) const;
     bool is_array(void) const;
     bool is_list(void) const;
+    bool is_dict(void) const;
+    bool is_set(void) const;
     bool is_macro(void) const;
     bool is_lambda(void) const;
     bool is_function(void) const;
@@ -478,6 +480,7 @@ public:
     Object clone(void) const;
 
     bool is_hashable(void) const;
+    bool is_iterable(void) const;
     Symbol type(void) const;
 
     friend bool operator==(const Object& lhs, const Object& rhs);
