@@ -2086,12 +2086,18 @@ Object::Object(const Object& obj) noexcept
 , m_value{obj.m_value}
 {}
 
+// -*-
+Object::Object(Object&& obj) noexcept
+: m_type{std::move(obj.m_type)}
+, m_value{std::move(obj.m_value)}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(Object&& obj) noexcept{}
+
 Object& Object::operator=(const Object& obj) noexcept{}
 Object& Object::operator=(Object&& obj) noexcept{}
 
