@@ -2986,12 +2986,16 @@ std::string Object::repr(void) const{
     return result;
 }
 
+Object Object::clone(void) const{
+    Object result(*this);
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object Object::clone(void) const{}
 
 bool Object::is_hashable(void) const{}
 bool Object::is_iterable(void) const{}
