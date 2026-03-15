@@ -2128,12 +2128,17 @@ bool Object::is_integer(void) const{
     return this->m_type==Symbol{"Integer"};
 }
 
+// -*-
+bool Object::is_float(void) const{
+    return this->m_type==Symbol{"Float"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool Object::is_float(void) const{}
+
 bool Object::is_number(void) const{}
 bool Object::is_symbol(void) const{}
 bool Object::is_string(void) const{}
