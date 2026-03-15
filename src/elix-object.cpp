@@ -3087,6 +3087,25 @@ bool operator!=(const Object& lhs, const Object& rhs){
         throw ELixError(ELixError::TypeError, ss.str());
     }
 }
+
+// -*-
+bool operator<(const Object& lhs, const Object& rhs){
+    if(lhs.is_number() && rhs.is_number()){
+        auto x = std::any_cast<Number>(lhs.m_value);
+        auto y = std::any_cast<Number>(rhs.m_value);
+        return (x<y);
+    }
+    if(lhs.type()!=rhs.type()){ return false; }
+    if(lhs.is_string()){
+        auto x = lhs.as_string();
+        auto y = rhs.as_string();
+        return (x < y);
+    }
+    std::stringstream ss;
+    ss << "`<' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
+
 /*
 // -*-
 class Object final{
@@ -3094,7 +3113,6 @@ public:
 
 bool operator<=(const Object& lhs, const Object& rhs){}
 bool operator>=(const Object& lhs, const Object& rhs){}
-bool operator<(const Object& lhs, const Object& rhs){}
 bool operator>(const Object& lhs, const Object& rhs){}
 Object operator+(const Object& lhs, const Object& rhs){}
 Object operator-(const Object& lhs, const Object& rhs){}
