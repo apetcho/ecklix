@@ -562,7 +562,7 @@ public:
     Object get(const std::string& name);
 
 private:
-    std::map<std::string, Object> m_bindins;
+    std::map<std::string, Object> m_bindings;
     Context m_parent;
 };
 

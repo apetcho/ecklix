@@ -3380,20 +3380,23 @@ Symbol& ELixError::kind(void){
     return this->m_kind;
 }
 
+// --------------------------
+// -*- Env Implementation -*-
+// --------------------------
+Env::Env(Context parent)
+: m_bindings{}
+, m_parent{parent}
+{}
+
 /*
-// -----------
-// -*- Env -*-
-// -----------
 class Env : public std::enable_shared_from_this<Env> {
 public:
-Env::Env(Context parent=nullptr);
-
-void Env::define(const std::string& name, const Object& obj);
-bool Env::update(const std::string& name, const Object& obj);
-Object Env::get(const std::string& name);
+void Env::define(const std::string& name, const Object& obj){}
+bool Env::update(const std::string& name, const Object& obj){}
+Object Env::get(const std::string& name){}
 
 private:
-std::map<std::string, Object> m_bindins;
+std::map<std::string, Object> m_bindings;
 Context m_parent;
 };
 
