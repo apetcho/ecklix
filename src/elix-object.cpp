@@ -3388,10 +3388,15 @@ Env::Env(Context parent)
 , m_parent{parent}
 {}
 
+// -*-
+void Env::define(const std::string& name, const Object& obj){
+    this->m_bindings[name] = obj;
+}
+
 /*
 class Env : public std::enable_shared_from_this<Env> {
 public:
-void Env::define(const std::string& name, const Object& obj){}
+
 bool Env::update(const std::string& name, const Object& obj){}
 Object Env::get(const std::string& name){}
 
