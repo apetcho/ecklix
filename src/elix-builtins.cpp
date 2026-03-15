@@ -28,7 +28,9 @@ static Object fn_div(const Vec<Object>& args);
 static Object fn_mod(const Vec<Object>& args);
 static Object fn_band(const Vec<Object>& args);
 static Object fn_bor(const Vec<Object>& args);
-static Object fn_bxor(const Vec<Object>& args);
+static Object fn_xor(const Vec<Object>& args);
+static Object fn_lshift(const Vec<Object>& args);
+static Object fn_rshift(const Vec<Object>& args);
 static Object fn_not(const Vec<Object>& args);
 static Object fn_and(const Vec<Object>& args);
 static Object fn_or(const Vec<Object>& args);
@@ -39,6 +41,7 @@ static Object fn_ge(const Vec<Object>& args);
 static Object fn_eq(const Vec<Object>& args);
 static Object fn_ne(const Vec<Object>& args);
 
+static Object fn_macro_expand(const Vec<Object>& args);
 static Object fn_pair_key(const Vec<Object>& args);
 static Object fn_pair_value(const Vec<Object>& args);
 

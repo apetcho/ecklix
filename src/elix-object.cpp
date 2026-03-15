@@ -2068,12 +2068,17 @@ Object::Object(const Lambda& lambda)
     }
 }
 
+// -*-
+Object::Object(const Macro& macro)
+: m_type{Symbol{"Macro"}}
+, m_value{macro}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(const Macro& macro){}
 Object::Object(const Func& func){}
 Object::Object(const Object& obj) noexcept{}
 Object::Object(Object&& obj) noexcept{}
