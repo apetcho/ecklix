@@ -3056,13 +3056,32 @@ Symbol Object::type(void) const{
     return this->m_type;
 }
 
+// -*-
+bool operator==(const Object& lhs, const Object& rhs){
+    if(lhs.is_number() && rhs.is_number()){
+        auto x = std::any_cast<Number>(lhs.m_value);
+        auto y = std::any_cast<Number>(rhs.m_value);
+        return (x==y);
+    }
+    if(  lhs.type()!=rhs.type()){ return false; }
+    if(lhs.is_nil()){ return true; }
+    else if(lhs.is_bool()){
+        return (lhs.as_bool()==rhs.as_bool());
+    }else if(lhs.is_symbol()){
+        return (lhs.as_symbol()==rhs.as_symbol());
+    }else if(lhs.is_string()){
+        return (lhs.as_string()==rhs.as_string());
+    }
+    std::stringstream ss;
+    ss << "`==' is not supported for " << std::quoted(lhs.type().str()) << " type";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-bool operator==(const Object& lhs, const Object& rhs){}
 bool operator!=(const Object& lhs, const Object& rhs){}
 bool operator<=(const Object& lhs, const Object& rhs){}
 bool operator>=(const Object& lhs, const Object& rhs){}
