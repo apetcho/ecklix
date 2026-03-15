@@ -1956,6 +1956,12 @@ Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
     return std::move(result);
 }
 
+// -*-
+Object Macro::operator()(const Vec<Object>& args, ELix& elix){
+    auto expaned = this->expand(args, elix);
+    return expaned->eval(&elix);
+}
+
 /*
 struct Macro{
     Vec<Symbol> params;
@@ -1963,7 +1969,7 @@ struct Macro{
     Context ctx;
 
 
-Object Macro::operator()(const Vec<Object>& args){}
+
 };
 
 // -*-

@@ -412,6 +412,7 @@ struct Macro final{
     Macro clone(void) const;
 
     Expression expand(const Vec<Object>& args, ELix& elix);
+    Object operator()(const Vec<Object>& args, ELix& elix);
 };
 
 // -*-
