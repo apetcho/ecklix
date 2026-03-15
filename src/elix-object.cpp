@@ -2542,12 +2542,28 @@ f64 Object::as_float(void) const{
     return result;
 }
 
+// -*-
+Symbol Object::as_symbol(void) const{
+    Symbol result{};
+    if(this->is_symbol()){
+        result = std::any_cast<Symbol>(this->m_value);
+    }else if(this->is_string()){
+        auto mstr = std::any_cast<String>(this->m_value);
+        result.value = mstr.text;
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a symbol object.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-Symbol Object::as_symbol(void) const{}
 String Object::as_string(void) const{}
 Array Object::as_array(void) const{}
 Dict Object::as_dict(void) const{}
