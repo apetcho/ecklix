@@ -2113,12 +2113,16 @@ Object& Object::operator=(Object&& obj) noexcept{
 // -*-
 Object::~Object(){}
 
+// -*-
+bool Object::is_nil(void) const{
+    return this->m_type==Symbol{"Nil"};
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-bool Object::is_nil(void) const{}
 bool Object::is_bool(void) const{}
 bool Object::is_integer(void) const{}
 bool Object::is_float(void) const{}
