@@ -2025,13 +2025,16 @@ Object::Object(const std::string& str)
     this->m_value = std::move(mstr);
 }
 
+Object::Object(const String& str)
+: m_type{Symbol{"String"}}
+, m_value{str}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-Object::Object(const String& str){}
 Object::Object(const Array& array){}
 Object::Object(const List& xs){}
 Object::Object(const Dict& xmap){}
