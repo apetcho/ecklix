@@ -2080,12 +2080,17 @@ Object::Object(const Func& func)
 , m_value{func}
 {}
 
+// -*-
+Object::Object(const Object& obj) noexcept
+: m_type{obj.m_type}
+, m_value{obj.m_value}
+{}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object::Object(const Object& obj) noexcept{}
 Object::Object(Object&& obj) noexcept{}
 Object& Object::operator=(const Object& obj) noexcept{}
 Object& Object::operator=(Object&& obj) noexcept{}
