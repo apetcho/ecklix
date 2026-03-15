@@ -3338,35 +3338,27 @@ Object Object::bitwise_not(void) const{
     return Object(ans);
 }
 
+Symbol ELixError::ValueError = Symbol{"ValueError"};
+Symbol ELixError::TypeError = Symbol{"TypeError"};
+Symbol ELixError::SyntaxError = Symbol{"SyntaxError"};
+Symbol ELixError::RuntimeError = Symbol{"RuntimeError"};
+Symbol ELixError::KeyError = Symbol{"KeyError"};
+Symbol ELixError::IndexError = Symbol{"IndexError"};
+
+// -*-
+ELixError::ELixError()
+: std::runtime_error("Unknown error occurred.")
+, m_kind{Symbol{"ELixError"}}
+{}
+
 /*
 // -*-
-class Object final{
-public:
-
-
-private:
-    using Value = std::variant<
-        Nil, bool, Number, String, Symbol, Func, Lambda, Macro,
-        Pair, List, Array, Dict, Set
-    >;
-
-    Value m_value;
-};
-
-// -*-
-Symbol ELixError::ValueError;
-Symbol ELixError::TypeError;
-Symbol ELixError::SyntaxError;
-Symbol ELixError::RuntimeError;
-Symbol ELixError::KeyError;
-Symbol ELixError::IndexError;
 class ELixError: public std::runtime_error {
 public:
-ELixError::ELixError();
-ELixError::ELixError(const Symbol& sym);
-ELixError::ELixError(const Symbol& sym, const std::string& msg);
+ELixError::ELixError(const Symbol& sym){}
+ELixError::ELixError(const Symbol& sym, const std::string& msg){}
 
-std::string ELixError::describe(void) const;
+std::string ELixError::describe(void) const{}
 private:
     Symbol m_kind;
 };
