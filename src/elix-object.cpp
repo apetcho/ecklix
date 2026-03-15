@@ -3308,13 +3308,17 @@ Object operator^(const Object& lhs, const Object& rhs){
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
+// -*-
+Object operator||(const Object& lhs, const Object& rhs){
+    auto ans = (lhs.as_bool() || rhs.as_bool());
+    return Object(ans);
+}
 
 /*
 // -*-
 class Object final{
 public:
 
-Object operator||(const Object& lhs, const Object& rhs){}
 Object operator&&(const Object& lhs, const Object& rhs){}
 
 Object Object::logical_not(void) const{}
