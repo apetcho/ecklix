@@ -555,6 +555,11 @@ private:
 class Env final : public std::enable_shared_from_this<Env> {
 public:
     Env(Context parent=nullptr);
+    Env(const Env&) noexcept = default;
+    Env(Env&&) noexcept = default;
+    Env& operator=(const Env&) noexcept = default;
+    Env& operator=(Env&&) noexcept = default;
+    ~Env() = default;
 
     void define(const std::string& name, const Object& obj);
     bool update(const std::string& name, const Object& obj);
@@ -733,16 +738,26 @@ private:
 class ELix final: public ExprVisitor{
 public:
     struct Module{
-        UniquePtr<Symbol> name;
+        Symbol name;
         Context ctx;
     };
-    
-    static std::map<std::string, Vec<std::string>> docs;
 
-    static UniquePtr<Symbol> Quote;
-    static UniquePtr<Symbol> Unquote;
-    static UniquePtr<Symbol> Quasiquote;
-    static UniquePtr<Symbol> UnquoteSplicing;
+    struct ModuleHash{
+        size_t operator()(const Module& key) const;
+    };
+    struct ModuleEqual{
+        bool operator()(const Module& lhs, const Module& rhs) const;
+    };
+
+    using ModuleSet = std::unordered_set<Module, ModuleHash, ModuleEqual>;
+    
+    static std::string scriptExt;
+    static std::map<std::string, Vec<std::string>> docstrings;
+
+    static Symbol Quote;
+    static Symbol Unquote;
+    static Symbol Quasiquote;
+    static Symbol UnquoteSplicing;
 
     //static UniquePtr<Module> mathModule;    // "Math"
     // static Context sysModule;      // "System"
@@ -751,19 +766,32 @@ public:
     // static Context jsonModule;     // "JSON"
 
     static ExprVisitor* visitor;
-    static Context prelude;
-    explicit ELix(Context ctx);
+    static UniquePtr<Env> prelude;
+    
+    explicit ELix() = default;
+    ~ELix() = default;
+
     Object eval(Expression expr); // evalExprRaw
 
     static void setup(void);
     static bool is_reserved_word(const std::string& word);
     static void repl(const Vec<Object>& args);
     static void run(const fs::path& scriptpath, const Vec<Object>& args);
+    static std::string readfile(const fs::path& filename);
+    static std::string readfile(const std::string& filename);
+    static std::string readfile(const char* filename);
+    static std::string input(void);
 
     static Context runtime;
+    static ModuleSet BuiltinModules;
 
 private:
-    ModuleLoader m_moduleLoader;
+    ModuleLoader m_moduleLoader{};
+    ModuleSet m_imported{};
+
+    Context load(const Symbol& name);
+    Context load(const fs::path& script);
+    Context load(const std::string& script);
 
     Object eval(LiteralExpr& expr) override;
     Object eval(SymbolExpr& expr) override;
@@ -785,6 +813,8 @@ private:
     static void initialize_list(void);
     static void initialize_dict(void);
     static void initialize_set(void);
+    static void initialize_math(void);
+
     // static void initialize_file(void);
     // static void initialize_datetime(void);
     // static void initialize_json(void);
@@ -816,15 +846,17 @@ private:
 // -*-
 class ModuleLoader{
 public:
-    explicit ModuleLoader();
+    explicit ModuleLoader() = default;
 
-    void load(const Symbol& name,  Context ctx, Context targetCtx);
-    void load(const fs::path& scritpepath, Context targetCtx);
+    Context load(const Symbol& name,  Context ctx);
+    Context load(const fs::path& scritpepath, Context ctx);
+    Context load(const std::string& scritpepath, Context ctx);
+    Context load(const char* scritpepath, Context ctx);
     static void setup(ELix* elix);
 
 private:
     static ELix* m_elix;
-    std::map<std::string, Context> m_cache;
+    std::map<std::string, Context> m_cache{};
 };
 
 

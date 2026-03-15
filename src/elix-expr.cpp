@@ -11,17 +11,17 @@ namespace ekasoft::elx{
 // -*------------------------------*-
 Object LiteralExpr::eval(Visitor visitor){
     //! @todo
-    return Object();
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string LiteralExpr::str(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string LiteralExpr::repr(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*-----------------------------*-
@@ -29,17 +29,17 @@ std::string LiteralExpr::repr(void) const{
 // -*-----------------------------*-
 Object SymbolExpr::eval(Visitor visitor){
     //! @todo
-    return Object();
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string SymbolExpr::str(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string SymbolExpr::repr(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*---------------------------*-
@@ -47,17 +47,17 @@ std::string SymbolExpr::repr(void) const{
 // -*---------------------------*-
 Object ListExpr::eval(Visitor visitor){
     //! @todo
-    return Object();
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string ListExpr::str(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string ListExpr::repr(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*----------------------------*-
@@ -65,17 +65,17 @@ std::string ListExpr::repr(void) const{
 // -*----------------------------*-
 Object ArrayExpr::eval(Visitor visitor){
     //! @todo
-    return Object();
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string ArrayExpr::str(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string ArrayExpr::repr(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*---------------------------*-
@@ -83,17 +83,17 @@ std::string ArrayExpr::repr(void) const{
 // -*---------------------------*-
 Object PairExpr::eval(Visitor visitor){
     //! @todo
-    return Object();
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string PairExpr::str(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string PairExpr::repr(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*---------------------------*-
@@ -101,17 +101,17 @@ std::string PairExpr::repr(void) const{
 // -*---------------------------*-
 Object DictExpr::eval(Visitor visitor){
     //! @todo
-    return Object();
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string DictExpr::str(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string DictExpr::repr(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*---------------------------*-
@@ -119,17 +119,17 @@ std::string DictExpr::repr(void) const{
 // -*---------------------------*-
 Object SetExpr::eval(Visitor visitor){
     //! @todo
-    return Object();
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string SetExpr::str(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 std::string SetExpr::repr(void) const{
     //! @todo
-    return "";
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*--------------------------------------------------------------------------*-
