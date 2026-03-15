@@ -2559,12 +2559,18 @@ Symbol Object::as_symbol(void) const{
     return result;
 }
 
+// -*-
+String Object::as_string(void) const{
+    String result{};
+    result.text = this->str();
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-String Object::as_string(void) const{}
 Array Object::as_array(void) const{}
 Dict Object::as_dict(void) const{}
 List Object::as_list(void) const{}
