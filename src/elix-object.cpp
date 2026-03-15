@@ -3248,13 +3248,26 @@ Object operator%(const Object& lhs, const Object& rhs){
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
+// -*-
+Object operator<<(const Object& lhs, const Object& rhs){
+    if(lhs.is_integer() && rhs.is_integer()){
+        auto num = lhs.as_integer() << rhs.as_integer();
+        return Object(num);
+    }
+
+    std::stringstream ss;
+    ss << "operator `<<' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
+
+
 
 /*
 // -*-
 class Object final{
 public:
 
-Object operator<<(const Object& lhs, const Object& rhs){}
+
 Object operator>>(const Object& lhs, const Object& rhs){}
 Object operator|(const Object& lhs, const Object& rhs){}
 Object operator&(const Object& lhs, const Object& rhs){}
