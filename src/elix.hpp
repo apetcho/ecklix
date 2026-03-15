@@ -464,6 +464,7 @@ public:
     bool as_bool(void) const;
     i64 as_integer(void) const;
     f64 as_float(void) const;
+    Number as_number(void) const;
     Symbol as_symbol(void) const;
     String as_string(void) const;
     Array as_array(void) const;

@@ -2579,6 +2579,31 @@ f64 Object::as_float(void) const{
 }
 
 // -*-
+Number Object::as_number(void) const{
+    if(this->is_number()){
+        return std::any_cast<Number>(this->m_value);
+    }
+    if(this->is_string()){
+        auto text = std::any_cast<String>(this->m_value).text;
+        bool check = (
+            text.find('.')!=std::string::npos ||
+            text.find('e')!=std::string::npos ||
+            text.find('E')!=std::string::npos
+        );
+        if(check){
+            auto num = this->as_float();
+            return Number(num);
+        }
+        auto num = this->as_integer();
+        return Number(num);
+    }
+
+    std::stringstream ss;
+    ss << std::quoted(this->type().str()) << " cannot be cast to a number.";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
+
+// -*-
 Symbol Object::as_symbol(void) const{
     Symbol result{};
     if(this->is_symbol()){
@@ -3059,9 +3084,7 @@ Symbol Object::type(void) const{
 // -*-
 bool operator==(const Object& lhs, const Object& rhs){
     if(lhs.is_number() && rhs.is_number()){
-        auto x = std::any_cast<Number>(lhs.m_value);
-        auto y = std::any_cast<Number>(rhs.m_value);
-        return (x==y);
+        return (lhs.as_number()==rhs.as_number());
     }
     if(  lhs.type()!=rhs.type()){ return false; }
     if(lhs.is_nil()){ return true; }
@@ -3091,9 +3114,7 @@ bool operator!=(const Object& lhs, const Object& rhs){
 // -*-
 bool operator<(const Object& lhs, const Object& rhs){
     if(lhs.is_number() && rhs.is_number()){
-        auto x = std::any_cast<Number>(lhs.m_value);
-        auto y = std::any_cast<Number>(rhs.m_value);
-        return (x<y);
+        return (lhs.as_number()< rhs.as_number());
     }
     if(lhs.type()!=rhs.type()){ return false; }
     if(lhs.is_string()){
@@ -3142,9 +3163,7 @@ bool operator>(const Object& lhs, const Object& rhs){
 // -*-
 Object operator+(const Object& lhs, const Object& rhs){
     if(lhs.is_number() && rhs.is_number()){
-        auto x = std::any_cast<Number>(lhs.m_value);
-        auto y = std::any_cast<Number>(rhs.m_value);
-        auto num = x + y;
+        auto num = lhs.as_number() + rhs.as_number();
         return Object(num);
     }
     if(lhs.type()==rhs.type()){
@@ -3181,12 +3200,24 @@ Object operator+(const Object& lhs, const Object& rhs){
     throw ELixError(ELixError::TypeError, ss.str());
 }
 
+// -*-
+Object operator-(const Object& lhs, const Object& rhs){
+    if(lhs.is_number() && rhs.is_number()){
+        auto num = lhs.as_number() - rhs.as_number();
+        return Object(num);
+    }
+
+    std::stringstream ss;
+    ss << "`-' is not supported for " << std::quoted(lhs.type().str()) << " type.";
+    throw ELixError(ELixError::TypeError, ss.str());
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-Object operator-(const Object& lhs, const Object& rhs){}
+
 Object operator*(const Object& lhs, const Object& rhs){}
 Object operator/(const Object& lhs, const Object& rhs){}
 Object operator%(const Object& lhs, const Object& rhs){}
