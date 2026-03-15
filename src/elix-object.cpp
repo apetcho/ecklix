@@ -2187,13 +2187,17 @@ bool Object::is_callable(void) const{
     );
 }
 
+// -*-
+bool Object::is_pair(void) const{
+    return this->m_type==Symbol{"Pair"};
+}
+
+
 
 /*
 // -*-
 class Object final{
 public:
-
-bool Object::is_pair(void) const{}
 
 bool Object::as_bool(void) const{}
 i64 Object::as_integer(void) const{}
@@ -2206,6 +2210,7 @@ List Object::as_list(void) const{}
 Set Object::as_set(void) const{}
 Lambda Object::as_lambda(void) const{}
 Macro Object::as_macro(void) const{}
+Lambda Object::as_function(void) const{}
 Func Object::as_func(void) const{}
 Pair Object::as_pair(void) const{}
 

@@ -469,6 +469,7 @@ public:
     Set as_set(void) const;
     Lambda as_lambda(void) const;
     Macro as_macro(void) const;
+    Lambda as_function(void) const;
     Func as_func(void) const;
     Pair as_pair(void) const;
 
