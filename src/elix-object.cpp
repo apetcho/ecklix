@@ -3326,13 +3326,17 @@ Object Object::logical_not(void) const{
     return Object(ans);
 }
 
+// -*-
+Object Object::negate(void) const{
+    auto ans = -this->as_number();
+    return Object(ans);
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-
-Object Object::negate(void) const{}
 Object Object::bitwise_not(void) const{}
 
 private:
