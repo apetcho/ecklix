@@ -2389,12 +2389,164 @@ i64 Object::as_integer(void) const{
     return result;
 }
 
+// -*-
+f64 Object::as_float(void) const{
+    f64 result{};
+    if(this->is_number()){
+        auto num = std::any_cast<Number>(this->m_value);
+        result = static_cast<f64>(num);
+    }else if(this->is_bool()){
+        auto val = std::any_cast<bool>(this->m_value);
+        result = static_cast<f64>(val ? 1 : 0);
+    }else if(this->is_string()){
+        auto val = std::any_cast<String>(this->m_value);
+        size_t pos{};
+        if(val.text.find('.')!=std::string::npos){
+            try{
+                result = std::stod(val.text, &pos);
+            }catch(const std::invalid_argument& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(const std::out_of_range& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(...){
+                throw ELixError(
+                    ELixError::ValueError,
+                    "unexpected error occurred while converting numeric string to number"
+                );
+            }
+            if(pos!=val.len()){
+                std::stringstream ss;
+                ss << "argument is not a numeric string";
+                throw ELixError(ELixError::ValueError, ss.str());
+            }
+        }else if(val.text.find('e')!=std::string::npos || val.text.find('E')!=std::string::npos){
+            try{
+                result = std::stod(val.text, &pos);
+            }catch(const std::invalid_argument& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(const std::out_of_range& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(...){
+                throw ELixError(
+                    ELixError::ValueError,
+                    "unexpected error occurred while converting numeric string to number"
+                );
+            }
+            if(pos!=val.len()){
+                std::stringstream ss;
+                ss << "argument is not a numeric string";
+                throw ELixError(ELixError::ValueError, ss.str());
+            }
+        }else if(val.text[0]=='0' && val.text[1]=='x'){
+            i64 num{};
+            try{
+                num = std::stoll(val.text.substr(2), &pos, 16);
+            }catch(const std::invalid_argument& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(const std::out_of_range& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(...){
+                throw ELixError(
+                    ELixError::ValueError,
+                    "unexpected error occurred while converting numeric string to number"
+                );
+            }
+            if(pos==val.len()){
+                result = static_cast<f64>(num);
+            }else{
+                std::stringstream ss;
+                ss << "argument is not a numeric string";
+                throw ELixError(ELixError::ValueError, ss.str());
+            }
+        }else if(val.text[0]=='0' && val.text[1]=='o'){
+            i64 num{};
+            try{
+                num = std::stoll(val.text.substr(2), &pos, 8);
+            }catch(const std::invalid_argument& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(const std::out_of_range& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(...){
+                throw ELixError(
+                    ELixError::ValueError,
+                    "unexpected error occurred while converting numeric string to number"
+                );
+            }
+            if(pos==val.len()){
+                result = static_cast<f64>(num);
+            }else{
+                std::stringstream ss;
+                ss << "argument is not a numeric string";
+                throw ELixError(ELixError::ValueError, ss.str());
+            }
+        }else if(val.text[0]=='0' && val.text[1]=='b'){
+            i64 num{};
+            try{
+                num = std::stoll(val.text.substr(2), &pos, 2);
+            }catch(const std::invalid_argument& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(const std::out_of_range& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(...){
+                throw ELixError(
+                    ELixError::ValueError,
+                    "unexpected error occurred while converting numeric string to number"
+                );
+            }
+            if(pos==val.len()){
+                result = static_cast<f64>(num);
+            }else{
+                std::stringstream ss;
+                ss << "argument is not a numeric string";
+                throw ELixError(ELixError::ValueError, ss.str());
+            }
+        }else{
+            i64 num{};
+            try{
+                num = std::stoll(val.text, &pos);
+            }catch(const std::invalid_argument& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(const std::out_of_range& err){
+                throw ELixError(ELixError::ValueError, std::string(err.what()));
+            }
+            catch(...){
+                throw ELixError(
+                    ELixError::ValueError,
+                    "unexpected error occurred while converting numeric string to number"
+                );
+            }
+            if(pos==val.len()){
+                result = static_cast<f64>(num);
+            }else{
+                std::stringstream ss;
+                ss << "argument is not a numeric string";
+                throw ELixError(ELixError::ValueError, ss.str());
+            }
+        }
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a floating-point.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-f64 Object::as_float(void) const{}
 Symbol Object::as_symbol(void) const{}
 String Object::as_string(void) const{}
 Array Object::as_array(void) const{}
