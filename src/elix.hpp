@@ -357,6 +357,7 @@ struct Dict final{ // Dict
     bool find(const Object& key) const;
     Dict& concat(const Dict& dict);
     i64 len(void) const;
+    void put(const Object& key, const Object& val);
     Object get(const Object& key) const;
     Dict& set(const Object& key, const Object& val);
     Dict& update(const Object& key, const Object& val);

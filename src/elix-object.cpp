@@ -1554,6 +1554,10 @@ Object Dict::get(const Object& key) const{
     throw ELixError(ELixError::KeyError, ss.str());
 }
 
+void Dict::put(const Object& key, const Object& val){
+    //! @todo
+}
+
 Dict& Dict::set(const Object& key, const Object& val){
     if(!key.is_hashable()){
         std::stringstream ss;
@@ -2603,12 +2607,64 @@ Array Object::as_array(void) const{
     return result;
 }
 
+// -*-
+Dict Object::as_dict(void) const{
+    Dict result{};
+    if(this->is_dict()){
+        result = std::any_cast<Dict>(this->m_value);
+    }else if(this->is_list()){
+        auto xs = std::any_cast<List>(this->m_value);
+        for(const auto& item: xs.items){
+            if(!item.is_pair()){
+                std::stringstream ss;
+                ss << "Error wile constructing a Dict object from a list.\n";
+                ss << "Expect elements of the list to be pairs but found ";
+                ss << std::quoted(item.type().str()) << " object.";
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            auto pair = item.as_pair();
+            result.put(Object(pair.key), Object(pair.val));
+        }
+    }else if(this->is_array()){
+        auto xs = std::any_cast<Array>(this->m_value);
+        for(const auto& item: xs.items){
+            if(!item.is_pair()){
+                std::stringstream ss;
+                ss << "Error wile constructing a Dict object from an array.\n";
+                ss << "Expect elements of the array to be pairs but found ";
+                ss << std::quoted(item.type().str()) << " object.";
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            auto pair = item.as_pair();
+            result.put(Object(pair.key), Object(pair.val));
+        }
+    }else if(this->is_set()){
+        auto xs = std::any_cast<Set>(this->m_value);
+        for(const auto& key: xs.hset){
+            if(!key.is_pair()){
+                std::stringstream ss;
+                ss << "Error wile constructing a Dict object from a set.\n";
+                ss << "Expect elements of the set to be pairs of hashable objects\nbut found ";
+                ss << std::quoted(key.type().str()) << " object.";
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            auto pair = key.as_pair();
+            result.put(Object(pair.key), Object(pair.val));
+        }
+    }else{
+        std::stringstream ss;
+        ss << std::quoted(this->type().str()) << " cannot be cast to a dict object.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    return result;
+}
+
 /*
 // -*-
 class Object final{
 public:
 
-Dict Object::as_dict(void) const{}
 List Object::as_list(void) const{}
 Set Object::as_set(void) const{}
 Lambda Object::as_lambda(void) const{}
