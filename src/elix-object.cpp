@@ -3371,16 +3371,12 @@ std::string ELixError::describe(void) const{
     return ss.str();
 }
 
-/*
 // -*-
-class ELixError: public std::runtime_error {
-public:
+Symbol ELixError::kind(void) const{
+    return this->m_kind;
+}
 
-Symbol ELixError::kind(void) const{}
-private:
-    Symbol m_kind;
-};
-
+/*
 // -----------
 // -*- Env -*-
 // -----------
