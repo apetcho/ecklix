@@ -40,8 +40,7 @@ std::string SymbolExpr::repr(void) const{
 // -*- ListExpr implementation -*-
 // -*---------------------------*-
 Object ListExpr::eval(Visitor visitor){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return visitor->eval(*this);
 }
 
 std::string ListExpr::str(void) const{
