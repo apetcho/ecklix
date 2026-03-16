@@ -35,6 +35,8 @@
     ELIX_DEF(True, "true")                          \
     ELIX_DEF(False, "false")                        \
     ELIX_DEF(Quote, "quote")                        \
+    ELIX_DEF(Cycle, "cycle")                        \
+    ELIX_DEF(Stop, "stop")                          \
     ELIX_DEF(Unquote, "unquote")                    \
     ELIX_DEF(Quasiquote, "quasiquote")              \
     ELIX_DEF(UnquoteSplicing, "unquote-splicing")
@@ -748,6 +750,9 @@ class Module;
 class ModuleHash;
 class ModuleEqual;
 
+struct StopSignal final {};
+struct CycleSignal final {};
+
 class ELix final: public ExprVisitor{
 public:
     using ModuleSet = std::unordered_set<Module, ModuleHash, ModuleEqual>;
@@ -840,6 +845,8 @@ private:
     Object handle_and(Vec<Expression> exprs);
     Object handle_or(Vec<Expression> exprs);
     Object handle_not(Vec<Expression> exprs);
+    Object handle_cycle(Vec<Expression> exprs);
+    Object handle_stop(Vec<Expression> exprs);
     Expression handle_quote(Vec<Expression> exprs);
     Expression handle_quasiquote(Vec<Expression> exprs);
     Expression handle_unquote(Vec<Expression> exprs);

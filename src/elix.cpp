@@ -6,6 +6,7 @@
 #include<type_traits>
 #include<typeindex>
 #include<typeinfo>
+#include<limits>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -402,6 +403,8 @@ Object ELix::eval(ListExpr& expr){
         else if(word=="and"){ result = this->handle_and(args); }
         else if(word=="or"){ result = this->handle_or(args); }
         else if(word=="not"){ result = this->handle_not(args); }
+        else if(word=="cycle"){ result = this->handle_cycle(args); }
+        else if(word=="stop"){ result = this->handle_stop(args); }
         else if(word=="quote"){ result = this->handle_quote(args)->eval(this); }
         else if(word=="quasiquote"){ result = this->handle_quasiquote(args)->eval(this); }
         else if(word=="unquote"){ result = this->handle_unquote(args)->eval(this); }
@@ -642,8 +645,39 @@ Object ELix::handle_cond(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_while(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size() >= 1);
+    this->check_argc(pred, "while");
+    constexpr auto MY_MAX_ITERATIONS = std::numeric_limits<i32>::max();
+    auto test = exprs[0]->eval(this);
+    if(!test.is_bool()){
+        std::stringstream ss;
+        ss << "Malformed `while' expression. Expression the test condition of\n";
+        ss << "at least one branch to evalue to true, but got none.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+
+    u32 iteration = 0;
+    while(test.as_bool()){
+        if(iteration > MY_MAX_ITERATIONS){
+            std::stringstream ss;
+            ss << "Too long running while loop. Maximum iteration exceeded.";
+            throw ELixError(ELixError::RuntimeError, ss.str());
+        }
+        try{
+            for(auto i=1; i < exprs.size(); i++){
+                [[maybe_unused]] auto _ = exprs[i]->eval(this);
+            }
+            test = exprs[0]->eval(this);
+        }catch(const StopSignal&){
+            break;
+        }
+        catch(const CycleSignal& ){
+            continue;
+        }
+        ++iteration;
+    }
+
+    return Object();
 }
 
 // -*-
@@ -684,6 +718,18 @@ Object ELix::handle_or(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_not(Vec<Expression> exprs){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::handle_cycle(Vec<Expression> exprs){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::handle_stop(Vec<Expression> exprs){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
