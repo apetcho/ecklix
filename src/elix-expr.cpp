@@ -149,8 +149,7 @@ std::string DictExpr::repr(void) const{
 // -*- SetExpr implementation -*-
 // -*---------------------------*-
 Object SetExpr::eval(Visitor visitor){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return visitor->eval(*this);
 }
 
 std::string SetExpr::str(void) const{
