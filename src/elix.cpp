@@ -1272,20 +1272,6 @@ Module& Module::operator=(Module&& mod) noexcept{
 }
 
 void Module::load(Context& ctx) const{
-    // auto src = ELix::readfile(this->m_fullpath);
-    // auto myruntime = this->m_elix->m_runtime;
-    // this->m_elix->m_runtime = ctx;
-    // Tokenizer tokenizer{src};
-    // Parser parser{tokenizer};
-    // auto exprs = parser.parse();
-    // for(auto&& expr: exprs){
-    //     [[maybe_unused]] auto _ = expr->eval(this->m_elix);
-    // }
-    // // fill the cache
-    // for(const auto& [key, val]: this->m_elix->m_runtime->bindings()){
-        
-    // }
-    // this->m_elix->m_runtime = myruntime;
     for(const auto& [key, val]: this->m_cache){
         ctx->define(key, val);
     }
@@ -1312,8 +1298,20 @@ const Object& Module::get(const std::string& name) const{
 
 // -*-
 void Module::setup(void){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto src = ELix::readfile(this->m_fullpath);
+    auto myruntime = this->m_elix->m_runtime;
+    this->m_elix->m_runtime = std::make_shared<Env>(this->m_elix->m_runtime);
+    Tokenizer tokenizer{src};
+    Parser parser{tokenizer};
+    auto exprs = parser.parse();
+    for(auto&& expr: exprs){
+         [[maybe_unused]] auto _ = expr->eval(this->m_elix);
+    }
+    // fill the cache
+    for(const auto& [key, val]: this->m_elix->m_runtime->bindings()){
+        this->m_cache[key] = val;
+    }
+    this->m_elix->m_runtime = myruntime;
 }
 
 // -*-
