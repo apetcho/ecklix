@@ -19,8 +19,7 @@ std::string LiteralExpr::str(void) const{
 }
 
 std::string LiteralExpr::repr(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return this->obj.repr();
 }
 
 // -*-----------------------------*-
