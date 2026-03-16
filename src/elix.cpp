@@ -347,8 +347,8 @@ Object ELix::eval(ListExpr& expr){
     // special-form or function call
     // expect the first element in the list to be a symbol
         
-    auto head = expr.items[0]->eval(this);
-    if(!head.is_symbol()){
+    auto head = dynamic_cast<SymbolExpr*>(expr.items[0].get());
+    if(head==nullptr){
         std::stringstream ss;
         ss << "Incorrect list-expression. Expect the first element to be a symbol.\n";
         ss << "A list-expression is a special-form or a function all.\n";
@@ -361,33 +361,11 @@ Object ELix::eval(ListExpr& expr){
     for(auto i=1; i < expr.items.size(); i++){
         args.push_back(std::move(expr.items[i]));
     }
-    auto word = head.as_symbol().str();
+    auto word = head->name.str();
     Object fun;
     Object result{};
     if(!ELix::is_reserved_word(word)){
-        // This is a function call
-        // Get the associated callable object
-        fun = this->m_runtime->get(word);
-        // Check that `fun' is actually a callable
-        if(!fun.is_callable()){
-            std::stringstream ss;
-            ss << "" << std::quoted(word) << " is not a callable object.";
-            throw ELixError(ELixError::SyntaxError, ss.str());
-        }
-        Vec<Object> argv{};
-        for(auto&& arg: args){
-            argv.push_back(arg->eval(this));
-        }
-        if(fun.is_macro()){
-            auto macro = fun.as_macro();
-            result = macro(argv);
-        }else if(fun.is_lambda() || fun.is_function()){
-            auto lambda = fun.as_lambda();
-            result = lambda(argv);
-        }else if(fun.is_func()){
-            auto func = fun.as_func();
-            result = func(argv);
-        }
+        result = this->handle_list(expr.items);
     }else{
         if(word=="import"){ result = this->handle_import(args); }
         else if(word=="progn"){ result = this->handle_progn(args); }
@@ -1068,8 +1046,37 @@ Object ELix::handle_stop(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_list(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // function call
+    auto word = dynamic_cast<SymbolExpr*>(exprs[0].get());
+    auto name = word->name.str();
+    auto fun = exprs[0]->eval(this);
+    // This is a function call
+    // Get the associated callable object
+    // Check that `fun' is actually a callable
+    if(!fun.is_callable()){
+        std::stringstream ss;
+        ss << "" << std::quoted(name) << " is not a callable object.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    Object result{};
+    Vec<Object> argv{};
+    if(exprs.size() > 1){
+        for(auto i=1; i < exprs.size(); i++){
+            argv.push_back(exprs[i]->eval(this));
+        }
+        if(fun.is_macro()){
+            auto macro = fun.as_macro();
+            result = macro(argv);
+        }else if(fun.is_lambda() || fun.is_function()){
+            auto lambda = fun.as_lambda();
+            result = lambda(argv);
+        }else if(fun.is_func()){
+            auto func = fun.as_func();
+            result = func(argv);
+        }
+    }
+
+    return result;
 }
 
 // -*-
