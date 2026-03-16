@@ -1,6 +1,8 @@
 #include "elix.hpp"
 #include<iostream>
+#include<iomanip>
 #include<fstream>
+#include<sstream>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -144,8 +146,24 @@ void ELix::run(const fs::path& scriptpath, const Vec<Object>& args){
 
 // -*-
 std::string ELix::readfile(const fs::path& filename){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    if(!fs::exists(filename)){
+        std::stringstream ss;
+        ss << "file " << std::quoted(filename.string()) << " not found.";
+        throw ELixError(ELixError::RuntimeError, ss.str());
+    }
+    std::ifstream fin(filename, std::ios::binary);
+    if(!fin.is_open()){
+        std::stringstream ss;
+        ss << "unable to open file " << std::quoted(filename.string());
+        throw ELixError(ELixError::RuntimeError, ss.str());
+    }
+    auto fsize = fs::file_size(filename);
+    std::string result(fsize, '\0');
+    fin.read(&result[0], fsize);
+    if(fin.is_open()){
+        fin.close();
+    }
+    return result;
 }
 
 // -*-
