@@ -1145,8 +1145,10 @@ Expression ELix::handle_quasiquote(Vec<Expression> exprs){
 
 // -*-
 Expression ELix::handle_unquote(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size()==1);
+    this->check_argc(pred, "unquote");
+    auto self = exprs[0]->eval(this);
+    return std::move(this->build_expression(self));
 }
 
 // -*-
