@@ -37,6 +37,15 @@ bool ELix::is_reserved_word(const std::string& word){
 }
 
 // -*-
+bool ELix::is_literal(const Object& obj){
+    auto check = (
+        obj.is_symbol() || obj.is_number() || obj.is_bool() ||
+        obj.is_string() || obj.is_nil()
+    );
+    return (check ? true : false);
+}
+
+// -*-
 void ELix::repl(const Vec<Object>& args){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
