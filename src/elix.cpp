@@ -300,10 +300,6 @@ Object ELix::eval(Expression expr){
 
     if(typesmap[std::type_index(typeid(expr))]=="SymbolExpr"){
         auto self = dynamic_cast<SymbolExpr*>(expr.get());
-        // if(self->name.str()=="nil"){ return Object(); }
-        // if(self->name.str()=="true"){ return Object(true); }
-        // if(self->name.str()=="false"){ return Object(false); }
-        // user-defined variable or builtin constants
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="LiteralExpr"){
         auto self = dynamic_cast<LiteralExpr*>(expr.get());
@@ -359,8 +355,12 @@ Object ELix::eval(LiteralExpr& expr){
 
 // -*-
 Object ELix::eval(SymbolExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    if(expr.name.str()=="nil"){ return Object(); }
+    else if(expr.name.str()=="true"){ return Object(true); }
+    else if(expr.name.str()=="false"){ return Object(false); }
+
+    // user-defined variable or builtin constants
+    return this->m_runtime->get(expr.name.str());
 }
 
 // -*-
