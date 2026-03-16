@@ -10,8 +10,8 @@ namespace ekasoft::elx{
 // -*- LiteralExpr implementation -*-
 // -*------------------------------*-
 Object LiteralExpr::eval(Visitor visitor){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    (void)visitor;
+    return this->obj;
 }
 
 std::string LiteralExpr::str(void) const{

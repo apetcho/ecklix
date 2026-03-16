@@ -589,7 +589,7 @@ Expression Parser::parse_literal(void){
     case TokenKind::Sym:
     case TokenKind::True:
     case TokenKind::False:
-        obj = Object(Symbol(this->m_token.lexeme));
+        obj = Object(Symbol{this->m_token.lexeme});
         break;
     case TokenKind::NIL:
         break;
@@ -617,7 +617,7 @@ Expression Parser::parse_literal(void){
         }
         break;
     case TokenKind::Str:
-        obj = Object(String(this->m_token.lexeme));
+        obj = Object(String{this->m_token.lexeme});
         break;
     default:
         failed = true;
@@ -651,7 +651,7 @@ Expression Parser::parse_symbol(void){
             yieldError();
             return nullptr; // not-reached
         }
-        return std::make_unique<SymbolExpr>(std::move(Object(Symbol(tok.lexeme))));
+        return std::make_unique<SymbolExpr>(std::move(Object(Symbol{tok.lexeme})));
     }
     yieldError();
     return nullptr; // not-reached
