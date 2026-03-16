@@ -574,8 +574,28 @@ Object ELix::handle_let(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_var(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size() >= 2 && exprs.size() % 2 == 0);
+    this->check_argc(pred, "var");
+    for(auto i=0; i < exprs.size(); i += 2){
+        auto key = dynamic_cast<SymbolExpr*>(exprs[i].get());
+        if(key==nullptr){
+            std::stringstream ss;
+            ss << "Invalid `var` exprssion. Expect a variable name but got ";
+            ss << std::quoted(exprs[i]->eval(this).type().str()) << " object type.";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        auto var = key->name.str();
+        if(ELix::is_reserved_word(var)){
+            std::stringstream ss;
+            ss << std::quoted(var) << " is a builtin reserved word. It cannot be used to ";
+            ss << "name a variable.";
+            throw ELixError(ELixError::ValueError, ss.str());
+        }
+        auto val = exprs[i+1]->eval(this);
+        this->m_runtime->define(var, val);
+    }
+
+    return Object();
 }
 
 // -*-
