@@ -300,53 +300,76 @@ Object ELix::eval(Expression expr){
 
     if(typesmap[std::type_index(typeid(expr))]=="SymbolExpr"){
         auto self = dynamic_cast<SymbolExpr*>(expr.get());
-        if(self->name.str()=="nil"){ return Object(); }
-        if(self->name.str()=="true"){ return Object(true); }
-        if(self->name.str()=="false"){ return Object(false); }
+        // if(self->name.str()=="nil"){ return Object(); }
+        // if(self->name.str()=="true"){ return Object(true); }
+        // if(self->name.str()=="false"){ return Object(false); }
         // user-defined variable or builtin constants
-        return this->m_runtime->get(self->name.str());
+        return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="LiteralExpr"){
         auto self = dynamic_cast<LiteralExpr*>(expr.get());
-        return self->obj;
+        return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="ArrayExpr"){
-        Vec<Object> result{};
         auto self = dynamic_cast<ArrayExpr*>(expr.get());
-        for(auto&& item: self->items){
-            result.push_back(item->eval(this));
-        }
-        return Object(Array{result});
+        // Vec<Object> result{};
+        // for(auto&& item: self->items){
+        //     result.push_back(item->eval(this));
+        // }
+        return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="PairExpr"){
         auto self = dynamic_cast<PairExpr*>(expr.get());
-        auto key = self->key->eval(this);
-        auto val = self->val->eval(this);
-        return Object(Pair{key, val});
+        // auto key = self->key->eval(this);
+        // auto val = self->val->eval(this);
+        return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="SetExpr"){
         auto self = dynamic_cast<SetExpr*>(expr.get());
-        HashSet hset{};
-        for(auto&& key: self->items){
-            hset.insert(Object(key->eval(this)));
-        }
-        return Object(Set{hset});
+        // HashSet hset{};
+        // for(auto&& key: self->items){
+        //     hset.insert(Object(key->eval(this)));
+        // }
+        return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="DictExpr"){
         auto self = dynamic_cast<DictExpr*>(expr.get());
-        HashMap hmap{};
-        for(auto&& item: self->items){
-            auto entry = item->eval(this);
-            if(!entry.is_pair()){
-                std::stringstream ss;
-                ss << "Invalid Dict entry. Excpect each entry to a Pair object";
-                throw ELixError(ELixError::SyntaxError, ss.str());
-            }
-            auto pair = entry.as_pair();
-            hmap[pair.key] = pair.val;
-        }
+        // HashMap hmap{};
+        // for(auto&& item: self->items){
+        //     auto entry = item->eval(this);
+        //     if(!entry.is_pair()){
+        //         std::stringstream ss;
+        //         ss << "Invalid Dict entry. Excpect each entry to a Pair object";
+        //         throw ELixError(ELixError::SyntaxError, ss.str());
+        //     }
+        //     auto pair = entry.as_pair();
+        //     hmap[pair.key] = pair.val;
+        // }
 
-        return Object(Dict{hmap});
+        return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="ListExpr"){
-        // special-form or function call
-        // expect the first element in the list to be a symbol
         auto self = dynamic_cast<ListExpr*>(expr.get());
-        auto head = self->items[0]->eval(this);
+        return this->eval(*self);   
+    }
+
+    std::stringstream ss;
+    ss << "Malformed expression " << expr->repr();
+    throw ELixError(ELixError::SyntaxError, ss.str());
+}
+
+// -*-
+Object ELix::eval(LiteralExpr& expr){
+    return expr.obj;
+}
+
+// -*-
+Object ELix::eval(SymbolExpr& expr){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::eval(ListExpr& expr){
+    // special-form or function call
+    // expect the first element in the list to be a symbol
+        
+    /*
+        auto head = expr->items[0]->eval(this);
         if(!head.is_symbol()){
             std::stringstream ss;
             ss << "Incorrect list-expression. Expect the first element to be a symbol.\n";
@@ -357,8 +380,8 @@ Object ELix::eval(Expression expr){
             throw ELixError(ELixError::SyntaxError, ss.str());
         }
         Vec<Expression> args{};
-        for(auto i=1; i < self->items.size(); i++){
-            args.push_back(std::move(self->items[i]));
+        for(auto i=1; i < expr->items.size(); i++){
+            args.push_back(std::move(expr->items[i]));
         }
         auto word = head.as_symbol().str();
         Object fun;
@@ -387,7 +410,6 @@ Object ELix::eval(Expression expr){
             auto func = fun.as_func();
             return func(argv);
         }else{
-            // We have a special form
             if(word=="import"){ return this->handle_import(args); }
             else if(word=="progn"){ return this->handle_progn(args); }
             else if(word=="if"){ return this->handle_if(args); }
@@ -412,29 +434,7 @@ Object ELix::eval(Expression expr){
                 throw ELixError(ELixError::SyntaxError, ss.str());
             }
         }
-    }
-
-    std::stringstream ss;
-    ss << "Malformed expression " << expr->repr();
-    throw ELixError(ELixError::SyntaxError, ss.str());
-}
-
-// -*-
-Object ELix::eval(LiteralExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
-
-// -*-
-Object ELix::eval(SymbolExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
-
-// -*-
-Object ELix::eval(ListExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    */
 }
 
 // -*-
