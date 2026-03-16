@@ -1316,8 +1316,9 @@ void Module::setup(void){
 
 // -*-
 void Module::configure(const Symbol& name){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    this->m_name = name.str();
+    this->m_filename = "";
+    this->m_fullpath = ""; 
 }
 
 // -*-
