@@ -497,7 +497,12 @@ void ELix::validate_type(bool pred, const std::string& emsg){
     }
 }
 
-
+// -*-
+void ELix::validate_value(bool pred, const std::string& emsg){
+    if(!pred){
+        throw ELixError(ELixError::ValueError, emsg);
+    }
+}
 
 // -*-
 void ELix::validate_name(const std::string& name){
