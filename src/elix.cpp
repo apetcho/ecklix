@@ -711,13 +711,9 @@ Object ELix::handle_while(Vec<Expression> exprs){
                 [[maybe_unused]] auto _ = exprs[i]->eval(this);
             }
             test = exprs[0]->eval(this);
-        }catch(const StopSignal&){
-            break;
-        }
-        catch(const CycleSignal& ){
-            continue;
-        }
-        ++iteration;
+            ++iteration;
+        }catch(const StopSignal&){ break; }
+        catch(const CycleSignal& ){ continue; }
     }
 
     return Object();
@@ -792,50 +788,66 @@ Object ELix::handle_for(Vec<Expression> exprs){
         for(auto c: xstr){
             checkIteration();
             this->m_runtime->define(var, Object(String{std::string(1, c)}));
-            for(auto i=1; i < exprs.size(); i++){
-                [[maybe_unused]] auto _ = exprs[i]->eval(this);
-            }
-            ++iteration;
+            try{
+                for(auto i=1; i < exprs.size(); i++){
+                    [[maybe_unused]] auto _ = exprs[i]->eval(this);
+                }
+                ++iteration;
+            }catch(const StopSignal& ){ break; }
+            catch(const CycleSignal& ){ continue; }
         }
     }else if(iterable.is_array()){
         auto items = iterable.as_array().items;
         for(auto item: items){
             checkIteration();
             this->m_runtime->define(var, item);
-            for(auto i=1; i < exprs.size(); i++){
-                [[maybe_unused]] auto _ = exprs[i]->eval(this);
-            }
-            ++iteration;
+            try{
+                for(auto i=1; i < exprs.size(); i++){
+                    [[maybe_unused]] auto _ = exprs[i]->eval(this);
+                }
+                ++iteration;
+            }catch(const StopSignal& ){ break; }
+            catch(const CycleSignal& ){ continue; }
         }
     }else if(iterable.is_list()){
         auto items = iterable.as_list().items;
         for(auto item: items){
             checkIteration();
             this->m_runtime->define(var, item);
-            for(auto i=1; i < exprs.size(); i++){
-                [[maybe_unused]] auto _ = exprs[i]->eval(this);
-            }
-            ++iteration;
+            try{
+                for(auto i=1; i < exprs.size(); i++){
+                    [[maybe_unused]] auto _ = exprs[i]->eval(this);
+                }
+                ++iteration;
+            }catch(const StopSignal& ){ break; }
+            catch(const CycleSignal& ){ continue; }
+            
         }
     }else if(iterable.is_set()){
         auto items = iterable.as_set().hset;
         for(auto item: items){
             checkIteration();
             this->m_runtime->define(var, item);
-            for(auto i=1; i < exprs.size(); i++){
-                [[maybe_unused]] auto _ = exprs[i]->eval(this);
-            }
-            ++iteration;
+            try{
+                for(auto i=1; i < exprs.size(); i++){
+                    [[maybe_unused]] auto _ = exprs[i]->eval(this);
+                }
+                ++iteration;
+            }catch(const StopSignal& ){ break; }
+            catch(const CycleSignal& ){ continue; }
         }
     }else {
         auto items = iterable.as_dict().items();
         for(auto item: items){
             checkIteration();
             this->m_runtime->define(var, Object(item));
-            for(auto i=1; i < exprs.size(); i++){
-                [[maybe_unused]] auto _ = exprs[i]->eval(this);
-            }
-            ++iteration;
+            try{
+                for(auto i=1; i < exprs.size(); i++){
+                    [[maybe_unused]] auto _ = exprs[i]->eval(this);
+                }
+                ++iteration;
+            }catch(const StopSignal& ){ break; }
+            catch(const CycleSignal& ){ continue; }
         }
     }
 
@@ -1042,8 +1054,7 @@ Object ELix::handle_cycle(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_stop(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    throw StopSignal{};
 }
 
 // -*-
