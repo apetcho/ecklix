@@ -58,15 +58,13 @@ std::string ListExpr::str(void) const{
 
 std::string ListExpr::repr(void) const{
     std::stringstream ss;
-    ss << "(";
+    ss << "\"(";
     for(auto i=0; i < this->items.size(); i++){
         if(i > 0){ ss << " "; }
         ss << this->items[i]->repr();
     }
-    ss << ")";
-    std::stringstream stream;
-    stream << std::quoted(ss.str());
-    return stream.str();
+    ss << ")\"";
+    return ss.str();
 }
 
 // -*----------------------------*-
@@ -89,15 +87,13 @@ std::string ArrayExpr::str(void) const{
 
 std::string ArrayExpr::repr(void) const{
     std::stringstream ss;
-    ss << "[";
+    ss << "\"[";
     for(auto i=0; i < this->items.size(); i++){
         if(i > 0){ ss << " "; }
         ss << this->items[i]->repr();
     }
-    ss << "]";
-    std::stringstream stream;
-    stream << std::quoted(ss.str());
-    return stream.str();
+    ss << "]\"";
+    return ss.str();
 }
 
 // -*---------------------------*-
@@ -115,10 +111,8 @@ std::string PairExpr::str(void) const{
 
 std::string PairExpr::repr(void) const{
     std::stringstream ss;
-    ss << "#(" << this->key->repr() << " " << this->val->repr() << ")";
-    std::stringstream stream;
-    stream << std::quoted(ss.str());
-    return stream.str();
+    ss <<"\"#(" << this->key->repr() << " " << this->val->repr() << ")\"";
+    return ss.str();
 }
 
 // -*---------------------------*-
@@ -141,8 +135,14 @@ std::string DictExpr::str(void) const{
 }
 
 std::string DictExpr::repr(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::stringstream ss;
+    ss << "\"{";
+    for(auto i=0; i < this->items.size(); i++){
+        if(i > 0){ ss << " "; }
+        ss << this->items[i]->repr();
+    }
+    ss << "}\"";
+    return ss.str();
 }
 
 // -*---------------------------*-

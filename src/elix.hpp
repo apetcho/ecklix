@@ -776,6 +776,7 @@ public:
 
     static void setup(void);
     static bool is_reserved_word(const std::string& word);
+    static bool is_literal(const Object& obj);
     static void repl(const Vec<Object>& args);
     static void run(const fs::path& scriptpath, const Vec<Object>& args);
     static std::string readfile(const fs::path& filename);

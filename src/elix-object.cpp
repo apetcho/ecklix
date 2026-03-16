@@ -560,9 +560,9 @@ std::string Symbol::str(void) const{
 }
 
 std::string Symbol::repr(void) const{
-    std::stringstream ss;
-    ss << std::quoted(this->str());
-    return ss.str();
+    // std::stringstream ss;
+    // ss << std::quoted(this->str());
+    return this->str();
 }
 
 Symbol Symbol::clone(void) const{
@@ -585,16 +585,16 @@ bool operator!=(const Symbol& lhs, const Symbol& rhs){
 std::string Lambda::str(void) const{
     std::stringstream ss;
     if(this->named){ ss << "function at "; }
-    else{ ss << "lambda  at "; }
-    ss << std::hex << std::addressof(*this);
+    else{ ss << "<lambda at "; }
+    ss << std::hex << std::addressof(*this) << ">";
     return ss.str();
 }
 
 // -*-
 std::string Lambda::repr(void) const{
     std::stringstream xs;
-    if(this->named){ xs << "(fun "; }
-    else{ xs << "(lambda "; }
+    if(this->named){ xs << "\"(fun "; }
+    else{ xs << "\"(lambda "; }
     if(this->params.empty()){ xs << "()"; }
     else{
         xs << "(";
@@ -607,11 +607,9 @@ std::string Lambda::repr(void) const{
     for(const auto& expr: this->body){
         xs << expr->repr() << "\n";
     }
-    xs << ")";
+    xs << ")\"";
 
-    std::stringstream ss;
-    ss << std::quoted(xs.str());
-    return ss.str();
+    return xs.str();
 }
 
 // -*-
@@ -678,15 +676,13 @@ std::string List::repr(void) const{
         return ss.str();
     }
     std::stringstream xs;
-    xs << "(";
+    xs << "\"(";
     for(size_t i=0; i < this->items.size(); i++){
         if(i > 0){ xs << " "; }
         xs << this->items[i].repr();
     }
-    xs << ")";
-    std::stringstream ss;
-    ss << std::quoted(xs.str());
-    return ss.str();
+    xs << ")\"";
+    return xs.str();
 }
 
 List List::clone(void) const{
@@ -854,16 +850,14 @@ std::string Array::repr(void) const{
         ss << std::quoted(this->str());
         return ss.str();
     }else{
-        xs << "[";
+        xs << "\"[";
         for(size_t i=0; i < this->items.size(); i++){
             if(i > 0){ xs << " "; }
             xs << this->items[i].repr();
         }
-        xs << "]";
+        xs << "]\"";
     }
-    std::stringstream ss;
-    ss << std::quoted(xs.str());
-    return ss.str();
+    return xs.str();
 }
 
 // -*-
@@ -1525,17 +1519,15 @@ std::string Dict::repr(void) const{
     }
 
     std::stringstream xs;
-    xs << "{\n";
+    xs << "\"{\n";
     for(const auto& [key, val]: this->hmap){
         Pair pair{};
         pair.key = Object(key);
         pair.val = Object(val);
         xs << pair.repr() << " ";
     }
-    xs << "\n}";
-    std::stringstream ss;
-    ss << std::quoted(xs.str());
-    return ss.str();
+    xs << "\n}\"";
+    return xs.str();
 }
 
 Dict Dict::clone(void) const{
@@ -1675,14 +1667,12 @@ std::string Set::repr(void) const{
         return ss.str();
     }
     std::stringstream xs;
-    xs << "#{\n";
+    xs << "\"#{\n";
     for(const auto& key: this->hset){
         xs << key.repr() << " ";
     }
-    xs << "\n}";
-    std::stringstream ss;
-    ss << std::quoted(xs.str());
-    return ss.str();
+    xs << "\n}\"";
+    return xs.str();
 }
 
 Set Set::clone(void) const{
@@ -1860,7 +1850,7 @@ std::string Macro::str(void) const{
 
 std::string Macro::repr(void) const{
     std::stringstream xs;
-    xs << "(macro " << this->name.repr() << "(";
+    xs << "\"(macro " << this->name.repr() << "(";
     for(auto i=0; i < params.size(); i++){
         if(i > 0){ xs << " "; }
         xs << params[i].repr();
@@ -1869,10 +1859,8 @@ std::string Macro::repr(void) const{
     for(auto& expr: body){
         xs << " " << expr->repr() << "\n";
     }
-    xs << "\n)";
-    std::stringstream ss;
-    ss << std::quoted(xs.str());
-    return ss.str();
+    xs << "\n)\"";
+    return xs.str();
 }
 
 Macro Macro::clone(void) const{
