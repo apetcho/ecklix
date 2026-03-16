@@ -168,14 +168,12 @@ std::string ELix::readfile(const fs::path& filename){
 
 // -*-
 std::string ELix::readfile(const std::string& filename){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return ELix::readfile(fs::path(filename));
 }
 
 // -*-
 std::string ELix::readfile(const char* filename){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return ELix::readfile(std::string(filename));
 }
 
 // -*-
