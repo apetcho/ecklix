@@ -119,8 +119,27 @@ void ELix::repl(const Vec<Object>& args){
 
 // -*-
 void ELix::run(const fs::path& scriptpath, const Vec<Object>& args){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    ELix::setup();
+    ELix elix;
+    elix.m_runtime = std::make_shared<Env>(ELix::prelude);
+    elix.m_runtime->define("@ARGV", Object(Array{args}));
+    std::string src{};
+    try{
+        src = ELix::readfile(scriptpath);
+        Tokenizer tokenizer{src};
+        Parser parser{tokenizer};
+        auto exprs = parser.parse();
+        for(auto&& expr: exprs){
+            [[maybe_unused]] auto result = elix.eval(std::move(expr));
+        }
+    }catch(const ELixError& err){
+        std::cerr << err.describe() << std::endl;
+    }catch(std::exception& err){
+        std::cerr << err.what() << std::endl;
+    }catch(...){
+        std::cerr << "Fatal: unknown error occurred." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
 }
 
 // -*-
