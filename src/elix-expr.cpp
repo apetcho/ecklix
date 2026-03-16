@@ -33,8 +33,7 @@ std::string SymbolExpr::str(void) const{
 }
 
 std::string SymbolExpr::repr(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return this->name.repr();
 }
 
 // -*---------------------------*-
