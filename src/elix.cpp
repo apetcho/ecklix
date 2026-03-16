@@ -510,15 +510,26 @@ Object ELix::handle_progn(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_if(Vec<Expression> exprs){
+    /*
+        (if test body)
+    */
     auto pred = (exprs.size()==2 || exprs.size()==3);
     this->check_argc(pred, "if");
 
-    if(exprs[0]->eval(this).as_bool()){
-        return exprs[1]->eval(this);
+    auto test = exprs[0]->eval(this);
+    if(!test.is_bool()){
+        std::stringstream ss;
+        ss << "Malformed `if' expression. Expect the test expression to\n";
+        ss << "evaluate to a bool value.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+
+    if(test.as_bool()){
+        [[maybe_unused]] auto _ = exprs[1]->eval(this);
     }
 
     if(exprs.size()==3){
-        return exprs[2]->eval(this);
+        [[maybe_unused]] auto _ = exprs[2]->eval(this);
     }
 
     return Object();
@@ -526,6 +537,13 @@ Object ELix::handle_if(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_let(Vec<Expression> exprs){
+    /*
+        (let ((var-1 val-1)
+            (var-2 val-2)
+            ...
+            (var-N val-N))
+            body)
+    */
     auto pred = (exprs.size() > 1);
     this->check_argc(pred, "let");
     auto pairs_ = exprs[0]->eval(this);
@@ -577,6 +595,13 @@ Object ELix::handle_let(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_var(Vec<Expression> exprs){
+    /*
+        (var (key-1 val-1)
+            (key-2 val-2)
+            (key-3 val-3)
+            ...
+            (key-N val-N))
+    */
     auto pred = (exprs.size() >= 2 && exprs.size() % 2 == 0);
     this->check_argc(pred, "var");
     for(auto i=0; i < exprs.size(); i += 2){
@@ -603,6 +628,13 @@ Object ELix::handle_var(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_cond(Vec<Expression> exprs){
+    /*
+        (cond
+            (test-1 expr-1)
+            (test-2 expr-2)
+            ...
+            (test-N expr-N))
+    */
     auto pred = (exprs.size() >= 2);
     this->check_argc(pred, "cond");
     bool failed{true};
@@ -645,6 +677,7 @@ Object ELix::handle_cond(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_while(Vec<Expression> exprs){
+    // (while test body)
     auto pred = (exprs.size() >= 1);
     this->check_argc(pred, "while");
     constexpr auto MY_MAX_ITERATIONS = std::numeric_limits<i32>::max();
@@ -682,8 +715,121 @@ Object ELix::handle_while(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_for(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (for (x iterable) body)
+    auto pred = (exprs.size() >= 1);
+    this->check_argc(pred, "for");
+    auto args = dynamic_cast<ListExpr*>(exprs[0].get());
+    if(args==nullptr){
+        std::stringstream ss;
+        ss << "Malformed `for' expression. Expected the first argument\n";
+        ss << "to be a list expression.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    if(args->items.size()!=2){
+        std::stringstream ss;
+        ss << "Malformed `for' expression. Expected the first argument\n";
+        ss << "to be a list expression of two elements.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+
+    auto var_ = dynamic_cast<SymbolExpr*>(args->items[0].get());
+    if(var_==nullptr){
+        std::stringstream ss;
+        ss << "Malformed `for' expression. Expected the first argument\n";
+        ss << "to be a list expression with the first element to be a symbol.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+
+    auto var = var_->name.str();
+    if(ELix::is_reserved_word(var)){
+        std::stringstream ss;
+        ss << std::quoted(var) << " is a builtin reserved word. It cannot be used to ";
+        ss << "name a variable.";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+
+    auto iterable = exprs[1]->eval(this);
+    if(!iterable.is_iterable()){
+        std::stringstream ss;
+        ss << "Malformed `for' expression. Expected the first argument\n";
+        ss << "to be a list expression with the second element to be an iterable object\n";
+        ss << "i.e a String, a List, an Array, a Set, or a Dict object.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+
+    auto ctx = std::make_shared<Env>(this->m_runtime);
+    auto saved = this->m_runtime;
+    this->m_runtime = ctx;
+    this->m_runtime->define(var, Object());
+    constexpr auto MY_MAX_ITERATIONS = std::numeric_limits<i32>::max();
+    u32 iteration = 0;
+
+    auto checkIteration = [&iteration, MY_MAX_ITERATIONS]() mutable {
+        if(iteration > MY_MAX_ITERATIONS){
+            std::stringstream ss;
+            ss << "Too long running while loop. Maximum iteration exceeded.";
+            throw ELixError(ELixError::RuntimeError, ss.str());
+        }
+    };
+    if(exprs.size()==1){
+        for(;;){ // empty-body
+            checkIteration();
+            ++iteration;
+        }           
+    }
+    if(iterable.is_string()){
+        auto xstr = iterable.as_string().str();
+        for(auto c: xstr){
+            checkIteration();
+            this->m_runtime->define(var, Object(String{std::string(1, c)}));
+            for(auto i=1; i < exprs.size(); i++){
+                [[maybe_unused]] auto _ = exprs[i]->eval(this);
+            }
+            ++iteration;
+        }
+    }else if(iterable.is_array()){
+        auto items = iterable.as_array().items;
+        for(auto item: items){
+            checkIteration();
+            this->m_runtime->define(var, item);
+            for(auto i=1; i < exprs.size(); i++){
+                [[maybe_unused]] auto _ = exprs[i]->eval(this);
+            }
+            ++iteration;
+        }
+    }else if(iterable.is_list()){
+        auto items = iterable.as_list().items;
+        for(auto item: items){
+            checkIteration();
+            this->m_runtime->define(var, item);
+            for(auto i=1; i < exprs.size(); i++){
+                [[maybe_unused]] auto _ = exprs[i]->eval(this);
+            }
+            ++iteration;
+        }
+    }else if(iterable.is_set()){
+        auto items = iterable.as_set().hset;
+        for(auto item: items){
+            checkIteration();
+            this->m_runtime->define(var, item);
+            for(auto i=1; i < exprs.size(); i++){
+                [[maybe_unused]] auto _ = exprs[i]->eval(this);
+            }
+            ++iteration;
+        }
+    }else {
+        auto items = iterable.as_dict().items();
+        for(auto item: items){
+            checkIteration();
+            this->m_runtime->define(var, Object(item));
+            for(auto i=1; i < exprs.size(); i++){
+                [[maybe_unused]] auto _ = exprs[i]->eval(this);
+            }
+            ++iteration;
+        }
+    }
+
+    return Object();
 }
 
 // -*-
