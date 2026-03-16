@@ -1292,8 +1292,7 @@ void Module::load(Context& ctx) const{
 }
 
 void Module::add(const std::string& name, const Object& val){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    this->m_cache[name] = val;
 }
 
 const Object& Module::get(const std::string& name) const{
