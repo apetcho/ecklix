@@ -315,18 +315,6 @@ Object ELix::eval(Expression expr){
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="DictExpr"){
         auto self = dynamic_cast<DictExpr*>(expr.get());
-        // HashMap hmap{};
-        // for(auto&& item: self->items){
-        //     auto entry = item->eval(this);
-        //     if(!entry.is_pair()){
-        //         std::stringstream ss;
-        //         ss << "Invalid Dict entry. Excpect each entry to a Pair object";
-        //         throw ELixError(ELixError::SyntaxError, ss.str());
-        //     }
-        //     auto pair = entry.as_pair();
-        //     hmap[pair.key] = pair.val;
-        // }
-
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="ListExpr"){
         auto self = dynamic_cast<ListExpr*>(expr.get());
@@ -439,8 +427,18 @@ Object ELix::eval(ArrayExpr& expr){
 
 // -*-
 Object ELix::eval(DictExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    HashMap hmap{};
+    for(auto&& item: expr.items){
+        auto entry = item->eval(this);
+        if(!entry.is_pair()){
+            std::stringstream ss;
+            ss << "Invalid Dict entry. Excpect each entry to a Pair object";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        auto pair = entry.as_pair();
+        hmap[pair.key] = pair.val;
+    }
+    return Object(Dict{hmap});
 }
 
 // -*-
