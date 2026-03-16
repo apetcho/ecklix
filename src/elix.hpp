@@ -99,7 +99,7 @@ using isize = std::int64_t;
 
 using Context = std::shared_ptr<Env>;
 using Expression = std::unique_ptr<ExprBase>;
-using Fn = std::function<Object(const Vec<Object>&)>;
+using Fn = std::function<Object(const Vec<Object>&, Context& ctx)>;
 //using Visitor = std::unique_ptr<ExprVisitor>;
 typedef ExprVisitor* Visitor;
 
@@ -786,6 +786,7 @@ public:
     //static Context runtime;
     static ModuleSet BuiltinModules;
     static void add_builtin_module(const Module& mymodule);
+    static void validate_argc(bool pred, const std::string& prefix);
 
 private:
     //ModuleLoader m_moduleLoader{};

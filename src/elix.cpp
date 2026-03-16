@@ -482,6 +482,15 @@ void ELix::check_argc(bool pred, const std::string& prefix){
 }
 
 // -*-
+void ELix::validate_argc(bool pred, const std::string& prefix){
+    if(!pred){
+        std::stringstream ss;
+        ss << "Illegal " << std::quoted(prefix) << " expression: invalid number of arguments.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+}
+
+// -*-
 void ELix::validate_name(const std::string& name){
     if(ELix::is_reserved_word(name)){
         std::stringstream ss;
