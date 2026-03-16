@@ -7,8 +7,8 @@ namespace ekasoft::elx{
 // -
 
 static void add_builtin(const std::string& name, Fn fn, int minArgc, int maxArgc, const std::string& docstr=""){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    Func func{fn, minArgc, maxArgc};
+    ELix::prelude->define(name, Object(func));
 }
 
 static void add_builtin(const std::string& name, const Object& obj, const std::string& docstr=""){
