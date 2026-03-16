@@ -1323,8 +1323,19 @@ void Module::configure(const Symbol& name){
 
 // -*-
 void Module::configure(const std::string& filename){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto path = fs::path(filename);
+    auto ext = path.extension();
+    if(ext!=ELix::scriptExt){
+        std::stringstream ss;
+        ss << "invalid file extension. ELix script file extension must be ";
+        ss << std::quoted(ELix::scriptExt) << ".";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    this->m_filename = filename;
+    this->m_fullpath = fs::absolute(path);
+    auto fname = path.filename().string();
+    auto len = fname.length() - std::string(".elx").length();
+    this->m_name = fname.substr(0, len);
 }
 
 // -*-
