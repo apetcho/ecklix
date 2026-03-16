@@ -346,73 +346,74 @@ Object ELix::eval(ListExpr& expr){
     // special-form or function call
     // expect the first element in the list to be a symbol
         
-    /*
-        auto head = expr->items[0]->eval(this);
-        if(!head.is_symbol()){
+    auto head = expr.items[0]->eval(this);
+    if(!head.is_symbol()){
+        std::stringstream ss;
+        ss << "Incorrect list-expression. Expect the first element to be a symbol.\n";
+        ss << "A list-expression is a special-form or a function all.\n";
+        ss << "Example:\n";
+        ss << "   (lambda () (println \"Hello World!\"))\n";
+        ss << "   (myfunction args)\n";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    Vec<Expression> args{};
+    for(auto i=1; i < expr.items.size(); i++){
+        args.push_back(std::move(expr.items[i]));
+    }
+    auto word = head.as_symbol().str();
+    Object fun;
+    Object result{};
+    if(!ELix::is_reserved_word(word)){
+        // This is a function call
+        // Get the associated callable object
+        fun = this->m_runtime->get(word);
+        // Check that `fun' is actually a callable
+        if(!fun.is_callable()){
             std::stringstream ss;
-            ss << "Incorrect list-expression. Expect the first element to be a symbol.\n";
-            ss << "A list-expression is a special-form or a function all.\n";
-            ss << "Example:\n";
-            ss << "   (lambda () (println \"Hello World!\"))\n";
-            ss << "   (myfunction args)\n";
+            ss << "" << std::quoted(word) << " is not a callable object.";
             throw ELixError(ELixError::SyntaxError, ss.str());
         }
-        Vec<Expression> args{};
-        for(auto i=1; i < expr->items.size(); i++){
-            args.push_back(std::move(expr->items[i]));
+        Vec<Object> argv{};
+        for(auto&& arg: args){
+            argv.push_back(arg->eval(this));
         }
-        auto word = head.as_symbol().str();
-        Object fun;
-        if(!ELix::is_reserved_word(word)){
-            // This is a function call
-            // Get the associated callable object
-            fun = this->m_runtime->get(word);
-            // Check that `fun' is actually a callable
-            if(!fun.is_callable()){
-                std::stringstream ss;
-                ss << "" << std::quoted(word) << " is not a callable object.";
-                throw ELixError(ELixError::SyntaxError, ss.str());
-            }
-            Vec<Object> argv{};
-            for(auto&& arg: args){
-                argv.push_back(arg->eval(this));
-            }
-            if(fun.is_macro()){
-                auto macro = fun.as_macro();
-                return macro(argv);
-            }
-            if(fun.is_lambda() || fun.is_function()){
-                auto lambda = fun.as_lambda();
-                return lambda(argv);
-            }
+        if(fun.is_macro()){
+            auto macro = fun.as_macro();
+            result = macro(argv);
+        }else if(fun.is_lambda() || fun.is_function()){
+            auto lambda = fun.as_lambda();
+            result = lambda(argv);
+        }else if(fun.is_func()){
             auto func = fun.as_func();
-            return func(argv);
-        }else{
-            if(word=="import"){ return this->handle_import(args); }
-            else if(word=="progn"){ return this->handle_progn(args); }
-            else if(word=="if"){ return this->handle_if(args); }
-            else if(word=="cond"){ return this->handle_cond(args); }
-            else if(word=="var"){ return this->handle_var(args); }
-            else if(word=="let"){ return this->handle_let(args); }
-            else if(word=="while"){ return this->handle_while(args); }
-            else if(word=="for"){ return this->handle_for(args); }
-            else if(word=="lambda"){ return this->handle_lambda(args); }
-            else if(word=="fun"){ return this->handle_fun(args); }
-            else if(word=="macro"){ return this->handle_macro(args); }
-            else if(word=="and"){ return this->handle_and(args); }
-            else if(word=="or"){ return this->handle_or(args); }
-            else if(word=="not"){ return this->handle_not(args); }
-            else if(word=="quote"){ return this->handle_quote(args)->eval(this); }
-            else if(word=="quasiquote"){ return this->handle_quasiquote(args)->eval(this); }
-            else if(word=="unquote"){ return this->handle_unquote(args)->eval(this); }
-            else if(word=="unquote-splicing"){ return this->handle_unquote_splicing(args)->eval(this); }
-            else{
-                std::stringstream ss;
-                ss << "unknown special form " << std::quoted(word);
-                throw ELixError(ELixError::SyntaxError, ss.str());
-            }
+            result = func(argv);
         }
-    */
+    }else{
+        if(word=="import"){ result = this->handle_import(args); }
+        else if(word=="progn"){ result = this->handle_progn(args); }
+        else if(word=="if"){ result = this->handle_if(args); }
+        else if(word=="cond"){ result = this->handle_cond(args); }
+        else if(word=="var"){ result = this->handle_var(args); }
+        else if(word=="let"){ result = this->handle_let(args); }
+        else if(word=="while"){ result = this->handle_while(args); }
+        else if(word=="for"){ result = this->handle_for(args); }
+        else if(word=="lambda"){ result = this->handle_lambda(args); }
+        else if(word=="fun"){ result = this->handle_fun(args); }
+        else if(word=="macro"){ result = this->handle_macro(args); }
+        else if(word=="and"){ result = this->handle_and(args); }
+        else if(word=="or"){ result = this->handle_or(args); }
+        else if(word=="not"){ result = this->handle_not(args); }
+        else if(word=="quote"){ result = this->handle_quote(args)->eval(this); }
+        else if(word=="quasiquote"){ result = this->handle_quasiquote(args)->eval(this); }
+        else if(word=="unquote"){ result = this->handle_unquote(args)->eval(this); }
+        else if(word=="unquote-splicing"){ result = this->handle_unquote_splicing(args)->eval(this); }
+        else{
+            std::stringstream ss;
+            ss << "unknown special form " << std::quoted(word);
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+    }
+
+    return result;
 }
 
 // -*-
