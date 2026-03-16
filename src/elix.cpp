@@ -1257,8 +1257,14 @@ Module& Module::operator=(const Module& mod) noexcept{
 }
 
 Module& Module::operator=(Module&& mod) noexcept{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    if(this != &mod){
+        this->m_name = std::move(mod.m_name);
+        this->m_filename = std::move(mod.m_filename);
+        this->m_fullpath = std::move(mod.m_fullpath);
+        this->m_cache = std::move(mod.m_cache);
+    }
+
+    return *this;
 }
 
 void Module::load(Context& ctx) const{
