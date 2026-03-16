@@ -864,9 +864,9 @@ private:
 // -*-
 class Module final{
 public:
-    explicit Module(const Symbol& name);
-    explicit Module(const std::string& filename);
-    explicit Module(const fs::path& filepath);
+    explicit Module(const Symbol& name, ELix* elix);
+    explicit Module(const std::string& filename, ELix* elix);
+    explicit Module(const fs::path& filepath, ELix* elix);
     Module(const Module& mod) noexcept;
     Module(Module&& mod) noexcept;
     Module& operator=(const Module& mod) noexcept;
@@ -887,6 +887,7 @@ private:
     std::string m_filename{};
     fs::path m_fullpath{};
     std::map<std::string, Object> m_cache{};
+    ELix* m_elix;
 
     void setup(void); // the cache
     void configure(const Symbol& name);

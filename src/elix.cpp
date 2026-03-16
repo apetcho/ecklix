@@ -263,7 +263,7 @@ void ELix::load(const fs::path& path){
         [[maybe_unused]] auto result = this->eval(std::move(expr));
     }
     // add to cache
-    this->m_imported.insert(Module{path});
+    this->m_imported.insert(Module{path, this});
 }
 
 // -*-
@@ -285,7 +285,7 @@ void ELix::load(const std::string& path){
         [[maybe_unused]] auto result = this->eval(std::move(expr));
     }
     // add to cache
-    this->m_imported.insert(Module{path});
+    this->m_imported.insert(Module{path, this});
 }
 
 // -*-
@@ -1215,17 +1215,17 @@ Expression ELix::handle_unquote_splicing(Vec<Expression> exprs){
 // -*-------------------------------*-
 // -*- ModuleLoader implementation -*-
 // -*-------------------------------*-
-Module::Module(const Symbol& name){
+Module::Module(const Symbol& name, ELix* elix){
     this->configure(name);
     this->setup();
 }
 
-Module::Module(const std::string& filename){
+Module::Module(const std::string& filename, ELix* elix){
     this->configure(filename);
     this->setup();
 }
 
-Module::Module(const fs::path& filepath){
+Module::Module(const fs::path& filepath, ELix* elix){
     this->configure(filepath);
     this->setup();
 }
@@ -1236,6 +1236,7 @@ Module::Module(const Module& mod) noexcept
 , m_filename{mod.m_filename}
 , m_fullpath{mod.m_fullpath}
 , m_cache{mod.m_cache}
+, m_elix{mod.m_elix}
 {}
 
 Module::Module(Module&& mod) noexcept
@@ -1243,6 +1244,7 @@ Module::Module(Module&& mod) noexcept
 , m_filename{std::move(mod.m_filename)}
 , m_fullpath{std::move(mod.m_fullpath)}
 , m_cache{std::move(mod.m_cache)}
+, m_elix{mod.m_elix}
 {}
 
 Module& Module::operator=(const Module& mod) noexcept{
@@ -1251,6 +1253,7 @@ Module& Module::operator=(const Module& mod) noexcept{
         this->m_filename = mod.m_filename;
         this->m_fullpath = mod.m_fullpath;
         this->m_cache = mod.m_cache;
+        this->m_elix = mod.m_elix;
     }
 
     return *this;
@@ -1262,14 +1265,30 @@ Module& Module::operator=(Module&& mod) noexcept{
         this->m_filename = std::move(mod.m_filename);
         this->m_fullpath = std::move(mod.m_fullpath);
         this->m_cache = std::move(mod.m_cache);
+        this->m_elix = mod.m_elix;
     }
 
     return *this;
 }
 
 void Module::load(Context& ctx) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // auto src = ELix::readfile(this->m_fullpath);
+    // auto myruntime = this->m_elix->m_runtime;
+    // this->m_elix->m_runtime = ctx;
+    // Tokenizer tokenizer{src};
+    // Parser parser{tokenizer};
+    // auto exprs = parser.parse();
+    // for(auto&& expr: exprs){
+    //     [[maybe_unused]] auto _ = expr->eval(this->m_elix);
+    // }
+    // // fill the cache
+    // for(const auto& [key, val]: this->m_elix->m_runtime->bindings()){
+        
+    // }
+    // this->m_elix->m_runtime = myruntime;
+    for(const auto& [key, val]: this->m_cache){
+        ctx->define(key, val);
+    }
 }
 
 void Module::add(const std::string& name, const Object& val){
