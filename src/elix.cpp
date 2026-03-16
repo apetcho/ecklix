@@ -312,10 +312,6 @@ Object ELix::eval(Expression expr){
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="SetExpr"){
         auto self = dynamic_cast<SetExpr*>(expr.get());
-        // HashSet hset{};
-        // for(auto&& key: self->items){
-        //     hset.insert(Object(key->eval(this)));
-        // }
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="DictExpr"){
         auto self = dynamic_cast<DictExpr*>(expr.get());
@@ -449,8 +445,12 @@ Object ELix::eval(DictExpr& expr){
 
 // -*-
 Object ELix::eval(SetExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    HashSet hset{};
+    for(auto&& key: expr.items){
+        hset.insert(Object(key->eval(this)));
+    }
+    
+    return Object(Set{hset});
 }
 
 // -*-
