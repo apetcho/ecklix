@@ -108,9 +108,11 @@ Token Tokenizer::peek_next_token(u32& row, u32& col, u32& pos){
         // hashset-literal: #{key1 key2 key3 ... }
         // symbol: #name
         if(this->peek_next()=='{'){ // hashset-literal
+            this->advance();
             this->reset(row, col, pos);
             return Token(TokenKind::PoundBrace, "#{", (row-1), (col-1));
         }else if(this->peek_next()=='('){ // hashset-literal
+            this->advance();
             this->reset(row, col, pos);
             return Token(TokenKind::PoundParen, "#(", (row-1), (col-1));
         }
@@ -118,6 +120,20 @@ Token Tokenizer::peek_next_token(u32& row, u32& col, u32& pos){
         token = this->read_literal(pos);
         this->reset(row, col, pos);
         return token;
+    case '\'':
+        pos = this->m_pos;
+        this->reset(row, col, pos);
+        return Token(TokenKind::Quote, "'", row, col);
+    case '`':
+        pos = this->m_pos;
+        this->reset(row, col, pos);
+        return Token(TokenKind::Quasiquote, "`", row, col);
+    case ',':
+        if(this->peek_next()=='@'){ // hashset-literal
+            this->advance();
+            this->reset(row, col, pos);
+            return Token(TokenKind::UnquoteSplicing, ",@", (row-1), (col-1));
+        }
     case '"': // string-literal
         token = this->read_string(pos);
         this->reset(row, col, pos);
