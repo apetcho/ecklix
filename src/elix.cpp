@@ -57,8 +57,17 @@ void ELix::setup(void){
 
 // -*-
 bool ELix::is_reserved_word(const std::string& word){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::set<std::string> keywords = {
+#define ELIX_DEF(_, text) text,
+        ELIX_RESERVED_WORDS()
+#undef ELIX_DEF
+    };
+
+    auto key = keywords.find(word);
+    if(key==keywords.end()){
+        return false;
+    }
+    return true;
 }
 
 // -*-
