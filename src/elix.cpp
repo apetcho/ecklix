@@ -1340,8 +1340,18 @@ void Module::configure(const std::string& filename){
 
 // -*-
 void Module::configure(const fs::path& filepath){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto ext = filepath.extension();
+    if(ext!=ELix::scriptExt){
+        std::stringstream ss;
+        ss << "invalid file extension. ELix script file extension must be ";
+        ss << std::quoted(ELix::scriptExt) << ".";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    this->m_filename = filepath.string();
+    this->m_fullpath = fs::absolute(filepath);
+    auto fname = filepath.filename().string();
+    auto len = fname.length() - std::string(".elx").length();
+    this->m_name = fname.substr(0, len);
 }
 
 size_t ModuleHash::operator()(const Module& arg) const{
