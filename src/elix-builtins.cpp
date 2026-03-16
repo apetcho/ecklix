@@ -9,11 +9,20 @@ namespace ekasoft::elx{
 static void add_builtin(const std::string& name, Fn fn, int minArgc, int maxArgc, const std::string& docstr=""){
     Func func{fn, minArgc, maxArgc};
     ELix::prelude->define(name, Object(func));
+    if(ELix::docstrings.find(name)==ELix::docstrings.end()){
+        ELix::docstrings[name] = Vec<std::string>{docstr};
+    }else{
+        ELix::docstrings[name].push_back(docstr);
+    }
 }
 
 static void add_builtin(const std::string& name, const Object& obj, const std::string& docstr=""){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    ELix::prelude->define(name, obj);
+    if(ELix::docstrings.find(name)==ELix::docstrings.end()){
+        ELix::docstrings[name] = Vec<std::string>{docstr};
+    }else{
+        ELix::docstrings[name].push_back(docstr);
+    }
 }
 
 // -*----------------*-
