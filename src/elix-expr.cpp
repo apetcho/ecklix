@@ -26,8 +26,7 @@ std::string LiteralExpr::repr(void) const{
 // -*- SymbolExpr implementation -*-
 // -*-----------------------------*-
 Object SymbolExpr::eval(Visitor visitor){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return visitor->eval(*this);
 }
 
 std::string SymbolExpr::str(void) const{
