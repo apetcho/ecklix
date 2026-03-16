@@ -482,6 +482,16 @@ void ELix::check_argc(bool pred, const std::string& prefix){
 }
 
 // -*-
+void ELix::validate_name(const std::string& name){
+    if(ELix::is_reserved_word(name)){
+        std::stringstream ss;
+        ss << std::quoted(name) << " is a builtin reserved word. It cannot be used to ";
+        ss << "name a variable.";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+}
+
+// -*-
 Object ELix::handle_import(Vec<Expression> exprs){
     this->check_argc(exprs.size()==1, "import");
     auto self = exprs[0]->eval(this);
@@ -845,12 +855,7 @@ Object ELix::handle_fun(Vec<Expression> exprs){
         throw ELixError(ELixError::SyntaxError, ss.str());
     }
     auto fname = name->name.str();
-    if(ELix::is_reserved_word(fname)){
-        std::stringstream ss;
-        ss << std::quoted(fname) << " is a builtin reserved word. It cannot be used to ";
-        ss << "name a variable.";
-        throw ELixError(ELixError::ValueError, ss.str());
-    }
+    this->validate_name(fname);
 
     auto xs = dynamic_cast<ListExpr*>(exprs[1].get());
     if(xs==nullptr){
@@ -870,6 +875,7 @@ Object ELix::handle_fun(Vec<Expression> exprs){
             ss << "in function parameters list.";
             throw ELixError(ELixError::SyntaxError, ss.str());
         }
+        this->validate_name(self->name.str());
         params.push_back(self->name);
     }
     Vec<Expression> body{};
@@ -885,6 +891,7 @@ Object ELix::handle_fun(Vec<Expression> exprs){
     lambda.ctx = std::make_shared<Env>(this->m_runtime);
     lambda.named = true;
     lambda.elix = this;
+    this->m_runtime->define(fname, Object(lambda));
 
     return std::move(lambda);
 }
@@ -892,27 +899,22 @@ Object ELix::handle_fun(Vec<Expression> exprs){
 // -*-
 Object ELix::handle_macro(Vec<Expression> exprs){
     auto pred = (exprs.size() >= 2);
-    this->check_argc(pred, "fun");
+    this->check_argc(pred, "macro");
+    
     auto name = dynamic_cast<SymbolExpr*>(exprs[0].get());
     if(name==nullptr){
         std::stringstream ss;
-        ss << "Malformed function definition. The name my be a symbol, ";
+        ss << "Malformed macro definition. The name my be a symbol, ";
         auto self = exprs[0]->eval(this);
         ss << "but we got " << std::quoted(self.type().str());
         throw ELixError(ELixError::SyntaxError, ss.str());
     }
     auto fname = name->name.str();
-    if(ELix::is_reserved_word(fname)){
-        std::stringstream ss;
-        ss << std::quoted(fname) << " is a builtin reserved word. It cannot be used to ";
-        ss << "name a variable.";
-        throw ELixError(ELixError::ValueError, ss.str());
-    }
-
+    this->validate_name(fname);
     auto xs = dynamic_cast<ListExpr*>(exprs[1].get());
     if(xs==nullptr){
         std::stringstream ss;
-        ss << "Malformed function definition. The second argument in a function definition\n";
+        ss << "Malformed macro definition. The second argument in a function definition\n";
         ss << "must be a list. ";
         auto self = exprs[1]->eval(this);
         ss << "but we got " << std::quoted(self.type().str());
@@ -924,9 +926,11 @@ Object ELix::handle_macro(Vec<Expression> exprs){
         if(self==nullptr){
             std::stringstream ss;
             ss << "Found " << std::quoted(item->eval(this).type().str()) << " object type ";
-            ss << "in function parameters list.";
+            ss << "in macro parameters list.";
             throw ELixError(ELixError::SyntaxError, ss.str());
         }
+
+        this->validate_name(self->name.str());
         params.push_back(self->name);
     }
     Vec<Expression> body{};
@@ -941,34 +945,20 @@ Object ELix::handle_macro(Vec<Expression> exprs){
     macro.body = std::move(body);
     macro.ctx = std::make_shared<Env>(this->m_runtime);
     macro.elix = this;
+    this->m_runtime->define(fname, Object(macro));
 
     return std::move(macro);
 }
 
 // -*-
 Object ELix::handle_lambda(Vec<Expression> exprs){
-    auto pred = (exprs.size() >= 2);
-    this->check_argc(pred, "fun");
-    auto name = dynamic_cast<SymbolExpr*>(exprs[0].get());
-    if(name==nullptr){
-        std::stringstream ss;
-        ss << "Malformed function definition. The name my be a symbol, ";
-        auto self = exprs[0]->eval(this);
-        ss << "but we got " << std::quoted(self.type().str());
-        throw ELixError(ELixError::SyntaxError, ss.str());
-    }
-    auto fname = name->name.str();
-    if(ELix::is_reserved_word(fname)){
-        std::stringstream ss;
-        ss << std::quoted(fname) << " is a builtin reserved word. It cannot be used to ";
-        ss << "name a variable.";
-        throw ELixError(ELixError::ValueError, ss.str());
-    }
-
-    auto xs = dynamic_cast<ListExpr*>(exprs[1].get());
+    auto pred = (exprs.size() >= 1);
+    this->check_argc(pred, "lambda");
+        
+    auto xs = dynamic_cast<ListExpr*>(exprs[0].get());
     if(xs==nullptr){
         std::stringstream ss;
-        ss << "Malformed function definition. The second argument in a function definition\n";
+        ss << "Malformed lambda-expression. The second argument in a function definition\n";
         ss << "must be a list. ";
         auto self = exprs[1]->eval(this);
         ss << "but we got " << std::quoted(self.type().str());
@@ -980,9 +970,10 @@ Object ELix::handle_lambda(Vec<Expression> exprs){
         if(self==nullptr){
             std::stringstream ss;
             ss << "Found " << std::quoted(item->eval(this).type().str()) << " object type ";
-            ss << "in function parameters list.";
+            ss << "in lambda-expression parameters list.";
             throw ELixError(ELixError::SyntaxError, ss.str());
         }
+        this->validate_name(self->name.str());
         params.push_back(self->name);
     }
     Vec<Expression> body{};
@@ -1004,8 +995,20 @@ Object ELix::handle_lambda(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_and(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size()==2);
+    this->check_argc(pred, "and");
+    auto x = exprs[0]->eval(this);
+    auto y = exprs[1]->eval(this);
+    if(!x.is_bool() && !y.is_bool()){
+        std::stringstream ss;
+        ss << "Malformed `and' expression. The two arguments of the `and'\n";
+        ss << "operators must evaluate to a boolean.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    if(x.as_bool() && y.as_bool()){
+        return Object(true);
+    }
+    return Object(false);
 }
 
 // -*-
