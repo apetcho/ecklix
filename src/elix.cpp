@@ -306,10 +306,6 @@ Object ELix::eval(Expression expr){
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="ArrayExpr"){
         auto self = dynamic_cast<ArrayExpr*>(expr.get());
-        // Vec<Object> result{};
-        // for(auto&& item: self->items){
-        //     result.push_back(item->eval(this));
-        // }
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="PairExpr"){
         auto self = dynamic_cast<PairExpr*>(expr.get());
@@ -439,8 +435,12 @@ Object ELix::eval(ListExpr& expr){
 
 // -*-
 Object ELix::eval(ArrayExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    Vec<Object> result{};
+    for(auto&& item: expr.items){
+        result.push_back(expr.eval(this));
+    }
+
+    return Object(Array{result});
 }
 
 // -*-
