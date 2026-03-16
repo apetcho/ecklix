@@ -263,9 +263,25 @@ void ELix::load(const fs::path& path){
 }
 
 // -*-
-void ELix::load(const std::string& script){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+void ELix::load(const std::string& path){
+    // user-defined script
+    for(const auto& mymod: this->m_imported){
+        // path is absolute or relative
+        if(path==mymod.filename()){
+            //! alread loaded. Do nothing
+            return;
+        }
+    }
+    // not yet loaded
+    auto src = ELix::readfile(path);
+    Tokenizer tokenizer{src};
+    Parser parser{tokenizer};
+    auto exprs = parser.parse();
+    for(auto&& expr: exprs){
+        [[maybe_unused]] auto result = this->eval(std::move(expr));
+    }
+    // add to cache
+    this->m_imported.insert(Module{path});
 }
 
 // -*-
