@@ -600,8 +600,44 @@ Object ELix::handle_var(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_cond(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size() >= 2);
+    this->check_argc(pred, "cond");
+    bool failed{true};
+    for(auto i=0; i < exprs.size(); i++){
+        auto branch = dynamic_cast<ListExpr*>(exprs[i].get());
+        if(branch==nullptr){
+            std::stringstream ss;
+            ss << "Invalid `cond` exprssion. Expect the argument to be a list of list-expression.";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        if(branch->items.size()!=2){
+            std::stringstream ss;
+            ss << "Invalid `cond` branch exprssion.\n";
+            ss << "Expect each branch to be a list of two expressions.\n";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        auto test = branch->items[0]->eval(this);
+        if(!test.is_bool()){
+            std::stringstream ss;
+            ss << "Invalid `cond` branch exprssion.\n";
+            ss << "Expect the first element each branch evaluate to boolean.\n";
+            ss << "Got " << test.type().str() << " object type.";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        if(test.as_bool()){
+            failed = false;
+            [[maybe_unused]] auto _ = branch->items[1]->eval(this);
+        }
+    }
+
+    if(failed){
+        std::stringstream ss;
+        ss << "Malformed `cond' expression. Expression the test condition of\n";
+        ss << "at least one branch to evalue to true, but got none.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+
+    return Object();
 }
 
 // -*-
