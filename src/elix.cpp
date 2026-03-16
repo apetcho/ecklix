@@ -461,8 +461,12 @@ Object ELix::eval(PairExpr& expr){
 
 // -*-
 void ELix::print(const Object& obj){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::cout << obj.str();
+}
+
+// -*-
+void ELix::println(const Object& obj){
+    std::cout << obj.str() << std::endl;
 }
 
 // -*-

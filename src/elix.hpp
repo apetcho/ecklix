@@ -822,6 +822,7 @@ private:
     // static void initialize_process(void);
 
     void print(const Object& obj);
+    void println(const Object& obj);
 
     // -*-
     Object handle_import(Vec<Expression> exprs);
