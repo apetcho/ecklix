@@ -10,8 +10,7 @@ namespace ekasoft::elx{
 // -*- LiteralExpr implementation -*-
 // -*------------------------------*-
 Object LiteralExpr::eval(Visitor visitor){
-    (void)visitor;
-    return this->obj;
+    return visitor->eval(*this);
 }
 
 std::string LiteralExpr::str(void) const{
@@ -30,8 +29,7 @@ Object SymbolExpr::eval(Visitor visitor){
 }
 
 std::string SymbolExpr::str(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return this->name.str();
 }
 
 std::string SymbolExpr::repr(void) const{
