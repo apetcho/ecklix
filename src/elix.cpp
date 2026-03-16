@@ -1081,8 +1081,9 @@ Object ELix::handle_list(Vec<Expression> exprs){
 
 // -*-
 Expression ELix::handle_quote(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size()==1);
+    this->check_argc(pred, "quote");
+    return std::move(exprs[0]);
 }
 
 // -*-
