@@ -81,8 +81,13 @@ std::string ArrayExpr::str(void) const{
 }
 
 std::string ArrayExpr::repr(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    Vec<Object> xs{};
+    for(const auto& expr: this->items){
+        xs.push_back(Object(String{expr->repr()}));
+    }
+
+    auto result = Object(Array{xs});
+    return result.str();
 }
 
 // -*---------------------------*-
