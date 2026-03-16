@@ -630,21 +630,22 @@ Object Lambda::operator()(const Vec<Object>& args){
         ss << "Incorrect number of arguments.\n";
         ss << "Expect " << this->params.size() << " but got " << args.size();
     }
+    auto myctx = this->ctx;
+    this->ctx = std::make_shared<Env>(Lambda::elix->m_runtime);
+    for(const auto& [key, val]: myctx->bindings()){
+        this->ctx->define(key, val);
+    }
     for(size_t i=0; i < args.size(); i++){
         auto key = this->params[i].str();
         auto val = args[i];
         this->ctx->define(key, val);
     }
     Object result{};
-    auto visitor = Lambda::elix;
-    auto runtime = Lambda::elix->m_runtime;
     Lambda::elix->m_runtime = this->ctx;
-
     for(auto&& expr: this->body){
         result = expr->eval(Lambda::elix);
     }
-    Lambda::elix = visitor;
-    Lambda::elix->m_runtime = runtime;
+    this->ctx = myctx;
     return result;
 }
 
@@ -1870,7 +1871,7 @@ Macro Macro::clone(void) const{
 }
 
 // -*-
-Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
+Expression Macro::expand(const Vec<Object>& args){
     if(this->params.size()!=args.size()){
         std::stringstream ss;
         ss << "Invalid number or arguments encountered while expanding ";
@@ -1879,13 +1880,18 @@ Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
         ss << args.size();
         throw ELixError(ELixError::RuntimeError, ss.str());
     }
-    Context ctx_ = this->ctx;
-    this->ctx = std::make_shared<Env>(ctx_);
+    auto myctx = this->ctx;
+    this->ctx = std::make_shared<Env>(Macro::elix->m_runtime);
+    for(const auto& [key, val]: this->ctx->bindings()){
+        this->ctx->define(key, val);
+    }
+
     for(auto i=0; i < this->params.size(); i++){
         auto key = this->params[i].str();
         this->ctx->define(key, args[i]);
     }
 
+    Macro::elix->m_runtime = this->ctx;
     std::map<std::type_index, std::string> typesmap;
     typesmap[std::type_index(typeid(ListExpr))] = "ListExpr";
     typesmap[std::type_index(typeid(ArrayExpr))] = "ArrayExpr";
@@ -1914,7 +1920,7 @@ Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(elix.handle_quote(xs)));
+                        expanded.push_back(std::move(Macro::elix->handle_quote(xs)));
                         continue;
                     }
                 }
@@ -1929,7 +1935,7 @@ Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(elix.handle_unquote(xs)));
+                        expanded.push_back(std::move(Macro::elix->handle_unquote(xs)));
                         continue;
                     }
                 }
@@ -1944,7 +1950,7 @@ Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(elix.handle_quasiquote(xs)));
+                        expanded.push_back(std::move(Macro::elix->handle_quasiquote(xs)));
                         continue;
                     }
                 }
@@ -1959,7 +1965,7 @@ Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(elix.handle_unquote_splicing(xs)));
+                        expanded.push_back(std::move(Macro::elix->handle_unquote_splicing(xs)));
                         continue;
                     }
                 }else if(sym=="macro"){
@@ -1975,14 +1981,14 @@ Expression Macro::expand(const Vec<Object>& args,  ELix& elix){
 
     auto result = std::make_unique<ListExpr>();
     result->items = std::move(expanded);
-    this->ctx = ctx_;
+    this->ctx = myctx;
     return std::move(result);
 }
 
 // -*-
-Object Macro::operator()(const Vec<Object>& args, ELix& elix){
-    auto expaned = this->expand(args, elix);
-    return expaned->eval(&elix);
+Object Macro::operator()(const Vec<Object>& args){
+    auto expaned = this->expand(args);
+    return expaned->eval(Macro::elix);
 }
 
 // -*------------------------------*-

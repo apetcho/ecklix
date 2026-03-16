@@ -3,6 +3,9 @@
 #include<iomanip>
 #include<fstream>
 #include<sstream>
+#include<type_traits>
+#include<typeindex>
+#include<typeinfo>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -286,8 +289,134 @@ void ELix::load(const std::string& path){
 
 // -*-
 Object ELix::eval(Expression expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::map<std::type_index, std::string> typesmap;
+    typesmap[std::type_index(typeid(ListExpr))] = "ListExpr";
+    typesmap[std::type_index(typeid(ArrayExpr))] = "ArrayExpr";
+    typesmap[std::type_index(typeid(DictExpr))] = "DictExpr";
+    typesmap[std::type_index(typeid(SetExpr))] = "SetExpr";
+    typesmap[std::type_index(typeid(LiteralExpr))] = "LiteralExpr";
+    typesmap[std::type_index(typeid(SymbolExpr))] = "SymbolExpr";
+    typesmap[std::type_index(typeid(PairExpr))] = "PairExpr";
+
+    if(typesmap[std::type_index(typeid(expr))]=="SymbolExpr"){
+        auto self = dynamic_cast<SymbolExpr*>(expr.get());
+        if(self->name.str()=="nil"){ return Object(); }
+        if(self->name.str()=="true"){ return Object(true); }
+        if(self->name.str()=="false"){ return Object(false); }
+        // user-defined variable or builtin constants
+        return this->m_runtime->get(self->name.str());
+    }else if(typesmap[std::type_index(typeid(expr))]=="LiteralExpr"){
+        auto self = dynamic_cast<LiteralExpr*>(expr.get());
+        return self->obj;
+    }else if(typesmap[std::type_index(typeid(expr))]=="ArrayExpr"){
+        Vec<Object> result{};
+        auto self = dynamic_cast<ArrayExpr*>(expr.get());
+        for(auto&& item: self->items){
+            result.push_back(item->eval(this));
+        }
+        return Object(Array{result});
+    }else if(typesmap[std::type_index(typeid(expr))]=="PairExpr"){
+        auto self = dynamic_cast<PairExpr*>(expr.get());
+        auto key = self->key->eval(this);
+        auto val = self->val->eval(this);
+        return Object(Pair{key, val});
+    }else if(typesmap[std::type_index(typeid(expr))]=="SetExpr"){
+        auto self = dynamic_cast<SetExpr*>(expr.get());
+        HashSet hset{};
+        for(auto&& key: self->items){
+            hset.insert(Object(key->eval(this)));
+        }
+        return Object(Set{hset});
+    }else if(typesmap[std::type_index(typeid(expr))]=="DictExpr"){
+        auto self = dynamic_cast<DictExpr*>(expr.get());
+        HashMap hmap{};
+        for(auto&& item: self->items){
+            auto entry = item->eval(this);
+            if(!entry.is_pair()){
+                std::stringstream ss;
+                ss << "Invalid Dict entry. Excpect each entry to a Pair object";
+                throw ELixError(ELixError::SyntaxError, ss.str());
+            }
+            auto pair = entry.as_pair();
+            hmap[pair.key] = pair.val;
+        }
+
+        return Object(Dict{hmap});
+    }else if(typesmap[std::type_index(typeid(expr))]=="ListExpr"){
+        // special-form or function call
+        // expect the first element in the list to be a symbol
+        auto self = dynamic_cast<ListExpr*>(expr.get());
+        auto head = self->items[0]->eval(this);
+        if(!head.is_symbol()){
+            std::stringstream ss;
+            ss << "Incorrect list-expression. Expect the first element to be a symbol.\n";
+            ss << "A list-expression is a special-form or a function all.\n";
+            ss << "Example:\n";
+            ss << "   (lambda () (println \"Hello World!\"))\n";
+            ss << "   (myfunction args)\n";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        Vec<Expression> args{};
+        for(auto i=1; i < self->items.size(); i++){
+            args.push_back(std::move(self->items[i]));
+        }
+        auto word = head.as_symbol().str();
+        Object fun;
+        if(!ELix::is_reserved_word(word)){
+            // This is a function call
+            // Get the associated callable object
+            fun = this->m_runtime->get(word);
+            // Check that `fun' is actually a callable
+            if(!fun.is_callable()){
+                std::stringstream ss;
+                ss << "" << std::quoted(word) << " is not a callable object.";
+                throw ELixError(ELixError::SyntaxError, ss.str());
+            }
+            Vec<Object> argv{};
+            for(auto&& arg: args){
+                argv.push_back(arg->eval(this));
+            }
+            if(fun.is_macro()){
+                auto macro = fun.as_macro();
+                return macro(argv);
+            }
+            if(fun.is_lambda() || fun.is_function()){
+                auto lambda = fun.as_lambda();
+                return lambda(argv);
+            }
+            auto func = fun.as_func();
+            return func(argv);
+        }else{
+            // We have a special form
+            if(word=="import"){ return this->handle_import(args); }
+            else if(word=="progn"){ return this->handle_progn(args); }
+            else if(word=="if"){ return this->handle_if(args); }
+            else if(word=="cond"){ return this->handle_cond(args); }
+            else if(word=="var"){ return this->handle_var(args); }
+            else if(word=="let"){ return this->handle_let(args); }
+            else if(word=="while"){ return this->handle_while(args); }
+            else if(word=="for"){ return this->handle_for(args); }
+            else if(word=="lambda"){ return this->handle_lambda(args); }
+            else if(word=="fun"){ return this->handle_fun(args); }
+            else if(word=="macro"){ return this->handle_macro(args); }
+            else if(word=="and"){ return this->handle_and(args); }
+            else if(word=="or"){ return this->handle_or(args); }
+            else if(word=="not"){ return this->handle_not(args); }
+            else if(word=="quote"){ return this->handle_quote(args)->eval(this); }
+            else if(word=="quasiquote"){ return this->handle_quasiquote(args)->eval(this); }
+            else if(word=="unquote"){ return this->handle_unquote(args)->eval(this); }
+            else if(word=="unquote-splicing"){ return this->handle_unquote_splicing(args)->eval(this); }
+            else{
+                std::stringstream ss;
+                ss << "unknown special form " << std::quoted(word);
+                throw ELixError(ELixError::SyntaxError, ss.str());
+            }
+        }
+    }
+
+    std::stringstream ss;
+    ss << "Malformed expression " << expr->repr();
+    throw ELixError(ELixError::SyntaxError, ss.str());
 }
 
 // -*-
@@ -394,6 +523,30 @@ Object ELix::handle_fun(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_macro(Vec<Expression> exprs){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::handle_lambda(Vec<Expression> exprs){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::handle_and(Vec<Expression> exprs){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::handle_or(Vec<Expression> exprs){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::handle_not(Vec<Expression> exprs){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }

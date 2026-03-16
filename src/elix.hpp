@@ -414,8 +414,10 @@ struct Macro final{
     std::string repr(void) const;
     Macro clone(void) const;
 
-    Expression expand(const Vec<Object>& args, ELix& elix);
-    Object operator()(const Vec<Object>& args, ELix& elix);
+    Expression expand(const Vec<Object>& args);
+    Object operator()(const Vec<Object>& args);
+
+    static ELix* elix;
 };
 
 // -*-
@@ -567,6 +569,10 @@ public:
     void define(const std::string& name, const Object& obj);
     bool update(const std::string& name, const Object& obj);
     Object get(const std::string& name);
+
+    const std::map<std::string, Object>& bindings(void) const{
+        return this->m_bindings;
+    }
 
 private:
     std::map<std::string, Object> m_bindings;
@@ -828,6 +834,10 @@ private:
     Object handle_for(Vec<Expression> exprs);
     Object handle_fun(Vec<Expression> exprs);
     Object handle_macro(Vec<Expression> exprs);
+    Object handle_lambda(Vec<Expression> exprs);
+    Object handle_and(Vec<Expression> exprs);
+    Object handle_or(Vec<Expression> exprs);
+    Object handle_not(Vec<Expression> exprs);
     Expression handle_quote(Vec<Expression> exprs);
     Expression handle_quasiquote(Vec<Expression> exprs);
     Expression handle_unquote(Vec<Expression> exprs);
