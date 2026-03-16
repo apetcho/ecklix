@@ -15,8 +15,7 @@ Object LiteralExpr::eval(Visitor visitor){
 }
 
 std::string LiteralExpr::str(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return this->obj.str();
 }
 
 std::string LiteralExpr::repr(void) const{
