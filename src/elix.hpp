@@ -831,6 +831,8 @@ private:
     void check_argc(bool pred, const std::string& prefix);
     void validate_name(const std::string& name);
 
+    Expression build_expression(const Object& obj);
+
     // -*-
     Object handle_import(Vec<Expression> exprs);
     Object handle_progn(Vec<Expression> exprs);

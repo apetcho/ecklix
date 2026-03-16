@@ -1087,9 +1087,61 @@ Expression ELix::handle_quote(Vec<Expression> exprs){
 }
 
 // -*-
+Expression ELix::build_expression(const Object& self){
+    // Expression expr = nullptr;
+    if(self.is_symbol()){
+        auto expr = std::make_unique<SymbolExpr>();
+        expr->name = self.as_symbol();
+        return std::move(expr);
+    }else if(ELix::is_literal(self)){
+        auto expr = std::make_unique<LiteralExpr>();
+        expr->obj = self;
+        return std::move(expr);
+    }else if(self.is_list()){
+        auto expr = std::make_unique<ListExpr>();
+        expr->items = {};
+        for(auto item: self.as_list().items){
+            expr->items.push_back(std::move(this->build_expression(item)));
+        }
+        return std::move(expr);
+    }else if(self.is_array()){
+        auto expr = std::make_unique<ArrayExpr>();
+        expr->items = {};
+        for(auto item: self.as_list().items){
+            expr->items.push_back(std::move(this->build_expression(item)));
+        }
+        return std::move(expr);
+    }else if(self.is_dict()){
+        auto expr = std::make_unique<DictExpr>();
+        expr->items = {};
+        for(auto item: self.as_list().items){
+            expr->items.push_back(std::move(this->build_expression(item)));
+        }
+        return std::move(expr);
+    }else if(self.is_set()){
+        auto expr = std::make_unique<SetExpr>();
+        expr->items = {};
+        for(auto item: self.as_list().items){
+            expr->items.push_back(std::move(this->build_expression(item)));
+        }
+        return std::move(expr);
+    }
+    auto expr = std::make_unique<PairExpr>();
+    auto pair = self.as_pair();
+    expr->key = this->build_expression(pair.key);
+    expr->val = this->build_expression(pair.val);
+
+    return std::move(expr);
+}
+
+// -*-
 Expression ELix::handle_quasiquote(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size()==1);
+    this->check_argc(pred, "quote");
+    auto self = exprs[0]->eval(this);
+    
+    
+    return std::move(exprs[0]);
 }
 
 // -*-
