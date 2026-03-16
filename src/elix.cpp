@@ -1296,8 +1296,18 @@ void Module::add(const std::string& name, const Object& val){
 }
 
 const Object& Module::get(const std::string& name) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto entry = this->m_cache.find(name);
+    if(entry == this->m_cache.end()){
+        std::stringstream ss;
+        ss << "symbol " << std::quoted(name) << " not found in module ";
+        if(this->filename().length()==0 || this->fullpath().string().length()==0){
+            ss << std::quoted(this->m_name);
+        }else{
+            ss << std::quoted(this->m_filename);
+        }
+        throw ELixError(ELixError::KeyError, ss.str());
+    }
+    return entry->second;
 }
 
 // -*-
