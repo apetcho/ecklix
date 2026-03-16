@@ -883,6 +883,7 @@ Object ELix::handle_fun(Vec<Expression> exprs){
     lambda.params = std::move(params);
     lambda.body = std::move(body);
     lambda.ctx = std::make_shared<Env>(this->m_runtime);
+    lambda.named = true;
     lambda.elix = this;
 
     return std::move(lambda);
@@ -896,8 +897,59 @@ Object ELix::handle_macro(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_lambda(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size() >= 2);
+    this->check_argc(pred, "fun");
+    auto name = dynamic_cast<SymbolExpr*>(exprs[0].get());
+    if(name==nullptr){
+        std::stringstream ss;
+        ss << "Malformed function definition. The name my be a symbol, ";
+        auto self = exprs[0]->eval(this);
+        ss << "but we got " << std::quoted(self.type().str());
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    auto fname = name->name.str();
+    if(ELix::is_reserved_word(fname)){
+        std::stringstream ss;
+        ss << std::quoted(fname) << " is a builtin reserved word. It cannot be used to ";
+        ss << "name a variable.";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+
+    auto xs = dynamic_cast<ListExpr*>(exprs[1].get());
+    if(xs==nullptr){
+        std::stringstream ss;
+        ss << "Malformed function definition. The second argument in a function definition\n";
+        ss << "must be a list. ";
+        auto self = exprs[1]->eval(this);
+        ss << "but we got " << std::quoted(self.type().str());
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    Vec<Symbol> params{};
+    for(auto& item: xs->items){
+        auto self = dynamic_cast<SymbolExpr*>(item.get());
+        if(self==nullptr){
+            std::stringstream ss;
+            ss << "Found " << std::quoted(item->eval(this).type().str()) << " object type ";
+            ss << "in function parameters list.";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        params.push_back(self->name);
+    }
+    Vec<Expression> body{};
+    if(exprs.size() > 2){
+        for(auto i=2; i < exprs.size(); i++){
+            body.push_back(std::move(exprs[i]));
+        }
+    }
+
+    Lambda lambda{};
+    lambda.params = std::move(params);
+    lambda.body = std::move(body);
+    lambda.ctx = std::make_shared<Env>(this->m_runtime);
+    lambda.named = false;
+    lambda.elix = this;
+
+    return std::move(lambda);
 }
 
 // -*-
