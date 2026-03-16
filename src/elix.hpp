@@ -864,10 +864,9 @@ private:
 // -*-
 class Module final{
 public:
-    explicit Module(const std::string& name);
+    explicit Module(const Symbol& name);
+    explicit Module(const std::string& filename);
     explicit Module(const fs::path& filepath);
-    explicit Module(const std::string& name, const std::string& filepath);
-    explicit Module(const std::string& name, const fs::path& filepath);
     Module(const Module& mod) noexcept;
     Module(Module&& mod) noexcept;
     Module& operator=(const Module& mod) noexcept;
@@ -890,6 +889,9 @@ private:
     std::map<std::string, Object> m_cache{};
 
     void setup(void); // the cache
+    void configure(const Symbol& name);
+    void configure(const std::string& filename);
+    void configure(const fs::path& filepath);
 };
 
 class ModuleHash final{

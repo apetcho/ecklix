@@ -1215,25 +1215,21 @@ Expression ELix::handle_unquote_splicing(Vec<Expression> exprs){
 // -*-------------------------------*-
 // -*- ModuleLoader implementation -*-
 // -*-------------------------------*-
-Module::Module(const std::string& name){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+Module::Module(const Symbol& name){
+    this->configure(name);
+    this->setup();
+}
+
+Module::Module(const std::string& filename){
+    this->configure(filename);
+    this->setup();
 }
 
 Module::Module(const fs::path& filepath){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    this->configure(filepath);
+    this->setup();
 }
 
-Module::Module(const std::string& name, const std::string& filepath){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
-
-Module::Module(const std::string& name, const fs::path& filepath){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
 
 Module::Module(const Module& mod) noexcept{
     //! @todo
@@ -1272,6 +1268,24 @@ const Object& Module::get(const std::string& name) const{
 
 // -*-
 void Module::setup(void){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+void Module::configure(const Symbol& name){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+void Module::configure(const std::string& filename){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+void Module::configure(const fs::path& filepath){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
