@@ -129,8 +129,15 @@ Object DictExpr::eval(Visitor visitor){
 }
 
 std::string DictExpr::str(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::stringstream ss;
+    ss << "{";
+    for(auto i=0; i < this->items.size(); i++){
+        if(i > 0){ ss << " "; }
+        ss << this->items[i]->str();
+    }
+    ss << "}";
+
+    return ss.str();
 }
 
 std::string DictExpr::repr(void) const{
