@@ -94,8 +94,7 @@ std::string ArrayExpr::repr(void) const{
 // -*- PairExpr implementation -*-
 // -*---------------------------*-
 Object PairExpr::eval(Visitor visitor){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return visitor->eval(*this);
 }
 
 std::string PairExpr::str(void) const{
