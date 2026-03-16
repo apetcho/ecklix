@@ -492,12 +492,17 @@ Object ELix::handle_import(Vec<Expression> exprs){
     }else{
         this->load(self.as_string().str());
     }
+
+    return Object();
 }
 
 // -*-
 Object ELix::handle_progn(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    for(auto&& expr: exprs){
+        [[maybe_unused]] auto _ = expr->eval(this);
+    }
+
+    return Object();
 }
 
 // -*-
