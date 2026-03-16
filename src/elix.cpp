@@ -1231,10 +1231,12 @@ Module::Module(const fs::path& filepath){
 }
 
 
-Module::Module(const Module& mod) noexcept{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
+Module::Module(const Module& mod) noexcept
+: m_name{mod.m_name}
+, m_filename{mod.m_filename}
+, m_fullpath{mod.m_fullpath}
+, m_cache{mod.m_cache}
+{}
 
 Module::Module(Module&& mod) noexcept{
     //! @todo
