@@ -1037,8 +1037,7 @@ Object ELix::handle_not(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_cycle(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    throw CycleSignal{};
 }
 
 // -*-
