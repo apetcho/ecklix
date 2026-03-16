@@ -1355,8 +1355,10 @@ void Module::configure(const fs::path& filepath){
 }
 
 size_t ModuleHash::operator()(const Module& arg) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto text = (
+        arg.name() + arg.filename() + arg.fullpath().string()
+    );
+    return std::hash<std::string>{}(text);
 }
 
 bool ModuleEqual::operator()(const Module& lhs, const Module& rhs) const{
