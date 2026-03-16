@@ -35,8 +35,8 @@
     ELIX_DEF(True, "true")                          \
     ELIX_DEF(False, "false")                        \
     ELIX_DEF(Quote, "quote")                        \
-    ELIX_DEF(Cycle, "cycle")                        \
-    ELIX_DEF(Stop, "stop")                          \
+    ELIX_DEF(Cycle, "continue")                     \
+    ELIX_DEF(Stop, "break")                          \
     ELIX_DEF(Unquote, "unquote")                    \
     ELIX_DEF(Quasiquote, "quasiquote")              \
     ELIX_DEF(UnquoteSplicing, "unquote-splicing")
@@ -750,8 +750,8 @@ class Module;
 class ModuleHash;
 class ModuleEqual;
 
-struct StopSignal final {};
-struct CycleSignal final {};
+struct BreakSignal final {};
+struct ContinueSignal final {};
 
 class ELix final: public ExprVisitor{
 public:
@@ -830,6 +830,7 @@ private:
     void println(const Object& obj);
     void check_argc(bool pred, const std::string& prefix);
     void validate_name(const std::string& name);
+    void validate_expr(Expression& expr, const Vec<std::string>& exclude, const std::string& where);
 
     Expression build_expression(const Object& obj);
 
@@ -848,8 +849,8 @@ private:
     Object handle_and(Vec<Expression> exprs);
     Object handle_or(Vec<Expression> exprs);
     Object handle_not(Vec<Expression> exprs);
-    Object handle_cycle(Vec<Expression> exprs);
-    Object handle_stop(Vec<Expression> exprs);
+    Object handle_continue(Vec<Expression> exprs);
+    Object handle_break(Vec<Expression> exprs);
     Expression handle_quote(Vec<Expression> exprs);
     Expression handle_quasiquote(Vec<Expression> exprs);
     Expression handle_unquote(Vec<Expression> exprs);

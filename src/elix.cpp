@@ -48,9 +48,6 @@ void ELix::setup(void){
 // static void setup_prelude(void);
 // -*-
 void ELix::setup_prelude(void){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-    /*
     ELix::initialize_constructors();
     ELix::initialize_predicates();
     ELix::initialize_operators();
@@ -65,7 +62,6 @@ void ELix::setup_prelude(void){
     ELix::initialize_dict();
     ELix::initialize_set();
     ELix::initialize_math();
-    */
 }
 
 // -*-
@@ -343,6 +339,26 @@ Object ELix::eval(SymbolExpr& expr){
 }
 
 // -*-
+void ELix::validate_expr(Expression& expr, const Vec<std::string>& exclude, const std::string& where){
+    auto xs = dynamic_cast<ListExpr*>(expr.get());
+    if(xs == nullptr){ return; }
+    if(xs->items.size()==0){ return; }
+    auto sym = dynamic_cast<SymbolExpr*>(xs->items[0].get());
+    if(sym==nullptr){
+        std::stringstream ss;
+        ss << "Malformed list-expression. First element must be a symbol.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    for(const auto& name: exclude){
+        if(sym->name.str()==name){
+            std::stringstream ss;
+            ss << name << " is not allowed outside " << where << "-expression.";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+    }
+}
+
+// -*-
 Object ELix::eval(ListExpr& expr){
     // special-form or function call
     // expect the first element in the list to be a symbol
@@ -367,6 +383,12 @@ Object ELix::eval(ListExpr& expr){
     if(!ELix::is_reserved_word(word)){
         result = this->handle_list(expr.items);
     }else{
+        if((word!="while" && word=="for")){
+            for(auto& x: args){
+                this->validate_expr(x, Vec<std::string>{"break", "continue"}, "while");
+                this->validate_expr(x, Vec<std::string>{"break", "continue"}, "for");
+            }
+        }
         if(word=="import"){ result = this->handle_import(args); }
         else if(word=="progn"){ result = this->handle_progn(args); }
         else if(word=="if"){ result = this->handle_if(args); }
@@ -381,8 +403,8 @@ Object ELix::eval(ListExpr& expr){
         else if(word=="and"){ result = this->handle_and(args); }
         else if(word=="or"){ result = this->handle_or(args); }
         else if(word=="not"){ result = this->handle_not(args); }
-        else if(word=="cycle"){ result = this->handle_cycle(args); }
-        else if(word=="stop"){ result = this->handle_stop(args); }
+        else if(word=="continue"){ result = this->handle_continue(args); }
+        else if(word=="break"){ result = this->handle_break(args); }
         else if(word=="quote"){ result = this->handle_quote(args)->eval(this); }
         else if(word=="quasiquote"){ result = this->handle_quasiquote(args)->eval(this); }
         else if(word=="unquote"){ result = this->handle_unquote(args)->eval(this); }
@@ -690,8 +712,8 @@ Object ELix::handle_while(Vec<Expression> exprs){
             }
             test = exprs[0]->eval(this);
             ++iteration;
-        }catch(const StopSignal&){ break; }
-        catch(const CycleSignal& ){ continue; }
+        }catch(const BreakSignal&){ break; }
+        catch(const ContinueSignal& ){ continue; }
     }
 
     return Object();
@@ -771,8 +793,8 @@ Object ELix::handle_for(Vec<Expression> exprs){
                     [[maybe_unused]] auto _ = exprs[i]->eval(this);
                 }
                 ++iteration;
-            }catch(const StopSignal& ){ break; }
-            catch(const CycleSignal& ){ continue; }
+            }catch(const BreakSignal& ){ break; }
+            catch(const ContinueSignal& ){ continue; }
         }
     }else if(iterable.is_array()){
         auto items = iterable.as_array().items;
@@ -784,8 +806,8 @@ Object ELix::handle_for(Vec<Expression> exprs){
                     [[maybe_unused]] auto _ = exprs[i]->eval(this);
                 }
                 ++iteration;
-            }catch(const StopSignal& ){ break; }
-            catch(const CycleSignal& ){ continue; }
+            }catch(const BreakSignal& ){ break; }
+            catch(const ContinueSignal& ){ continue; }
         }
     }else if(iterable.is_list()){
         auto items = iterable.as_list().items;
@@ -797,8 +819,8 @@ Object ELix::handle_for(Vec<Expression> exprs){
                     [[maybe_unused]] auto _ = exprs[i]->eval(this);
                 }
                 ++iteration;
-            }catch(const StopSignal& ){ break; }
-            catch(const CycleSignal& ){ continue; }
+            }catch(const BreakSignal& ){ break; }
+            catch(const ContinueSignal& ){ continue; }
             
         }
     }else if(iterable.is_set()){
@@ -811,8 +833,8 @@ Object ELix::handle_for(Vec<Expression> exprs){
                     [[maybe_unused]] auto _ = exprs[i]->eval(this);
                 }
                 ++iteration;
-            }catch(const StopSignal& ){ break; }
-            catch(const CycleSignal& ){ continue; }
+            }catch(const BreakSignal& ){ break; }
+            catch(const ContinueSignal& ){ continue; }
         }
     }else {
         auto items = iterable.as_dict().items();
@@ -824,8 +846,8 @@ Object ELix::handle_for(Vec<Expression> exprs){
                     [[maybe_unused]] auto _ = exprs[i]->eval(this);
                 }
                 ++iteration;
-            }catch(const StopSignal& ){ break; }
-            catch(const CycleSignal& ){ continue; }
+            }catch(const BreakSignal& ){ break; }
+            catch(const ContinueSignal& ){ continue; }
         }
     }
 
@@ -834,6 +856,7 @@ Object ELix::handle_for(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_fun(Vec<Expression> exprs){
+    // (fun name params body)
     auto pred = (exprs.size() >= 2);
     this->check_argc(pred, "fun");
     auto name = dynamic_cast<SymbolExpr*>(exprs[0].get());
@@ -888,6 +911,7 @@ Object ELix::handle_fun(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_macro(Vec<Expression> exprs){
+    // (macro name params body)
     auto pred = (exprs.size() >= 2);
     this->check_argc(pred, "macro");
     
@@ -942,6 +966,7 @@ Object ELix::handle_macro(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_lambda(Vec<Expression> exprs){
+    // (lambda params body)
     auto pred = (exprs.size() >= 1);
     this->check_argc(pred, "lambda");
         
@@ -985,6 +1010,7 @@ Object ELix::handle_lambda(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_and(Vec<Expression> exprs){
+    // (and expr1 expr2)
     auto pred = (exprs.size()==2);
     this->check_argc(pred, "and");
     auto x = exprs[0]->eval(this);
@@ -1003,6 +1029,7 @@ Object ELix::handle_and(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_or(Vec<Expression> exprs){
+    // (or expr1 expr2)
     auto pred = (exprs.size()==2);
     this->check_argc(pred, "or");
     auto x = exprs[0]->eval(this);
@@ -1021,6 +1048,7 @@ Object ELix::handle_or(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_not(Vec<Expression> exprs){
+    // (not expr)
     auto pred = (exprs.size()==1);
     this->check_argc(pred, "not");
     auto arg = exprs[0]->eval(this);
@@ -1035,13 +1063,15 @@ Object ELix::handle_not(Vec<Expression> exprs){
 }
 
 // -*-
-Object ELix::handle_cycle(Vec<Expression> exprs){
-    throw CycleSignal{};
+Object ELix::handle_continue(Vec<Expression> exprs){
+    // (continue)
+    throw ContinueSignal{};
 }
 
 // -*-
-Object ELix::handle_stop(Vec<Expression> exprs){
-    throw StopSignal{};
+Object ELix::handle_break(Vec<Expression> exprs){
+    // (break)
+    throw BreakSignal{};
 }
 
 // -*-
