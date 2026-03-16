@@ -1362,8 +1362,9 @@ size_t ModuleHash::operator()(const Module& arg) const{
 }
 
 bool ModuleEqual::operator()(const Module& lhs, const Module& rhs) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto x = (lhs.name()+lhs.filename()+lhs.fullpath().string());
+    auto y = (rhs.name()+rhs.filename()+rhs.fullpath().string());
+    return (x==y);
 }
 
 // -*--------------------------------------------------------------------------*-
