@@ -169,7 +169,7 @@ std::string SetExpr::repr(void) const{
     ss << "\"#{";
     for(auto i=0; i < this->items.size(); i++){
         if(i > 0){ ss << " "; }
-        ss << this->items[i]->str();
+        ss << this->items[i]->repr();
     }
     ss << "}\"";
 
