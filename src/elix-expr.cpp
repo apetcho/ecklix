@@ -54,8 +54,13 @@ std::string ListExpr::str(void) const{
 }
 
 std::string ListExpr::repr(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    Vec<Object> xs{};
+    for(const auto& expr: this->items){
+        xs.push_back(Object(String{expr->repr()}));
+    }
+
+    auto result = Object(List{xs});
+    return result.repr();
 }
 
 // -*----------------------------*-
