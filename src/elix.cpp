@@ -26,8 +26,33 @@ ELix::ModuleSet ELix::BuiltinModules;
 // -*- Static methods -*-
 // -*------------------*-
 void ELix::setup(void){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    ELix::scriptExt = ".elx";
+    ELix::docstrings = {};
+    ELix::Quote = Symbol{"quote"};                      // '
+    ELix::Unquote = Symbol{"unquote"};                  // ,
+    ELix::Quasiquote = Symbol{"quasiquote"};            // `
+    ELix::UnquoteSplicing = Symbol{"unquote-splicing"}; // ,@
+    ELix::visitor = nullptr;
+    ELix::prelude = nullptr;
+    ELix::runtime = nullptr;
+    ELix::BuiltinModules = {};
+
+    ELix::initialize_constructors();
+    ELix::initialize_predicates();
+    ELix::initialize_operators();
+    ELix::initialize_functional();
+    ELix::initialize_basic_io();
+    ELix::initialize_misc();
+    ELix::initialize_string();
+    ELix::initialize_symbol();
+    ELix::initialize_pair();
+    ELix::initialize_array();
+    ELix::initialize_list();
+    ELix::initialize_dict();
+    ELix::initialize_set();
+    ELix::initialize_math();
+
+    ELix::init_builtin_modules();
 }
 
 // -*-
@@ -79,6 +104,37 @@ std::string ELix::readfile(const char* filename){
 std::string ELix::input(void){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+void ELix::add_module(const Module& mymodule){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+void ELix::init_builtin_modules(void){
+    //! @todo
+    /*
+    - json
+    - yaml
+    - toml
+    - csv
+    - regex
+    - system
+    - datetime
+    - process
+    - thread
+    - file
+    - path
+    - http
+    - containers
+    - net
+    - curses
+    - wx
+    - hbird ***
+    - zmq
+    - 
+    */
 }
 
 // -------------------------------------------
@@ -242,31 +298,67 @@ Expression ELix::handle_unquote_splicing(Vec<Expression> exprs){
 // -*-------------------------------*-
 // -*- ModuleLoader implementation -*-
 // -*-------------------------------*-
-Context ModuleLoader::load(const Symbol& name,  Context ctx){
+Module::Module(const std::string& name){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-// -*-
-Context ModuleLoader::load(const fs::path& scritpepath, Context ctx){
+Module::Module(const fs::path& filepath){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-// -*-
-Context ModuleLoader::load(const std::string& scritpepath, Context ctx){
+Module::Module(const std::string& name, const std::string& filepath){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-// -*-
-Context ModuleLoader::load(const char* scritpepath, Context ctx){
+Module::Module(const std::string& name, const fs::path& filepath){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-// -*-
-void ModuleLoader::setup(ELix* elix){
+Module::Module(const Module& mod) noexcept{
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+Module::Module(Module&& mod) noexcept{
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+Module& Module::operator=(const Module& mod) noexcept{
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+Module& Module::operator=(Module&& mod) noexcept{
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+void Module::load(Context& ctx){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+void Module::add(const std::string& name, const Object& val){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+const Object& Module::get(const std::string& name) const{
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+size_t ModuleHash::operator()(const Module& arg) const{
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+bool ModuleEqual::operator()(const Module& lhs, const Module& rhs) const{
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }

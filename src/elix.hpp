@@ -736,20 +736,12 @@ private:
 // ------------------------------
 // -*- ELix : the interpreter -*-
 // ------------------------------
+class Module;
+class ModuleHash;
+class ModuleEqual;
+
 class ELix final: public ExprVisitor{
 public:
-    struct Module{
-        Symbol name;
-        Context ctx;
-    };
-
-    struct ModuleHash{
-        size_t operator()(const Module& key) const;
-    };
-    struct ModuleEqual{
-        bool operator()(const Module& lhs, const Module& rhs) const;
-    };
-
     using ModuleSet = std::unordered_set<Module, ModuleHash, ModuleEqual>;
     
     static std::string scriptExt;
@@ -759,12 +751,6 @@ public:
     static Symbol Unquote;
     static Symbol Quasiquote;
     static Symbol UnquoteSplicing;
-
-    //static UniquePtr<Module> mathModule;    // "Math"
-    // static Context sysModule;      // "System"
-    // static Context fileModule;     // "File"
-    // static Context datetimeModule; // "DateTime"
-    // static Context jsonModule;     // "JSON"
 
     static ExprVisitor* visitor;
     static UniquePtr<Env> prelude;
@@ -786,9 +772,10 @@ public:
 
     static Context runtime;
     static ModuleSet BuiltinModules;
+    static void add_module(const Module& mymodule);
 
 private:
-    ModuleLoader m_moduleLoader{};
+    //ModuleLoader m_moduleLoader{};
     ModuleSet m_imported{};
 
     Context load(const Symbol& name);
@@ -817,6 +804,7 @@ private:
     static void initialize_set(void);
     static void initialize_math(void);
 
+    static void init_builtin_modules();
     // static void initialize_file(void);
     // static void initialize_datetime(void);
     // static void initialize_json(void);
@@ -841,25 +829,47 @@ private:
     Expression handle_unquote_splicing(Vec<Expression> exprs);
     Object handle_list(Vec<Expression> exprs); // function-call
 
-    friend class ModuleLoader;
+    friend class Module;
     friend struct Macro;
 };
 
-
 // -*-
-class ModuleLoader{
+class Module final{
 public:
-    explicit ModuleLoader() = default;
+    explicit Module() = default;
+    explicit Module(const std::string& name);
+    explicit Module(const fs::path& filepath);
+    explicit Module(const std::string& name, const std::string& filepath);
+    explicit Module(const std::string& name, const fs::path& filepath);
+    Module(const Module& mod) noexcept;
+    Module(Module&& mod) noexcept;
+    Module& operator=(const Module& mod) noexcept;
+    Module& operator=(Module&& mod) noexcept;
 
-    Context load(const Symbol& name,  Context ctx);
-    Context load(const fs::path& scritpepath, Context ctx);
-    Context load(const std::string& scritpepath, Context ctx);
-    Context load(const char* scritpepath, Context ctx);
-    static void setup(ELix* elix);
+    ~Module() = default;
+
+    const std::string& name(void) const{ return this->m_name; }
+    std::string& name(void){ return this->m_name; }
+
+    void load(Context& ctx);
+    void add(const std::string& name, const Object& val);
+    const Object& get(const std::string& name) const;
 
 private:
-    static ELix* m_elix;
-    std::map<std::string, Context> m_cache{};
+    std::string m_name{};
+    std::string m_filename{};
+    fs::path m_fullpath{};
+    std::map<std::string, Object> m_cache{};
+};
+
+class ModuleHash final{
+public:
+    size_t operator()(const Module& arg) const;
+};
+
+class ModuleEqual final{
+public:
+    bool operator()(const Module& lhs, const Module& rhs) const;
 };
 
 
