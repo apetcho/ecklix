@@ -1246,8 +1246,14 @@ Module::Module(Module&& mod) noexcept
 {}
 
 Module& Module::operator=(const Module& mod) noexcept{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    if(this != &mod){
+        this->m_name = mod.m_name;
+        this->m_filename = mod.m_filename;
+        this->m_fullpath = mod.m_fullpath;
+        this->m_cache = mod.m_cache;
+    }
+
+    return *this;
 }
 
 Module& Module::operator=(Module&& mod) noexcept{
