@@ -309,8 +309,6 @@ Object ELix::eval(Expression expr){
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="PairExpr"){
         auto self = dynamic_cast<PairExpr*>(expr.get());
-        // auto key = self->key->eval(this);
-        // auto val = self->val->eval(this);
         return this->eval(*self);
     }else if(typesmap[std::type_index(typeid(expr))]=="SetExpr"){
         auto self = dynamic_cast<SetExpr*>(expr.get());
@@ -457,8 +455,9 @@ Object ELix::eval(SetExpr& expr){
 
 // -*-
 Object ELix::eval(PairExpr& expr){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto key = expr.key->eval(this);
+    auto val = expr.val->eval(this);
+    return Object(Pair{key, val});
 }
 
 // -*-
