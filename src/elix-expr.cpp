@@ -71,8 +71,13 @@ Object ArrayExpr::eval(Visitor visitor){
 }
 
 std::string ArrayExpr::str(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    Vec<Object> xs{};
+    for(const auto& expr: this->items){
+        xs.push_back(Object(String{expr->str()}));
+    }
+
+    auto result = Object(Array{xs});
+    return result.str();
 }
 
 std::string ArrayExpr::repr(void) const{
