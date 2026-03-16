@@ -141,6 +141,12 @@ void ELix::print(const Object& obj){
 }
 
 // -*-
+Object ELix::handle_import(Vec<Expression> exprs){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
 Object ELix::handle_progn(Vec<Expression> exprs){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);

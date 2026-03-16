@@ -17,6 +17,7 @@
 #include<set>
 
 #define ELIX_RESERVED_WORDS()                       \
+    ELIX_DEF(Import, "import")                      \
     ELIX_DEF(Progn, "progn")                        \
     ELIX_DEF(If, "if")                              \
     ELIX_DEF(Let, "let")                            \
@@ -823,6 +824,7 @@ private:
     void print(const Object& obj);
 
     // -*-
+    Object handle_import(Vec<Expression> exprs);
     Object handle_progn(Vec<Expression> exprs);
     Object handle_if(Vec<Expression> exprs);
     Object handle_let(Vec<Expression> exprs);

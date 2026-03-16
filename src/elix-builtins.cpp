@@ -319,6 +319,16 @@ static Object fn_linspace(const Vec<Object>& args){
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
+static Object fn_repeat(const Vec<Object>& args){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_partial(const Vec<Object>& args){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
 // -*-
 void ELix::initialize_functional(void){
     //! @todo
@@ -338,6 +348,8 @@ static Object fn_min(const Vec<Object>& args);
 static Object fn_max(const Vec<Object>& args);
 static Object fn_range(const Vec<Object>& args);
 static Object fn_linspace(const Vec<Object>& args);
+static Object fn_repeat(const Vec<Object>& args);
+static Object fn_partial(const Vec<Object>& args);
     */
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -428,29 +440,118 @@ static Object fn_panic(const Vec<Object>& args){
 
 // -*-
 struct Formatter{
-    //! @todo
-    std::string src;
+    explicit Formatter(const std::string& src) noexcept: m_src{src}{}
+    
+    ~Formatter() = default;
 
-    std::string format(void) const;
+    // -*-
+    std::string format(void) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+
+    const std::string& src(void) const;
 
 private:
-    std::string format(const Object& obj) const;
+    std::string m_src;
+
+    // -*-
+    // (format "Some fancy text with {var} embedded")
+    std::string format(const Object& obj) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+
     // SPEC:
     //  'f': Float
+    //  'e': Float in scientific notation
     //  'i': Integer
     //  's': String or Symbol
-    //  'a': Any
-    std::string format(const Object& obj, char spec) const;
+    //  'r': Raw string
+    // (format "var: {var:f}")
+    // (format "var: {var:e}")
+    // (format "var: {var:i}")
+    // (format "var: {var:s}")
+    // (format "var: {var:r}")
+    // (format "var: {var}")
+    std::string format(const Object& obj, char spec) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+
     // JUSTIFCATION:
     //  '^': Center-align
     //  '<': Left-align
     //  '>': Right-align
-    std::string format(const Object& obj, char spec, char justify) const;
-    std::string format(const Object& obj, char spec, u32 width) const;
-    std::string format(const Object& obj, char spec_or_justify, u32 width, u32 prec) const;
-    std::string format(const Object& obj, u32 width, u32 prec) const;
-    std::string format(const Object& obj, u32 width, u32 prec) const;
-    std::string format(const Object& obj, char spec, char justify, u32 width, u32 prec) const;
+    // (format "var: {var:^f")
+    // (format "var: {var:<i}")
+    // (format "var: {var:>s}")
+    std::string format(const Object& obj, char spec, char justify) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+    
+    // (format "var: {var:20s}")
+    // (format "var: {var:20f}")
+    // (format "var: {var:20i}")
+    std::string format(const Object& obj, char spec, u32 width) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+
+    // (format "var: {var:20s}")
+    // (format "var: {var:20.3f}")
+    // (format "var: {var:20i}")
+    // (format "var: {var:<20s}")
+    // (format "var: {var:>20.3f}")
+    // (format "var: {var:^20i}")
+    std::string format(const Object& obj, char spec_or_justify, u32 width, u32 prec) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+
+    // (format "var : {var:.3f")
+    std::string format(const Object& obj, u32 width, u32 prec) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+    
+    // (format "var: {var:^10.2f")
+    std::string format(const Object& obj, char spec, char justify, u32 width, u32 prec) const{
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+
+    enum class Kind{
+        EOS,        // END_OF_STRING
+        LBRACE,     // '{'
+        RBRACE,     // '}'
+        SYMBOL,     // SYMBOL,
+        COLON,      // ':'
+        DOT,        // '.'
+        NUM,        // NUMBER
+        STR,        // STRING
+    };
+    struct Token{
+        Kind kind;
+        u32 row;
+        u32 col;
+        std::string lexeme;
+        i32 prec;
+        i32 width;
+        char justify;
+        char spec;
+    };
+
+    Vec<Token> tokenize(void){
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
+
+    Object parse(const Vec<Token>& tokens){
+        //! @todo
+        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    }
 };
 
 static Object fn_format(const Vec<Object>& args){
@@ -468,7 +569,12 @@ static Object fn_eval(const Vec<Object>& args){
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_import(const Vec<Object>& args){
+static Object fn_getenv(const Vec<Object>& args){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_setenv(const Vec<Object>& args){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -477,7 +583,7 @@ static Object fn_import(const Vec<Object>& args){
 void ELix::initialize_misc(void){
     //! @todo
     /*
-    static Object fn_clone(const Vec<Object>& args);
+static Object fn_clone(const Vec<Object>& args);
 static Object fn_typeof(const Vec<Object>& args);
 static Object fn_isinstance(const Vec<Object>& args);
 static Object fn_symbols(const Vec<Object>& args);
@@ -488,7 +594,8 @@ static Object fn_panic(const Vec<Object>& args);
 static Object fn_format(const Vec<Object>& args);
 static Object fn_help(const Vec<Object>& args);
 static Object fn_eval(const Vec<Object>& args);
-static Object fn_import(const Vec<Object>& args);
+static Object fn_getenv(const Vec<Object>& args){}
+static Object fn_setenv(const Vec<Object>& args){}
     */
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
