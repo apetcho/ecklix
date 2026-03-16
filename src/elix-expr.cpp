@@ -165,8 +165,15 @@ std::string SetExpr::str(void) const{
 }
 
 std::string SetExpr::repr(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::stringstream ss;
+    ss << "\"#{";
+    for(auto i=0; i < this->items.size(); i++){
+        if(i > 0){ ss << " "; }
+        ss << this->items[i]->str();
+    }
+    ss << "}\"";
+
+    return ss.str();
 }
 
 // -*--------------------------------------------------------------------------*-
