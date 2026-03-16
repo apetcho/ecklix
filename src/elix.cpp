@@ -1013,8 +1013,20 @@ Object ELix::handle_and(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_or(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size()==2);
+    this->check_argc(pred, "or");
+    auto x = exprs[0]->eval(this);
+    auto y = exprs[1]->eval(this);
+    if(!x.is_bool() && !y.is_bool()){
+        std::stringstream ss;
+        ss << "Malformed `or' expression. The two arguments of the `and'\n";
+        ss << "operators must evaluate to a boolean.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    if(x.as_bool() || y.as_bool()){
+        return Object(true);
+    }
+    return Object(false);
 }
 
 // -*-
