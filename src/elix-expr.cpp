@@ -125,8 +125,7 @@ std::string PairExpr::repr(void) const{
 // -*- DictExpr implementation -*-
 // -*---------------------------*-
 Object DictExpr::eval(Visitor visitor){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return visitor->eval(*this);
 }
 
 std::string DictExpr::str(void) const{
