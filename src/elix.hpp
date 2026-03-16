@@ -823,6 +823,7 @@ private:
 
     void print(const Object& obj);
     void println(const Object& obj);
+    void check_argc(bool pred, const std::string& prefix);
 
     // -*-
     Object handle_import(Vec<Expression> exprs);

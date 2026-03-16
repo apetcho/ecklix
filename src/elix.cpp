@@ -470,9 +470,21 @@ void ELix::println(const Object& obj){
 }
 
 // -*-
+void ELix::check_argc(bool pred, const std::string& prefix){
+    if(!pred){
+        std::stringstream ss;
+        ss << std::quoted(prefix) << ": invalid number of arguments.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+}
+
+/*
+void ELix::check_argc(bool pred, const std::string& prefix){}
+*/
+
+// -*-
 Object ELix::handle_import(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    if(0){}
 }
 
 // -*-
