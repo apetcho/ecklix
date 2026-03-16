@@ -1140,8 +1140,7 @@ Expression ELix::handle_quasiquote(Vec<Expression> exprs){
     this->check_argc(pred, "quote");
     auto self = exprs[0]->eval(this);
     
-    
-    return std::move(exprs[0]);
+    return std::move(this->build_expression(self));
 }
 
 // -*-
