@@ -478,13 +478,20 @@ void ELix::check_argc(bool pred, const std::string& prefix){
     }
 }
 
-/*
-void ELix::check_argc(bool pred, const std::string& prefix){}
-*/
-
 // -*-
 Object ELix::handle_import(Vec<Expression> exprs){
-    if(0){}
+    this->check_argc(exprs.size()==1, "import");
+    auto self = exprs[0]->eval(this);
+    if(!(self.is_symbol() || self.is_string())){
+        std::stringstream ss;
+        ss << "import: invalid argument type. Expect String or Symbol type.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    if(self.is_symbol()){
+        this->load(self.as_symbol());
+    }else{
+        this->load(self.as_string().str());
+    }
 }
 
 // -*-
