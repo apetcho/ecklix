@@ -509,7 +509,7 @@ Object ELix::handle_progn(Vec<Expression> exprs){
 Object ELix::handle_if(Vec<Expression> exprs){
     auto pred = (exprs.size()==2 || exprs.size()==3);
     this->check_argc(pred, "if");
-    
+
     if(exprs[0]->eval(this).as_bool()){
         return exprs[1]->eval(this);
     }
@@ -523,8 +523,53 @@ Object ELix::handle_if(Vec<Expression> exprs){
 
 // -*-
 Object ELix::handle_let(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size() > 1);
+    this->check_argc(pred, "let");
+    auto pairs_ = exprs[0]->eval(this);
+    if(!pairs_.is_list()){
+        std::stringstream ss;
+        ss << "Malformed `let' expression. The first arguments must be a list of ";
+        ss << "\npairs. Got " << std::quoted(pairs_.type().str()) << " object type.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    auto pairs = pairs_.as_list();
+    // check whether each element is actually a pair
+    for(const auto& item: pairs.items){
+        if(!item.is_pair()){
+            std::stringstream ss;
+            ss << "Malformed `let' expression. The first arguments must be a list of ";
+            ss << "\npairs. Got " << std::quoted(item.type().str()) << " object type as elements\n";
+            ss << "of the list or pair.";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+        if(!item.as_pair().key.is_symbol()){
+            std::stringstream ss;
+            ss << "Malformed `let' expression. The first element of each pair must be ";
+            ss << "a symbol.\nGot " << std::quoted(item.type().str()) << " object type.";
+            throw ELixError(ELixError::SyntaxError, ss.str());
+        }
+    }
+
+    auto ctx = std::make_shared<Env>(this->m_runtime);
+    for(const auto& item: pairs.items){
+        auto pair = item.as_pair();
+        ctx->define(pair.key.as_symbol().str(), pair.val);
+    }
+
+    auto body = Vec<Expression>{};
+    for(auto i=1; i < exprs.size(); i++){
+        body.push_back(std::move(exprs[i]));
+    }
+
+    auto saved = this->m_runtime;
+    this->m_runtime = ctx;
+    for(auto& expr: body){
+        [[maybe_unused]] auto _ = expr->eval(this);
+    }
+
+    this->m_runtime = saved;
+
+    return Object();
 }
 
 // -*-
