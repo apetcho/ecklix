@@ -67,8 +67,7 @@ std::string ListExpr::repr(void) const{
 // -*- ArrayExpr implementation -*-
 // -*----------------------------*-
 Object ArrayExpr::eval(Visitor visitor){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    return visitor->eval(*this);
 }
 
 std::string ArrayExpr::str(void) const{
