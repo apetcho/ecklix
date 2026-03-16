@@ -854,7 +854,8 @@ public:
     ~Module() = default;
 
     const std::string& name(void) const{ return this->m_name; }
-    std::string& name(void){ return this->m_name; }
+    const std::string& filename(void) const{ return this->m_filename; };
+    const fs::path& fullpath(void) const { return this->m_fullpath; }
 
     void load(Context& ctx) const;
     void add(const std::string& name, const Object& val);
