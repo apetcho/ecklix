@@ -774,7 +774,7 @@ public:
 
     //static Context runtime;
     static ModuleSet BuiltinModules;
-    static void add_module(const Module& mymodule);
+    static void add_builtin_module(const Module& mymodule);
 
 private:
     //ModuleLoader m_moduleLoader{};

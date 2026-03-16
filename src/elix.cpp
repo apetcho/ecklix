@@ -182,9 +182,8 @@ std::string ELix::input(void){
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-void ELix::add_module(const Module& mymodule){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+void ELix::add_builtin_module(const Module& mymodule){
+    ELix::BuiltinModules.insert(mymodule);
 }
 
 // -*-
