@@ -1,4 +1,6 @@
 #include "elix.hpp"
+#include<iostream>
+#include<fstream>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -17,9 +19,7 @@ Symbol ELix::Unquote;
 Symbol ELix::Quasiquote;
 Symbol ELix::UnquoteSplicing;
     
-ExprVisitor* ELix::visitor;
-UniquePtr<Env> ELix::prelude;
-Context ELix::runtime; 
+Context ELix::prelude;
 ELix::ModuleSet ELix::BuiltinModules;
 
 // -*------------------*-
@@ -32,11 +32,19 @@ void ELix::setup(void){
     ELix::Unquote = Symbol{"unquote"};                  // ,
     ELix::Quasiquote = Symbol{"quasiquote"};            // `
     ELix::UnquoteSplicing = Symbol{"unquote-splicing"}; // ,@
-    ELix::visitor = nullptr;
     ELix::prelude = nullptr;
-    ELix::runtime = nullptr;
     ELix::BuiltinModules = {};
 
+    ELix::setup_prelude();
+    ELix::init_builtin_modules();
+}
+
+// static void setup_prelude(void);
+// -*-
+void ELix::setup_prelude(void){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    /*
     ELix::initialize_constructors();
     ELix::initialize_predicates();
     ELix::initialize_operators();
@@ -51,8 +59,7 @@ void ELix::setup(void){
     ELix::initialize_dict();
     ELix::initialize_set();
     ELix::initialize_math();
-
-    ELix::init_builtin_modules();
+    */
 }
 
 // -*-
@@ -81,8 +88,33 @@ bool ELix::is_literal(const Object& obj){
 
 // -*-
 void ELix::repl(const Vec<Object>& args){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    //! @todo add optional banner message
+    //! @todo process all the args
+    [[maybe_unused]] auto _ = args;
+    ELix::setup();
+    ELix elix;
+    elix.m_runtime = std::make_shared<Env>(ELix::prelude);
+    std::string src{};
+    while(true){
+        try{
+            src = ELix::input();
+            Tokenizer tokenizer{src};
+            Parser parser{tokenizer};
+            auto exprs = parser.parse();
+            Object result{};
+            for(auto&& expr: exprs){
+                result = elix.eval(std::move(expr));
+            }
+            std::cout << result.str() << std::endl;
+        }catch(const ELixError& err){
+            std::cerr << err.describe() << std::endl;
+        }catch(std::exception& err){
+            std::cerr << err.what() << std::endl;
+        }catch(...){
+            std::cerr << "Fatal: unknown error occurred." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
 }
 
 // -*-
@@ -204,6 +236,12 @@ Object ELix::eval(DictExpr& expr){
 
 // -*-
 Object ELix::eval(SetExpr& expr){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+Object ELix::eval(PairExpr& expr){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }

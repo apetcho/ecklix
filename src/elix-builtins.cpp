@@ -579,6 +579,21 @@ static Object fn_setenv(const Vec<Object>& args){
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
+static Object fn_quit(const Vec<Object>& args){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_exit(const Vec<Object>& args){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_bye(const Vec<Object>& args){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
 // -*-
 void ELix::initialize_misc(void){
     //! @todo
@@ -596,6 +611,9 @@ static Object fn_help(const Vec<Object>& args);
 static Object fn_eval(const Vec<Object>& args);
 static Object fn_getenv(const Vec<Object>& args){}
 static Object fn_setenv(const Vec<Object>& args){}
+static Object fn_quit(const Vec<Object>& args){}
+static Object fn_exit(const Vec<Object>& args){}
+static Object fn_bye(const Vec<Object>& args){}
     */
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }

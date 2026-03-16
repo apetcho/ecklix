@@ -636,18 +636,15 @@ Object Lambda::operator()(const Vec<Object>& args){
         this->ctx->define(key, val);
     }
     Object result{};
-    auto visitor = ELix::visitor;
-    auto runtime = ELix::runtime;
-
-    auto self = std::make_unique<ELix>();
-    ELix::runtime = this->ctx;
-    ELix::visitor = self.get();
+    auto visitor = Lambda::elix;
+    auto runtime = Lambda::elix->m_runtime;
+    Lambda::elix->m_runtime = this->ctx;
 
     for(auto&& expr: this->body){
-        result = expr->eval(ELix::visitor);
+        result = expr->eval(Lambda::elix);
     }
-    ELix::visitor = visitor;
-    ELix::runtime = runtime;
+    Lambda::elix = visitor;
+    Lambda::elix->m_runtime = runtime;
     return result;
 }
 

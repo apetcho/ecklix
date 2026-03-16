@@ -253,6 +253,8 @@ struct Lambda final{
     Lambda clone(void) const;
 
     Object operator()(const Vec<Object>& args);
+
+    static ELix* elix;
 };
 
 // -*-
@@ -752,8 +754,8 @@ public:
     static Symbol Quasiquote;
     static Symbol UnquoteSplicing;
 
-    static ExprVisitor* visitor;
-    static UniquePtr<Env> prelude;
+    //static ExprVisitor* visitor;
+    static Context prelude;
     
     explicit ELix() = default;
     ~ELix() = default;
@@ -770,12 +772,13 @@ public:
     static std::string readfile(const char* filename);
     static std::string input(void);
 
-    static Context runtime;
+    //static Context runtime;
     static ModuleSet BuiltinModules;
     static void add_module(const Module& mymodule);
 
 private:
     //ModuleLoader m_moduleLoader{};
+    Context m_runtime{nullptr};
     ModuleSet m_imported{};
 
     Context load(const Symbol& name);
@@ -788,7 +791,9 @@ private:
     Object eval(ArrayExpr& expr) override;
     Object eval(DictExpr& expr) override;
     Object eval(SetExpr& expr) override;
+    Object eval(PairExpr& expr) override;
 
+    static void setup_prelude(void);
     static void initialize_constructors(void);
     static void initialize_predicates(void);
     static void initialize_operators(void);
@@ -831,6 +836,7 @@ private:
 
     friend class Module;
     friend struct Macro;
+    friend struct Lambda;
 };
 
 // -*-
