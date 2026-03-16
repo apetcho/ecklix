@@ -1138,23 +1138,78 @@ Expression ELix::build_expression(const Object& self){
 Expression ELix::handle_quasiquote(Vec<Expression> exprs){
     auto pred = (exprs.size()==1);
     this->check_argc(pred, "quote");
-    auto self = exprs[0]->eval(this);
-    
-    return std::move(this->build_expression(self));
+    return std::move(exprs[0]);
 }
 
 // -*-
 Expression ELix::handle_unquote(Vec<Expression> exprs){
     auto pred = (exprs.size()==1);
     this->check_argc(pred, "unquote");
-    auto self = exprs[0]->eval(this);
-    return std::move(this->build_expression(self));
+    return std::move(exprs[0]);
 }
 
 // -*-
 Expression ELix::handle_unquote_splicing(Vec<Expression> exprs){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (exprs.size()==1);
+    this->check_argc(pred, "unquote-splicing");
+    auto xs = dynamic_cast<ListExpr*>(exprs[0].get());
+    if(xs==nullptr){
+        std::stringstream ss;
+        ss << "Invalid argument type to `unquote-splicing' i.e ";
+        ss << std::quoted(",@") << ".\nExpect argument to be list object.";
+        throw ELixError(ELixError::SyntaxError, ss.str());
+    }
+    Vec<Expression> argv{};
+    for(auto&& expr: exprs){
+        auto self = dynamic_cast<ListExpr*>(expr.get());
+        if(self != nullptr){
+            auto items = self->items;
+            if(items.size() != 0){
+                auto sym = dynamic_cast<SymbolExpr*>(items[0].get());
+                if(sym!=nullptr){
+                    if(sym->name.str()=="unquote"){
+                        if(items.size()!=2){
+                            std::stringstream ss;
+                            ss << "the argument to unquote expression inside the ";
+                            ss << "unquote-splicing expression must be a list object.";
+                            throw ELixError(ELixError::SyntaxError, ss.str());
+                        }
+                        auto args = dynamic_cast<ListExpr*>(items[1].get());
+                        if(args==nullptr){
+                            std::stringstream ss;
+                            ss << "the argument to unquote expression inside the ";
+                            ss << "unquote-splicing expression must be a list object.";
+                            throw ELixError(ELixError::SyntaxError, ss.str());
+                        }
+                        for(auto& arg: args->items){
+                            argv.push_back(this->build_expression(arg->eval(this))); 
+                        }
+                    }else{
+                        Vec<Object> vec{};
+                        for(auto& arg: items){
+                            vec.push_back(arg->eval(this)); 
+                        }
+                        argv.push_back(this->build_expression(Object(List{vec})));
+                    }
+                }else{
+                    std::stringstream ss;
+                    ss << "Malformed list-expression found inside an ";
+                    ss << "unquote-splicing expression.";
+                    throw ELixError(ELixError::SyntaxError, ss.str());
+                }
+            }else{
+                Vec<Object> vec{Object(Symbol{"list"})};
+                argv.push_back(std::move(this->build_expression(Object(List{vec}))));
+            }
+        }else{
+            argv.push_back(std::move(expr));
+        }
+    }
+
+    auto result = std::make_unique<ListExpr>();
+    result->items = std::move(argv);
+
+    return std::move(result);
 }
 
 // -*-------------------------------*-
