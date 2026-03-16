@@ -1238,10 +1238,12 @@ Module::Module(const Module& mod) noexcept
 , m_cache{mod.m_cache}
 {}
 
-Module::Module(Module&& mod) noexcept{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
+Module::Module(Module&& mod) noexcept
+: m_name{std::move(mod.m_name)}
+, m_filename{std::move(mod.m_filename)}
+, m_fullpath{std::move(mod.m_fullpath)}
+, m_cache{std::move(mod.m_cache)}
+{}
 
 Module& Module::operator=(const Module& mod) noexcept{
     //! @todo
