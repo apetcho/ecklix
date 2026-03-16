@@ -781,9 +781,9 @@ private:
     Context m_runtime{nullptr};
     ModuleSet m_imported{};
 
-    Context load(const Symbol& name);
-    Context load(const fs::path& script);
-    Context load(const std::string& script);
+    void load(const Symbol& name);
+    void load(const fs::path& script);
+    void load(const std::string& script);
 
     Object eval(LiteralExpr& expr) override;
     Object eval(SymbolExpr& expr) override;
@@ -842,7 +842,6 @@ private:
 // -*-
 class Module final{
 public:
-    explicit Module() = default;
     explicit Module(const std::string& name);
     explicit Module(const fs::path& filepath);
     explicit Module(const std::string& name, const std::string& filepath);
@@ -857,7 +856,7 @@ public:
     const std::string& name(void) const{ return this->m_name; }
     std::string& name(void){ return this->m_name; }
 
-    void load(Context& ctx);
+    void load(Context& ctx) const;
     void add(const std::string& name, const Object& val);
     const Object& get(const std::string& name) const;
 
@@ -866,6 +865,8 @@ private:
     std::string m_filename{};
     fs::path m_fullpath{};
     std::map<std::string, Object> m_cache{};
+
+    void setup(void); // the cache
 };
 
 class ModuleHash final{

@@ -215,19 +215,38 @@ void ELix::init_builtin_modules(void){
 // -------------------------------------------
 // -*- ELix : the interpreter internal API -*-
 // -------------------------------------------
-Context ELix::load(const Symbol& name){
+void ELix::load(const Symbol& name){
+    // - load a builtin module
+    // already loaded (i.e imported)
+    for(const auto& mymod: this->m_imported){
+        if(mymod.name()==name.str()){
+            return;
+        }
+    }
+    // not yet imported
+    // find-by-name
+    for(auto& mymod: ELix::BuiltinModules){
+        if(mymod.name()==name.str()){
+            this->m_imported.insert(mymod); // add to cache
+            mymod.load(this->m_runtime);
+            return;
+        }
+    }
+
+    // module not found
+    std::stringstream ss;
+    ss << "module " << std::quoted(name.str()) << " not found.";
+    throw ELixError(ELixError::RuntimeError, ss.str());
+}
+
+// -*-
+void ELix::load(const fs::path& script){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*-
-Context ELix::load(const fs::path& script){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
-
-// -*-
-Context ELix::load(const std::string& script){
+void ELix::load(const std::string& script){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -419,7 +438,7 @@ Module& Module::operator=(Module&& mod) noexcept{
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-void Module::load(Context& ctx){
+void Module::load(Context& ctx) const{
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -430,6 +449,12 @@ void Module::add(const std::string& name, const Object& val){
 }
 
 const Object& Module::get(const std::string& name) const{
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+// -*-
+void Module::setup(void){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
