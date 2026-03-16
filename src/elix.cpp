@@ -491,6 +491,15 @@ void ELix::validate_argc(bool pred, const std::string& prefix){
 }
 
 // -*-
+void ELix::validate_type(bool pred, const std::string& emsg){
+    if(!pred){
+        throw ELixError(ELixError::TypeError, emsg);
+    }
+}
+
+
+
+// -*-
 void ELix::validate_name(const std::string& name){
     if(ELix::is_reserved_word(name)){
         std::stringstream ss;

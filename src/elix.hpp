@@ -787,6 +787,8 @@ public:
     static ModuleSet BuiltinModules;
     static void add_builtin_module(const Module& mymodule);
     static void validate_argc(bool pred, const std::string& prefix);
+    static void validate_type(bool pred, const std::string& emsg);
+    static void validate_value(bool pred, const std::string& emsg);
 
 private:
     //ModuleLoader m_moduleLoader{};

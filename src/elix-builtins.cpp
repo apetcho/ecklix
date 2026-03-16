@@ -29,9 +29,9 @@ static void add_builtin(const std::string& name, const Object& obj, const std::s
 // -*- Constructors -*-
 // -*----------------*-
 static Object fn_symbol(const Vec<Object>& args){
-    // (symbol args)
+    // (Symbol args)
     auto pred = (args.size()==1);
-    
+    ELix::validate_argc(pred, "Symbol");
 }
 
 static Object fn_string(const Vec<Object>& args){
