@@ -98,8 +98,11 @@ Object PairExpr::eval(Visitor visitor){
 }
 
 std::string PairExpr::str(void) const{
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    Object key, val;
+    key = Object(String{this->key->str()});
+    val = Object(String{this->val->str()});
+    auto result = Pair{key, val};
+    return result.str();
 }
 
 std::string PairExpr::repr(void) const{
