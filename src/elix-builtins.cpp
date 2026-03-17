@@ -3245,11 +3245,23 @@ static Object fn_list_reverse(const Vec<Object>& args, ELix* elix){
     
 }
 
+// -*-
 static Object fn_list_concat(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.concat xs ys)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "List.concat");
+    pred = (args[0].is_list() && args[1].is_integer());
+    ELix::validate_type(
+        pred, "`(List.concat xs ys)'", "expect `xs' and `ys' to be List objects."
+    );
+    auto xs = args[0].as_list();
+    auto ys = args[1].as_list();
+
+    xs.concat(ys);
+    return Object(xs);
 }
 
+// -*-
 static Object fn_list_len(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3305,8 +3317,8 @@ void ELix::initialize_list(void){
     //! @todo
     /*
 static Object fn_list_find(const Vec<Object>& args){}       // (List.find xs obj [from])
-static Object fn_list_reverse(const Vec<Object>& args){}
-static Object fn_list_concat(const Vec<Object>& args){}
+static Object fn_list_reverse(const Vec<Object>& args){}    // (List.reverse xs)
+static Object fn_list_concat(const Vec<Object>& args){}     // (List.concat xs ys)
 static Object fn_list_len(const Vec<Object>& args){}
 static Object fn_list_head(const Vec<Object>& args){}
 static Object fn_list_tail(const Vec<Object>& args){}
