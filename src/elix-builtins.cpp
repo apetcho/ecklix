@@ -1711,8 +1711,88 @@ static Object fn_repeat(const Vec<Object>& args, ELix* elix){
 
 // -*- (reduce fn arg init)
 static Object fn_reduce(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (reduce fn arg init)
+    auto pred = (args.size()==3);
+    ELix::validate_argc(pred, "reduce");
+    pred = args[0].is_callable();
+    ELix::validate_type(
+        pred, "`(reduce fn arg init)'",
+        "expect `fn' to be a callable."
+    );
+    pred = (
+        args[1].is_list() || args[1].is_array() ||
+        args[1].is_set() || args[1].is_dict()
+    );
+    ELix::validate_type(
+        pred, "`(reduce fn arg init)'",
+        "expect `arg' to be a List, an Array, a Set or a Dict."
+    );
+
+    Object result{};
+    auto argv = args[1];
+    auto init = args[2];
+    if(args[0].is_lambda() || args[0].is_function()){
+        auto func = (
+            args[0].is_lambda() ? args[0].as_lambda() : args[0].as_function()
+        );
+        if(argv.is_list() || argv.is_array()){
+            auto items = (argv.is_list() ? argv.as_list().items : argv.as_array().items);
+            for(const auto& obj: items){
+                init = func(Vec<Object>{init, obj}, elix);
+            }
+            result = init;
+        }else if(argv.is_set()){
+            for(const auto& obj: argv.as_set().hset){
+                init = func(Vec<Object>{init, obj}, elix);
+            }
+            result = init;
+        }else{
+            for(const auto& pair: argv.as_dict().items()){
+                init = func(Vec<Object>{init, Object(pair)}, elix);
+            }
+            result = init;
+        }
+    }else if(args[0].is_func()){
+        auto func = args[0].as_func();
+        if(argv.is_list() || argv.is_array()){
+            auto items = (argv.is_list() ? argv.as_list().items : argv.as_array().items);
+            for(const auto& obj: items){
+                init = func(Vec<Object>{init, obj}, elix);
+            }
+            result = init;
+        }else if(argv.is_set()){
+            for(const auto& obj: argv.as_set().hset){
+                init = func(Vec<Object>{init, obj}, elix);
+            }
+            result = init;
+        }else{
+            for(const auto& pair: argv.as_dict().items()){
+                init = func(Vec<Object>{init, Object(pair)}, elix);
+            }
+            result = init;
+        }
+    }else{
+        auto func = args[0].as_macro();
+        if(argv.is_list() || argv.is_array()){
+            auto items = (argv.is_list() ? argv.as_list().items : argv.as_array().items);
+            for(const auto& obj: items){
+                init = func(Vec<Object>{init, obj}, elix);
+            }
+            result = init;
+        }else if(argv.is_set()){
+            for(const auto& obj: argv.as_set().hset){
+                init = func(Vec<Object>{init, obj}, elix);
+            }
+            result = init;
+        }else{
+            for(const auto& pair: argv.as_dict().items()){
+                init = func(Vec<Object>{init, Object(pair)}, elix);
+            }
+            result = init;
+        }
+    }
+
+    return result;
 }
 
 // -*-
