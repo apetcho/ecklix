@@ -2929,11 +2929,22 @@ static Object fn_array_find(const Vec<Object>& args, ELix* elix){
     return Object(Number(ans));
 }
 
+// -*-
 static Object fn_array_reverse(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.reverse array)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Array.reverse");
+    pred = (args[0].is_array());
+    ELix::validate_type(
+        pred, "`(Array.reverse array)'", "expect `array' to be an Array object."
+    );
+    auto self = args[0].as_array();
+    self.reverse();
+
+    return Object(self);
 }
 
+// -*-
 static Object fn_array_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
