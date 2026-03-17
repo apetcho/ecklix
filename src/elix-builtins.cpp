@@ -2190,8 +2190,18 @@ private:
 };
 
 static Object fn_format(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (format xstr)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "format");
+    pred = (args[0].is_string());
+    ELix::validate_type(
+        pred, "`(format obj)'", "expect `obj' must be a string."
+    );
+    auto src = args[0].as_string().text;
+    Formatter formatter(src);
+    auto ans = formatter.format();
+
+    return Object(String{ans});
 }
 
 static Object fn_help(const Vec<Object>& args, ELix* elix){
