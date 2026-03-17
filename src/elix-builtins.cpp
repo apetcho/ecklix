@@ -2890,8 +2890,15 @@ static Object fn_pair_key(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_pair_value(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Pair.value obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Pair.value");
+    pred = args[0].is_pair();
+    ELix::validate_type(
+        pred, "`(Pair.value obj)'", "expect `obj' to be a Pair."
+    );
+
+    return args[0].as_pair().val;
 }
 
 void ELix::initialize_pair(void){
