@@ -2344,7 +2344,7 @@ static Object fn_clamp(const Vec<Object>& args, ELix* elix){
     pred = (args[0].is_number() && args[1].is_number() && args[2].is_number());
     ELix::validate_type(
         pred, "`(clamp val vmin vmax)'",
-        "expect `val', `vmin', and `vmax' to be integer"
+        "expect `val', `vmin', and `vmax' to be numbers"
     );
     pred = (args[0].is_integer() && args[1].is_integer() && args[2].is_integer());
     Object result{};
@@ -2369,8 +2369,18 @@ static Object fn_clamp(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_gcd(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (gcd m n)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "gcd");
+    pred = (args[0].is_integer() && args[1].is_integer());
+    ELix::validate_type(
+        pred, "`(gcd m n)'", "expect `m', and `n' to integers"
+    );
+    auto m = args[0].as_integer();
+    auto n = args[1].as_integer();
+    auto ans = std::gcd(m, n);
+
+    return Object(Number(ans));
 }
 
 static Object fn_lcm(const Vec<Object>& args, ELix* elix){
