@@ -1186,8 +1186,8 @@ static Object fn_push(const Vec<Object>& args, ELix* elix){
     auto container = args[0];
     pred = (container.is_string() || container.is_list() || container.is_array());
     ELix::validate_type(
-        pred, "`(push container arg)'",
-        "expect `container' to be a String, a List or an Array object."
+        container.is_iterable(), "`(push container arg)'",
+        "expect `container' to an iterable."
     );
     auto arg = args[1];
     Object result{};
@@ -1200,8 +1200,18 @@ static Object fn_push(const Vec<Object>& args, ELix* elix){
     }else if(container.is_array()){
         container.as_array().push(arg);
         result = container;
-    }else{
+    }else if(container.is_array()){
         container.as_list().push(arg);
+        result = container;
+    }else if(container.is_set()){
+        container.as_set().add(arg);
+        result = container;
+    }else{
+        ELix::validate_type(
+            arg.is_pair(), "`(push dict arg)'", "expect `arg' to be a Pair object."
+        );
+        auto pair = arg.as_pair();
+        container.as_dict().hmap[pair.key] = pair.val;
         result = container;
     }
 
