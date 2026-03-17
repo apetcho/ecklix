@@ -331,19 +331,15 @@ static Object fn_pair(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_constructors(void){
-    //! @todo
-    /*
-static Object fn_symbol(const Vec<Object>& args);
-static Object fn_string(const Vec<Object>& args);
-static Object fn_integer(const Vec<Object>& args);
-static Object fn_float(const Vec<Object>& args);
-static Object fn_array(const Vec<Object>& args);
-static Object fn_hashmap(const Vec<Object>& args);
-static Object fn_hashset(const Vec<Object>& args);
-static Object fn_list(const Vec<Object>& args);
-static Object fn_pair(const Vec<Object>& args);
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("Symbol.new", fn_symbol, 1, 1);
+    add_builtin("String.new", fn_string, 0, 1);
+    add_builtin("Integer.new", fn_symbol, 0, 1);
+    add_builtin("Float.new", fn_symbol, 0, 1);
+    add_builtin("Array.new", fn_symbol, 0, 2);
+    add_builtin("Set.new", fn_symbol, 0, 1);
+    add_builtin("Dict.new", fn_symbol, 0, 1);
+    add_builtin("List.new", fn_symbol, 0, 1);
+    add_builtin("Pair.new", fn_symbol, 2, 2);
 }
 
 
