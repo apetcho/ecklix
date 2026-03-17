@@ -2,6 +2,7 @@
 #include<algorithm>
 #include<sstream>
 #include<iomanip>
+#include<random>
 #include<cctype>
 #include<numeric>
 
@@ -1193,14 +1194,14 @@ static Object fn_push(const Vec<Object>& args, ELix* elix){
     Object result{};
     if(container.is_string()){
         ELix::validate_type(
-            arg.is_string(), "`(push container arg)'",
+            arg.is_string(), "`(push string arg)'",
             "expect `arg' to be a String."
         );
         result = Object((container + arg));
     }else if(container.is_array()){
         container.as_array().push(arg);
         result = container;
-    }else if(container.is_array()){
+    }else if(container.is_list()){
         container.as_list().push(arg);
         result = container;
     }else if(container.is_set()){
@@ -1220,8 +1221,56 @@ static Object fn_push(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_pop(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (pop container)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "pop");
+    auto container = args[0];
+    pred = (container.is_string() || container.is_list() || container.is_array());
+    ELix::validate_type(
+        container.is_iterable(), "`(pop container)'",
+        "expect `container' to an iterable."
+    );
+    Object result{};
+    if(container.is_string()){
+        container.as_string().text = container.as_string().text.substr(
+            0, container.as_string().len()-1
+        );
+        result = Object((container));
+    }else if(container.is_array()){
+        container.as_array().pop();
+        result = container;
+    }else if(container.is_list()){
+        container.as_list().pop();
+        result = container;
+    }else if(container.is_set()){
+        std::random_device dev;
+        std::mt19937 rng(dev());
+        std::uniform_int_distribution<i64> dist(0, container.as_set().len());
+        auto n = dist(rng);
+        Object key{};
+        decltype(n) i = 0;
+        for(const auto& val: (container.as_set().hset)){
+            if(i==n){ key = val; }
+            ++i;
+        }
+        container.as_set().remove(key);
+        result = container;
+    }else{
+        std::random_device dev;
+        std::mt19937 rng(dev());
+        std::uniform_int_distribution<i64> dist(0, container.as_set().len());
+        auto n = dist(rng);
+        Object key{};
+        decltype(n) i = 0;
+        for(const auto& val: (container.as_dict().hmap)){
+            if(i==n){ key = val.first; }
+            ++i;
+        }
+        container.as_dict().remove(key);
+        result = container;
+    }
+
+    return result;
 }
 
 static Object fn_clear(const Vec<Object>& args, ELix* elix){
