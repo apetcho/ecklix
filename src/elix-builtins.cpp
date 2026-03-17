@@ -2469,7 +2469,7 @@ static Object fn_str_concat(const Vec<Object>& args, ELix* elix){
     ELix::validate_argc(pred, "String.concat");
     pred = (args[0].is_string() && args[1].is_string());
     ELix::validate_type(
-        pred, "`(String.concat x y)'", "expect `x' and `y' to be string."
+        pred, "`(String.concat x y)'", "expect `x' and `y' to be strings."
     );
     auto self = args[0].as_string();
     self.concat(args[1].as_string());
@@ -2477,11 +2477,22 @@ static Object fn_str_concat(const Vec<Object>& args, ELix* elix){
     return Object(self);
 }
 
+// -*-
 static Object fn_str_len(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.len obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "String.len");
+    pred = (args[0].is_string() && args[1].is_string());
+    ELix::validate_type(
+        pred, "`(String.len arg)'", "expect `arg' to be a string."
+    );
+    auto self = args[0].as_string();
+    auto size = self.len();
+
+    return Object(Number(size));
 }
 
+// -*-
 static Object fn_str_eq(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
