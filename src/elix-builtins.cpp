@@ -1890,8 +1890,11 @@ void ELix::initialize_basic_io(void){
 // -*- Miscellaneous builtin functions -*-
 // -*-----------------------------------*-
 static Object fn_clone(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (clone obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "clone");
+
+    return args[0].clone();
 }
 
 static Object fn_typeof(const Vec<Object>& args, ELix* elix){
