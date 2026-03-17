@@ -2037,10 +2037,31 @@ static Object fn_ascii_isascii(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_ascii_ord(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (ord obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "ord");
+    auto obj = args[0];
+    ELix::validate_type(
+        obj.is_string(), "`(ord obj)'",
+        "expect `obj' to be a string."
+    );
+    auto xstr = obj.as_string().text;
+    pred = (xstr.length()==1);
+    ELix::validate_value(
+        pred, "`(ord obj)'", "expect `obj' is a String with len==1"
+    );
+    i64 ans{};
+    for(const auto& [key, val]: ASCII){
+        if(val==xstr){
+            ans = key;
+            break;
+        }
+    }
+
+    return Object(ans);
 }
 
+// -*-
 static Object fn_panic(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
