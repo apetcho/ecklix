@@ -2578,10 +2578,21 @@ static Object fn_str_endswith(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_str_ltrim(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.ltrim text)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "String.ltrim");
+    ELix::validate_type(
+        args[0].is_string(), "`(String.ltrim text)'",
+        "expect `text' to be a strings."
+    );
+
+    auto text = args[0].as_string();
+    text.ltrim();
+
+    return Object(text);
 }
 
+// -*-
 static Object fn_str_rtrim(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
