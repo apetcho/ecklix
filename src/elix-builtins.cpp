@@ -3350,8 +3350,17 @@ static Object fn_list_push(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_list_pop(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.pop xs)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "List.pop");
+    pred = (args[0].is_list());
+    ELix::validate_type(
+        pred, "`(List.pop xs)'", "expect `xs' to be a List object."
+    );
+    auto xs = args[0].as_list();
+    xs.pop();
+
+    return Object(xs);
 }
 
 static Object fn_list_insert(const Vec<Object>& args, ELix* elix){
@@ -3382,7 +3391,7 @@ static Object fn_list_tail(const Vec<Object>& args){}       // (List.tail xs)
 static Object fn_list_first(const Vec<Object>& args){}      // (List.first xs)
 static Object fn_list_last(const Vec<Object>& args){}       // (List.last xs)
 static Object fn_list_push(const Vec<Object>& args){}       // (List.push xs obj)
-static Object fn_list_pop(const Vec<Object>& args){}
+static Object fn_list_pop(const Vec<Object>& args){}        // (List.pos xs)
 static Object fn_list_insert(const Vec<Object>& args){}
 static Object fn_list_remove(const Vec<Object>& args){}
 static Object fn_list_clear(const Vec<Object>& args){}
