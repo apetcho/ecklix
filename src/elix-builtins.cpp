@@ -2384,8 +2384,18 @@ static Object fn_gcd(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_lcm(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (lcm m n)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "lcm");
+    pred = (args[0].is_integer() && args[1].is_integer());
+    ELix::validate_type(
+        pred, "`(lcm m n)'", "expect `m', and `n' to integers"
+    );
+    auto m = args[0].as_integer();
+    auto n = args[1].as_integer();
+    auto ans = std::lcm(m, n);
+
+    return Object(Number(ans));
 }
 
 // -*-
