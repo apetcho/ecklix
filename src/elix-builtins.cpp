@@ -523,13 +523,7 @@ static Object fn_sub(const Vec<Object>& args, ELix* elix){
     auto pred = (args.size() >= 1);
     ELix::validate_argc(pred, "-");
     if(args.size()==1){
-        auto arg = args[0];
-        if(!arg.is_number()){
-            std::stringstream ss;
-            ss << "`(- arg)': expect arg to be a number.";
-            throw ELixError(ELixError::TypeError, ss.str());
-        }
-        return Object(-arg.as_number());
+        return Object(args[0].negate());
     }
     auto acc = args[0];
     for(size_t i=1; i < args.size(); i++){
@@ -572,40 +566,32 @@ static Object fn_mod(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_band(const Vec<Object>& args, ELix* elix){
-    // (~ x ...)
+    // (~ x)
     auto pred = (args.size() == 1);
     ELix::validate_argc(pred, "~");
-    auto acc = args[0];
-    for(size_t i=1; i < args.size(); i++){
-        acc = acc % args[i];
-    }
+    auto acc = (args[0].bitwise_not());
     return Object(acc);
 }
 
 static Object fn_bor(const Vec<Object>& args, ELix* elix){
-    // (| x ...)
-    auto pred = (args.size() >= 2);
+    // (| x y)
+    auto pred = (args.size() == 2);
     ELix::validate_argc(pred, "|");
-    auto acc = args[0];
-    for(size_t i=1; i < args.size(); i++){
-        acc = acc | args[i];
-    }
+    auto acc = (args[0] | args[1]);
     return Object(acc);
 }
 
 static Object fn_xor(const Vec<Object>& args, ELix* elix){
-    // (^ x ...)
-    auto pred = (args.size() >= 2);
+    // (^ x y)
+    auto pred = (args.size() == 2);
     ELix::validate_argc(pred, "^");
-    auto acc = args[0];
-    for(size_t i=1; i < args.size(); i++){
-        acc = acc ^ args[i];
-    }
+    auto acc = (args[0] ^ args[1]);
+
     return Object(acc);
 }
 
 static Object fn_lshift(const Vec<Object>& args, ELix* elix){
-    // (<< x ...)
+    // (<< x y)
     auto pred = (args.size() == 2);
     ELix::validate_argc(pred, "<<");
     auto acc = (args[0] << args[1]);
@@ -613,7 +599,7 @@ static Object fn_lshift(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_rshift(const Vec<Object>& args, ELix* elix){
-    // (>> x ...)
+    // (>> x y)
     auto pred = (args.size() >= 2);
     ELix::validate_argc(pred, ">>");
     auto acc = (args[0] >> args[1]);
@@ -621,8 +607,11 @@ static Object fn_rshift(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_not(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (not x)
+    auto pred = (args.size() == 1);
+    ELix::validate_argc(pred, "*");
+    auto acc = args[0].logical_not();
+    return Object(acc);
 }
 
 static Object fn_and(const Vec<Object>& args, ELix* elix){
