@@ -1452,11 +1452,58 @@ static Object fn_min(const Vec<Object>& args, ELix* elix){
     return result;
 }
 
+// -*-
 static Object fn_max(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (max list_or_array)
+    // (max x1 x2 ... xN)
+    auto pred = (args.size() >= 1);
+    ELix::validate_argc(pred, "max");
+
+    Object result{};
+    if(args.size()==1){
+        auto arg = args[0];
+        pred = (arg.is_list() || arg.is_array());
+        ELix::validate_type(
+            pred, "`(max arg)'",
+            "expect `arg' to a List or an Array."
+        );
+        if(arg.is_array()){
+            ELix::validate_value(
+                (arg.as_array().len()!=0), "(min xarray)",
+                "cannot sort an empty array `xarray'."
+            );
+            std::sort(
+                arg.as_array().items.begin(), arg.as_array().items.end(),
+                [](const Object& lhs, const Object& rhs){
+                    return (lhs > rhs);
+                }
+            );
+            result = arg.as_array().items[0];
+        }else{
+            ELix::validate_value(
+                (arg.as_list().len()!=0), "(max xlist)",
+                "cannot sort an empty list `xlist'."
+            );
+            std::sort(
+                arg.as_list().items.begin(), arg.as_list().items.end(),
+                [](const Object& lhs, const Object& rhs){
+                    return (lhs > rhs);
+                }
+            );
+            result = arg.as_list().items[0];
+        }
+    }else{
+        std::sort(
+            args.begin(), args.end(),
+            [](const Object& x, const Object& y){ return (x > y); }
+        );
+        result = args[0];
+    }
+
+    return result;
 }
 
+// -*-
 static Object fn_range(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
