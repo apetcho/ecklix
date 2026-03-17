@@ -672,8 +672,11 @@ static Object fn_eq(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_ne(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (!= x y)
+    auto pred = (args.size() == 2);
+    ELix::validate_argc(pred, "!=");
+    auto acc = (args[0] != args[1]);
+    return Object(acc);
 }
 
 // -*-
