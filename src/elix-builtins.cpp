@@ -1167,7 +1167,7 @@ static Object fn_len(const Vec<Object>& args, ELix* elix){
     auto pred = (args.size()==1);
     ELix::validate_argc(pred, "len");
     auto arg = args[0];
-    ELix::validate_type(arg.is_iterable(), "len", "expect argument to an iterable object.");
+    ELix::validate_type(arg.is_iterable(), "`(len arg)'", "expect argument to an iterable object.");
     i64 size{};
 
     if(arg.is_string()){ size = arg.as_string().len(); }
@@ -1178,11 +1178,37 @@ static Object fn_len(const Vec<Object>& args, ELix* elix){
     return Object(Number(size));
 }
 
+// -*-
 static Object fn_push(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (push container arg)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "push");
+    auto container = args[0];
+    pred = (container.is_string() || container.is_list() || container.is_array());
+    ELix::validate_type(
+        pred, "`(push container arg)'",
+        "expect `container' to be a String, a List or an Array object."
+    );
+    auto arg = args[1];
+    Object result{};
+    if(container.is_string()){
+        ELix::validate_type(
+            arg.is_string(), "`(push container arg)'",
+            "expect `arg' to be a String."
+        );
+        result = Object((container + arg));
+    }else if(container.is_array()){
+        container.as_array().push(arg);
+        result = container;
+    }else{
+        container.as_list().push(arg);
+        result = container;
+    }
+
+    return result;
 }
 
+// -*-
 static Object fn_pop(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
