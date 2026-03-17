@@ -2204,9 +2204,30 @@ static Object fn_format(const Vec<Object>& args, ELix* elix){
     return Object(String{ans});
 }
 
+// -*-
 static Object fn_help(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (help obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "help");
+    pred = args[0].is_symbol();
+    ELix::validate_type(
+        pred, "`(help obj)'", "expect `obj' to be a symbol"
+    );
+    auto sym = args[0].as_symbol().str();
+    auto entry = ELix::docstrings.find(sym);
+    if(entry==ELix::docstrings.end()){
+        std::stringstream ss;
+        ss << "unknown symbol " << std::quoted(sym) << ".";
+        throw ELixError(ELixError::RuntimeError, ss.str());
+    }
+    std::stringstream ss;
+    ss << "ELix help for symbol " << std::quoted(sym) << "\n\n";
+    for(auto i=0; i < entry->second.size(); i++){
+        ss << "[" << (i+1) << "]\n";
+        ss << entry->second[i] << "\n-------\n" << std::endl;
+    }
+
+    return Object(String{ss.str()});
 }
 
 static Object fn_eval(const Vec<Object>& args, ELix* elix){
