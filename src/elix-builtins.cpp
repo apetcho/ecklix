@@ -2902,12 +2902,8 @@ static Object fn_pair_value(const Vec<Object>& args, ELix* elix){
 }
 
 void ELix::initialize_pair(void){
-    //! @todo
-    /*
-static Object fn_pair_key(const Vec<Object>& args){}
-static Object fn_pair_value(const Vec<Object>& args){}
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("Pair.key", fn_pair_key, 1, 1);             // (Pair.key obj)
+    add_builtin("Pair.value", fn_pair_value, 1, 1);         // (Pair.value obj)
 }
 
 // -*--------------*-
