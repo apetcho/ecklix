@@ -1368,8 +1368,38 @@ static Object fn_reverse(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_find(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (find haystack needle)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "find");
+    ELix::validate_type(
+        args[0].is_iterable(), "`(find haystack needle)'",
+        "expect `haystack' to be an iterable object."
+    );
+    auto haystack = args[0];
+    auto needle = args[1];
+    Object result{};
+    if(haystack.is_string()){
+        ELix::validate_type(
+            needle.is_string(), "`(find string arg)'",
+            "expect `arg' to a string."
+        );
+        auto ans = haystack.as_string().find(needle.as_string());
+        result = Object(Number(ans));
+    }else if(haystack.is_array()){
+        auto ans = haystack.as_array().find(needle);
+        result = Object(Number(ans));
+    }else if(haystack.is_list()){
+        auto ans = haystack.as_list().find(needle);
+        result = Object(Number(ans));
+    }else if(haystack.is_set()){
+        auto ans = haystack.as_set().find(needle);
+        result = Object(ans);
+    }else{
+        auto ans = haystack.as_dict().find(needle);
+        result = Object(ans);
+    }
+
+    return result;
 }
 
 static Object fn_min(const Vec<Object>& args, ELix* elix){
