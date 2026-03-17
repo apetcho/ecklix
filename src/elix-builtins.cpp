@@ -3210,10 +3210,26 @@ void ELix::initialize_array(void){
 // -*- List APIs -*-
 // -*-------------*-
 static Object fn_list_find(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.find xs obj [from])
+    auto pred = (args.size()==2 || args.size()==3);
+    ELix::validate_argc(pred, "List.find");
+    pred = (args[0].is_list());
+    if(args.size()==3){
+        pred = pred && args[2].is_integer();
+    }
+    ELix::validate_type(
+        pred, "`(List.find xs obj [from])'",
+        "expect `xs' to be a List and the optional `from' to be an integer"
+    );
+    auto xs = args[0].as_list();
+    auto obj = args[1];
+    auto from = (args.size()==3 ? args[2].as_integer() : 0);
+    auto ans = xs.find(obj, from);
+
+    return Object(Number(ans));
 }
 
+// -*-
 static Object fn_list_reverse(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3269,11 +3285,16 @@ static Object fn_list_remove(const Vec<Object>& args, ELix* elix){
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
+static Object fn_list_clear(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
 // -*-
 void ELix::initialize_list(void){
     //! @todo
     /*
-static Object fn_list_find(const Vec<Object>& args){}
+static Object fn_list_find(const Vec<Object>& args){}       // (List.find xs obj [from])
 static Object fn_list_reverse(const Vec<Object>& args){}
 static Object fn_list_concat(const Vec<Object>& args){}
 static Object fn_list_len(const Vec<Object>& args){}
@@ -3285,6 +3306,7 @@ static Object fn_list_push(const Vec<Object>& args){}
 static Object fn_list_pop(const Vec<Object>& args){}
 static Object fn_list_insert(const Vec<Object>& args){}
 static Object fn_list_remove(const Vec<Object>& args){}
+static Object fn_list_clear(const Vec<Object>& args){}
     */
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
