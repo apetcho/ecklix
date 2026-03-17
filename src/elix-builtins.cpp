@@ -623,8 +623,11 @@ static Object fn_and(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_or(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (or x y)
+    auto pred = (args.size() == 2);
+    ELix::validate_argc(pred, "or");
+    auto acc = (args[0] || args[1]);
+    return Object(acc);
 }
 
 static Object fn_lt(const Vec<Object>& args, ELix* elix){
