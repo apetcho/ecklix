@@ -2946,8 +2946,18 @@ static Object fn_array_reverse(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_array_concat(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.concat xarr yarr)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Array.concat");
+    pred = (args[0].is_array() && args[1].is_array());
+    ELix::validate_type(
+        pred, "`(Array.concat xarr yarr)'", "expect `xarr' and `yarr' to be Arrays object."
+    );
+    auto xarr = args[0].as_array();
+    auto yarr = args[1].as_array();
+    xarr.concat(yarr);
+    
+    return Object(xarr);
 }
 
 static Object fn_array_len(const Vec<Object>& args, ELix* elix){
