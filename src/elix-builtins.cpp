@@ -1274,8 +1274,34 @@ static Object fn_pop(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_clear(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (clear container)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "clear");
+    auto container = args[0];
+    pred = (container.is_string() || container.is_list() || container.is_array());
+    ELix::validate_type(
+        container.is_iterable(), "`(clear container)'",
+        "expect `container' to an iterable."
+    );
+    Object result{};
+    if(container.is_string()){
+        container.as_string().text.clear();
+        result = Object((container));
+    }else if(container.is_array()){
+        container.as_array().clear();
+        result = container;
+    }else if(container.is_list()){
+        container.as_list().clear();
+        result = container;
+    }else if(container.is_set()){
+        container.as_set().clear();
+        result = container;
+    }else{
+        container.as_dict().clear();
+        result = container;
+    }
+
+    return result;
 }
 
 static Object fn_concat(const Vec<Object>& args, ELix* elix){
