@@ -3398,8 +3398,17 @@ static Object fn_list_remove(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_list_clear(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.clear xs)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "List.clear");
+    pred = (args[0].is_list());
+    ELix::validate_type(
+        pred, "`(List.clear xs)'", "expect `xs' to be a List object."
+    );
+    auto xs = args[0].as_list();
+    
+    xs.clear();
+    return Object(xs);
 }
 
 // -*-
