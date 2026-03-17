@@ -2877,10 +2877,18 @@ void ELix::initialize_symbol(void){
 // -*- Pair APIs -*-
 // -*-------------*-
 static Object fn_pair_key(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Pair.key obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Pair.key");
+    pred = args[0].is_pair();
+    ELix::validate_type(
+        pred, "`(Pair.key obj)'", "expect `obj' to be a Pair."
+    );
+
+    return args[0].as_pair().key;
 }
 
+// -*-
 static Object fn_pair_value(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
