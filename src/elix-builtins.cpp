@@ -1185,7 +1185,6 @@ static Object fn_push(const Vec<Object>& args, ELix* elix){
     auto pred = (args.size()==2);
     ELix::validate_argc(pred, "push");
     auto container = args[0];
-    pred = (container.is_string() || container.is_list() || container.is_array());
     ELix::validate_type(
         container.is_iterable(), "`(push container arg)'",
         "expect `container' to an iterable."
@@ -1225,7 +1224,6 @@ static Object fn_pop(const Vec<Object>& args, ELix* elix){
     auto pred = (args.size()==1);
     ELix::validate_argc(pred, "pop");
     auto container = args[0];
-    pred = (container.is_string() || container.is_list() || container.is_array());
     ELix::validate_type(
         container.is_iterable(), "`(pop container)'",
         "expect `container' to an iterable."
@@ -1278,7 +1276,6 @@ static Object fn_clear(const Vec<Object>& args, ELix* elix){
     auto pred = (args.size()==1);
     ELix::validate_argc(pred, "clear");
     auto container = args[0];
-    pred = (container.is_string() || container.is_list() || container.is_array());
     ELix::validate_type(
         container.is_iterable(), "`(clear container)'",
         "expect `container' to an iterable."
@@ -1305,8 +1302,44 @@ static Object fn_clear(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_concat(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (concat arg1 arg2 ... argN)
+    auto pred = (args.size()>=1);
+    ELix::validate_argc(pred, "concat");
+    pred = true;
+    for(const auto& arg: args){
+        pred = pred && (args[0].type()==arg.type());
+    }
+    ELix::validate_type(
+        (pred && args[0].is_iterable()), "`(concat arg1 arg2 ... argN)'",
+        "expect all arguments to have the same iterable type."
+    );
+    Object result{};
+    if(args[0].is_string()){
+        result = Object(String{});
+        for(const auto& arg: args){
+            result = result + arg.as_string();
+        }
+    }else if(args[0].is_array()){
+        Array self{};
+        for(const auto& arg: args){
+            self.concat(arg.as_array());
+        }
+        result = Object(self);
+    }else if(args[0].is_list()){
+        List self{};
+        for(const auto& arg: args){ self.concat(arg.as_list()); }
+        result = Object(self);
+    }else if(args[0].is_set()){
+        Set self{};
+        for(const auto& arg: args){ self.concat(arg.as_set()); }
+        result = Object(self);
+    }else{
+        Dict self{};
+        for(const auto& arg: args){ self.concat(arg.as_dict()); }
+        result = Object(self);
+    }
+
+    return result;
 }
 
 static Object fn_reverse(const Vec<Object>& args, ELix* elix){
