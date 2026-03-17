@@ -1,5 +1,6 @@
 #include "elix.hpp"
 #include<algorithm>
+#include<iostream>
 #include<sstream>
 #include<iomanip>
 #include<random>
@@ -1823,8 +1824,12 @@ static Object fn_partial(const Vec<Object>& args);
 // -*- Basic builtin Input/Output functions -*-
 // -*----------------------------------------*-
 static Object fn_println(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (println ...)
+    for(usize i=0; i < args.size(); i++){
+        if(i > 0){ std::cout << " "; }
+        std::cout << args[i].str();
+    }
+    std::cout << std::endl;
 }
 
 static Object fn_eprintln(const Vec<Object>& args, ELix* elix){
