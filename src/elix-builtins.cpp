@@ -1566,9 +1566,9 @@ static Object fn_linspace(const Vec<Object>& args, ELix* elix){
     // (linspace vmin vmax)
     // (linspace vmin vmax N)
     auto pred = (args.size()==2 || args.size()==3);
-    Vec<Object> result{};
     ELix::validate_argc(pred, "linspace");
     usize N = 10;
+    Vec<Object> result(N);
     if(args.size()==2){
         pred = (args[0].is_number() && args[1].is_number());
         ELix::validate_type(
@@ -1601,6 +1601,7 @@ static Object fn_linspace(const Vec<Object>& args, ELix* elix){
             pred, "`(linspace vmin vmax N)'",
             "expect vmin < vmax and step > 1"
         );
+        result.resize(N);
         auto dx = (vmax - vmin) / (N - 1);
         for(auto val=vmin; val < vmax; val += dx){
             result.push_back(Object(Number(val)));
@@ -1611,8 +1612,21 @@ static Object fn_linspace(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_repeat(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (repeat N obj)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "repeat");
+    pred = (args[0].is_integer());
+    ELix::validate_type(
+        pred, "`(repeat N obj)'", "expect `N' to be an integer."
+    );
+    auto N = args[0].as_integer();
+    ELix::validate_value(
+        (N > 0), "`(repeat N obj)'", "expect N > 0"
+    );
+    Vec<Object> result(N);
+    for(auto i=0; i < N; i++){ result.push_back(args[1]); }
+
+    return Object(Array{result});
 }
 
 static Object fn_partial(const Vec<Object>& args, ELix* elix){
