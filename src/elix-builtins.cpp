@@ -1897,11 +1897,16 @@ static Object fn_clone(const Vec<Object>& args, ELix* elix){
     return args[0].clone();
 }
 
+// -*-
 static Object fn_typeof(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (typeof obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "typeof");
+
+    return Object(args[0].type());
 }
 
+// -*-
 static Object fn_isinstance(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
