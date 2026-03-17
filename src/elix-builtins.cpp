@@ -2320,9 +2320,20 @@ static Object fn_exit(const Vec<Object>& args, ELix* elix){
     return Object();
 }
 
+// -*-
 static Object fn_bye(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (bye obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "bye");
+    pred = args[0].is_string();
+    ELix::validate_type(
+        pred, "`(bye obj)'", "expect `obj' to be a string used an exit message."
+    );
+    auto msg = args[0].as_string().text;
+    std::cerr << msg << std::endl;
+    std::exit(EXIT_SUCCESS);
+
+    return Object();
 }
 
 static Object fn_clamp(const Vec<Object>& args, ELix* elix){
