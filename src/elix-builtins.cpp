@@ -1561,9 +1561,53 @@ static Object fn_range(const Vec<Object>& args, ELix* elix){
     return Object(Array{result});
 }
 
+// -*-
 static Object fn_linspace(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (linspace vmin vmax)
+    // (linspace vmin vmax N)
+    auto pred = (args.size()==2 || args.size()==3);
+    Vec<Object> result{};
+    ELix::validate_argc(pred, "linspace");
+    usize N = 10;
+    if(args.size()==2){
+        pred = (args[0].is_number() && args[1].is_number());
+        ELix::validate_type(
+            pred, "`(linspace vmin vmax)'",
+            "expect `vmin' and `vmax' to be number."
+        );
+        auto vmin = args[0].as_float();
+        auto vmax = args[1].as_float();
+        pred = (vmin < vmax);
+        ELix::validate_value(
+            pred, "`(linspace vmin vmax)'",
+            "expect vmin < vmax."
+        );
+        auto dx = (vmax - vmin) / (N - 1);
+        for(auto val=vmin; val < vmax; val += dx){
+            result.push_back(Object(Number(val)));
+        }
+    }else{
+        pred = (args[0].is_integer() && args[1].is_integer(), args[2].is_integer());
+        ELix::validate_type(
+            pred, "`(linspace vmin vmax N)'",
+            "expect `vmin', `vmax' must be floating-point numbers "
+            "and `N' an integer."
+        );
+        auto vmin = args[0].as_float();
+        auto vmax = args[1].as_float();
+        auto N = args[2].as_integer();
+        pred = ((vmin < vmax) && (N > 1));
+        ELix::validate_value(
+            pred, "`(linspace vmin vmax N)'",
+            "expect vmin < vmax and step > 1"
+        );
+        auto dx = (vmax - vmin) / (N - 1);
+        for(auto val=vmin; val < vmax; val += dx){
+            result.push_back(Object(Number(val)));
+        }
+    }
+
+    return Object(Array{result});
 }
 
 static Object fn_repeat(const Vec<Object>& args, ELix* elix){
