@@ -1505,8 +1505,60 @@ static Object fn_max(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_range(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (range n)
+    // (range vmin vmax)
+    // (range vmin vmax step)
+    auto pred = (args.size()>=1 && args.size() < 4);
+    Vec<Object> result{};
+    ELix::validate_argc(pred, "range");
+    if(args.size()==1){
+        ELix::validate_type(
+            args[0].is_integer(), "`(range n)'",
+            "expect `n' to be an integer"
+        );
+        auto n = args[0].as_integer();
+        ELix::validate_value((n > 0), "`(range n)'", "expect n > 0");
+        Vec<i64> vec(n);
+        std::iota(vec.begin(), vec.end(), 0);
+        Vec<Object> self(n);
+        for(const auto& val: vec){ self.push_back(Object(Number{val})); }
+        result = self;
+    }else if(args.size()==2){
+        pred = (args[0].is_integer() && args[1].is_integer());
+        ELix::validate_type(
+            pred, "`(range vmin vmax)'",
+            "expect `vmin' and `vmax' to be integers."
+        );
+        auto vmin = args[0].as_integer();
+        auto vmax = args[1].as_integer();
+        pred = (vmin < vmax);
+        ELix::validate_value(
+            pred, "`(range vmin vmax)'",
+            "expect vmin < vmax."
+        );
+        for(auto val=vmin; val < vmax; val++){
+            result.push_back(Object(Number(val)));
+        }
+    }else{
+        pred = (args[0].is_integer() && args[1].is_integer(), args[2].is_integer());
+        ELix::validate_type(
+            pred, "`(range vmin vmax step)'",
+            "expect `vmin', `vmax' and `step' to be integers."
+        );
+        auto vmin = args[0].as_integer();
+        auto vmax = args[1].as_integer();
+        auto step = args[2].as_integer();
+        pred = ((vmin < vmax) && (step > 0));
+        ELix::validate_value(
+            pred, "`(range vmin vmax step)'",
+            "expect vmin < vmax and step > 0"
+        );
+        for(auto val=vmin; val < vmax; val += step){
+            result.push_back(Object(Number(val)));
+        }
+    }
+
+    return Object(Array{result});
 }
 
 static Object fn_linspace(const Vec<Object>& args, ELix* elix){
