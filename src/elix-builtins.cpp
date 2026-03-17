@@ -2796,31 +2796,27 @@ static Object fn_str_at(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_string(void){
-    //! @todo
-    /*
-static Object fn_str_find(const Vec<Object>& args);
-static Object fn_str_reverse(const Vec<Object>& args);
-static Object fn_str_concat(const Vec<Object>& args);
-static Object fn_str_len(const Vec<Object>& args);
-static Object fn_str_eq(const Vec<Object>& args);
-static Object fn_str_ne(const Vec<Object>& args);
-static Object fn_str_split(const Vec<Object>& args);
-static Object fn_str_startswith(const Vec<Object>& args);
-static Object fn_str_endswith(const Vec<Object>& args);
-static Object fn_str_ltrim(const Vec<Object>& args);
-static Object fn_str_rtrim(const Vec<Object>& args);
-static Object fn_str_trim(const Vec<Object>& args);
-static Object fn_str_lower(const Vec<Object>& args){}
-static Object fn_str_upper(const Vec<Object>& args){}
-static Object fn_str_capitalize(const Vec<Object>& args){}
-static Object fn_str_title(const Vec<Object>& args){}
-static Object fn_str_find_all(const Vec<Object>& args){}
-static Object fn_str_replace(const Vec<Object>& args){}
-static Object fn_str_replace_all(const Vec<Object>& args){}
-static Object fn_str_substr(const Vec<Object>& args){}
-static Object fn_str_at(const Vec<Object>& args){}
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("String.find", fn_str_find, 2, 2);              // (String.find text needle)
+    add_builtin("String.reverse", fn_str_reverse, 1, 1);        // (String.reverse text)
+    add_builtin("String.concat", fn_str_concat, 2, 2);          // (String.concat xtext ytext)
+    add_builtin("String.len", fn_str_len, 1, 1);                // (String.len text)
+    add_builtin("String.equal", fn_str_eq, 2, 2);               // (String.equal xtext ytext)
+    add_builtin("String.not_equal", fn_str_ne, 2, 2);           // (String.not_equal xtext ytext)
+    add_builtin("String.split", fn_str_split, 1, 2);            // (String.split text [delim])
+    add_builtin("String.startswith", fn_str_startswith, 2, 2);  // (String.startswith text prefix)
+    add_builtin("String.endswith", fn_str_endswith, 2, 2);      // (String.endswith text suffix)
+    add_builtin("String.ltrim", fn_str_ltrim, 1, 1);            // (String.ltrim text)
+    add_builtin("String.rtrim", fn_str_rtrim, 1, 1);            // (String.rtrim text)
+    add_builtin("String.trim", fn_str_trim, 1, 1);              // (String.trim text)
+    add_builtin("String.lower", fn_str_lower, 1, 1);            // (String.lower text)
+    add_builtin("String.upper", fn_str_upper, 1, 1);            // (String.upper text)
+    add_builtin("String.capitalize", fn_str_capitalize, 1, 1);  // (String.capitalize text)
+    add_builtin("String.title", fn_str_title, 1, 1);            // (String.title text)
+    add_builtin("String.find_all", fn_str_find_all, 2, 2);      // (String.find_all text needle)
+    add_builtin("String.replace", fn_str_replace, 3, 3);        // (String.replace text old neo)
+    add_builtin("String.replace_all", fn_str_replace_all, 3, 3);// (String.replace_all text old neo)
+    add_builtin("String.substr", fn_str_substr, 2, 3);          // (String.substr text start [stop])
+    add_builtin("String.at", fn_str_at, 2, 2);                  // (String.at text index)
 }
 
 // -*---------------*-
