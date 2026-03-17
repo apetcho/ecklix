@@ -1861,8 +1861,20 @@ static Object fn_eprint(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_input(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (input [prompt])
+    auto pred = (args.size() <= 1);
+    ELix::validate_argc(pred, "input");
+    if(args.size()==1){
+        ELix::validate_type(
+            args[0].is_string(), "`(input [prompt])'",
+            "If prompt provided, it must be a String."
+        );
+        std::cout << args[0].str();
+    }
+    std::string line{};
+    std::getline(std::cin >> std::ws, line);
+    
+    return Object(String{line});
 }
 
 // -*-
