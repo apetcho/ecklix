@@ -2307,8 +2307,17 @@ static Object fn_quit(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_exit(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (exit obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "exit");
+    pred = args[0].as_integer();
+    ELix::validate_type(
+        pred, "`(exit obj)'", "expect `obj' to be an integer used as an exit code."
+    );
+    auto ec = args[0].as_integer();
+    std::exit(ec);
+
+    return Object();
 }
 
 static Object fn_bye(const Vec<Object>& args, ELix* elix){
