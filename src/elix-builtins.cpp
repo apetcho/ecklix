@@ -203,7 +203,7 @@ static Object fn_array(const Vec<Object>& args, ELix* elix){
 static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
     // (Dict.new )
     // (Dict.new iterable)
-    auto pred = (args.size() <= 0);
+    auto pred = (args.size() <= 1);
     ELix::validate_argc(pred, "Dict.new");
     if(args.empty()){
         return Object(Dict{});
@@ -274,7 +274,7 @@ static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
 static Object fn_hashset(const Vec<Object>& args, ELix* elix){
     // (Set.new )
     // (Set.new iterable)
-    auto pred = (args.size() <= 0);
+    auto pred = (args.size() <= 1);
     ELix::validate_argc(pred, "Set.new");
     if(args.empty()){
         return Object(Set{});
@@ -376,8 +376,11 @@ static Object fn_list(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_pair(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Pair.new");
+    Pair pair{args[0], args[1]};
+
+    return Object(pair);
 }
 
 // -*-
