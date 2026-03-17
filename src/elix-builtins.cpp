@@ -3263,8 +3263,17 @@ static Object fn_list_concat(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_list_len(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.len xs)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "List.find");
+    pred = (args[0].is_list());
+    ELix::validate_type(
+        pred, "`(List.len xs)'", "expect `xs' to be a List object."
+    );
+    auto xs = args[0].as_list();
+    auto num = xs.len();
+    
+    return Object(Number(num));
 }
 
 static Object fn_list_head(const Vec<Object>& args, ELix* elix){
