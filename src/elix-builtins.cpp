@@ -2255,10 +2255,28 @@ static Object fn_eval(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_getenv(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (getenv obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "getenv");
+    pred = args[0].is_string();
+    ELix::validate_type(
+        pred, "`(getenv obj)'", "expect `obj' to be a String object."
+    );
+    auto var = args[0].as_string().text;
+    auto ans = std::getenv(var.c_str());
+    Vec<Object> result{};
+    if(ans != nullptr){
+        auto self = String{std::string(ans)};
+        auto vec = self.split(String{":"});
+        for(const auto& path: vec){
+            result.push_back(Object(path));
+        }
+    }
+
+    return Object(Array{result});
 }
 
+// -*-
 static Object fn_setenv(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
