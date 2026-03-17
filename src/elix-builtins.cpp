@@ -1,7 +1,9 @@
 #include "elix.hpp"
+#include<algorithm>
 #include<sstream>
 #include<iomanip>
 #include<cctype>
+#include<numeric>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -497,8 +499,23 @@ void ELix::initialize_predicates(void){
 // -*- Builtin operators -*-
 // -*---------------------*-
 static Object fn_add(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (+ x ...)
+    auto pred = (args.size() >= 1);
+    ELix::validate_argc(pred, "+");
+    if(args.size()==1){
+        auto arg = args[0];
+        if(!arg.is_number()){
+            std::stringstream ss;
+            ss << "`(+ arg)': expect arg to be a number.";
+            throw ELixError(ELixError::TypeError, ss.str());
+        }
+        return Object(arg.as_number());
+    }
+    auto acc = args[0];
+    for(size_t i=1; i < args.size(); i++){
+        acc = acc + args[i];
+    }
+    return Object(acc);
 }
 
 static Object fn_sub(const Vec<Object>& args, ELix* elix){
@@ -972,6 +989,21 @@ static Object fn_bye(const Vec<Object>& args, ELix* elix){
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
+static Object fn_clamp(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_gcd(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_lcm(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
 // -*-
 void ELix::initialize_misc(void){
     //! @todo
@@ -992,6 +1024,9 @@ static Object fn_setenv(const Vec<Object>& args){}
 static Object fn_quit(const Vec<Object>& args){}
 static Object fn_exit(const Vec<Object>& args){}
 static Object fn_bye(const Vec<Object>& args){}
+static Object fn_clamp(const Vec<Object>& args){}
+static Object fn_gcd(const Vec<Object>& args){}
+static Object fn_lcm(const Vec<Object>& args){}
     */
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
