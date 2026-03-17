@@ -2678,7 +2678,7 @@ static Object fn_str_title(const Vec<Object>& args, ELix* elix){
     ELix::validate_argc(pred, "String.title");
     ELix::validate_type(
         args[0].is_string(), "`(String.title text)'",
-        "expect `text' to be a strings."
+        "expect `text' to be a string."
     );
 
     auto text = args[0].as_string();
@@ -2692,9 +2692,10 @@ static Object fn_str_find_all(const Vec<Object>& args, ELix* elix){
     // (String.find_all text needle)
     auto pred = (args.size()==2);
     ELix::validate_argc(pred, "String.find_all");
+    pred = (args[0].is_string() && args[1].is_string());
     ELix::validate_type(
-        args[0].is_string(), "`(String.find_all text needle)'",
-        "expect `text' to be a strings."
+        pred, "`(String.find_all text needle)'",
+        "expect `text' and `needle' to be strings."
     );
 
     auto text = args[0].as_string();
@@ -2708,11 +2709,26 @@ static Object fn_str_find_all(const Vec<Object>& args, ELix* elix){
     return Object(Array{result});
 }
 
+// -*-
 static Object fn_str_replace(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.replace text old neo)
+    auto pred = (args.size()==3);
+    ELix::validate_argc(pred, "String.replace");
+    pred = (args[0].is_string() && args[1].is_string() && args[2].is_string());
+    ELix::validate_type(
+        pred, "`(String.replace text old neo)'",
+        "expect `text', `old' and `neo' to be strings."
+    );
+
+    auto text = args[0].as_string();
+    auto old = args[1].as_string();
+    auto neo = args[2].as_string();
+    text.replace(old, neo);
+
+    return Object(text);
 }
 
+// -*-
 static Object fn_str_replace_all(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
