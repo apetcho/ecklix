@@ -2298,8 +2298,12 @@ static Object fn_setenv(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_quit(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (quit)
+    auto pred = args.empty();
+    ELix::validate_argc(pred, "quit");
+    std::exit(EXIT_SUCCESS);
+
+    return Object();
 }
 
 static Object fn_exit(const Vec<Object>& args, ELix* elix){
