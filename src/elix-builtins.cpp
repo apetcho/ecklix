@@ -3124,8 +3124,20 @@ static Object fn_array_sort(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_array_reduce(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.reduce xarr func init)
+    auto pred = (args.size()==3);
+    ELix::validate_argc(pred, "Array.reduce");
+    pred = (args[0].is_array() && args[1].is_callable());
+    ELix::validate_type(
+        pred, "`(Array.reduce xarr func init)'",
+        "expect `xarr' to be an Array object and `func' to be a callable."
+    );
+    auto self = args[0].as_array();
+    auto func = args[1];
+    auto init = args[2];
+
+    auto ans = self.reduce(func, init, elix);
+    return Object(ans);
 }
 
 static Object fn_array_push(const Vec<Object>& args, ELix* elix){
