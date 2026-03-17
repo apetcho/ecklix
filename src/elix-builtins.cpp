@@ -1115,8 +1115,51 @@ static Object fn_zip(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_enumerate(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (enumerate iterable)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "enumerate");
+    auto arg = args[0];
+    if(!arg.is_iterable()){
+        std::stringstream ss;
+        ss << "`(enumerate arg)': expect argument to be an iterable.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    Vec<Object> result{};
+    if(arg.is_string()){
+        for(i64 i=0; i < arg.as_string().len(); i++){
+            Pair entry{
+                Object(Number(i)),
+                Object(String{std::string(1, arg.as_string().text[i])})
+            };
+            result.push_back(std::move(entry));
+        }
+    }else if(arg.is_array()){
+        for(i64 i=0; i < arg.as_array().len(); i++){
+            Pair entry{ Object(Number(i)), arg.as_array().items[i] };
+            result.push_back(std::move(entry));
+        }
+    }else if(arg.is_list()){
+        for(i64 i=0; i < arg.as_list().len(); i++){
+            Pair entry{ Object(Number(i)), arg.as_list().items[i] };
+            result.push_back(std::move(entry));
+        }
+    }else if(arg.is_set()){
+        i64 i = 0;
+        for(const auto& obj: arg.as_set().hset){
+            Pair entry{ Object(Number(i)),  obj};
+            result.push_back(std::move(entry));
+            ++i;
+        }
+    }else{
+        i64 i = 0;
+        for(auto pair: arg.as_dict().items()){
+            Pair entry{ Object(Number(i)),  Object(pair)};
+            result.push_back(std::move(entry));
+            ++i;
+        }
+    }
+
+    return Object(Array{result});
 }
 
 static Object fn_len(const Vec<Object>& args, ELix* elix){
