@@ -3298,7 +3298,7 @@ static Object fn_list_tail(const Vec<Object>& args, ELix* elix){
     ELix::validate_argc(pred, "List.tail");
     pred = (args[0].is_list());
     ELix::validate_type(
-        pred, "`(List.tail)'", "expect `xs' to be a List object."
+        pred, "`(List.tail xs)'", "expect `xs' to be a List object."
     );
     auto xs = args[0].as_list();
     auto result = xs.tail();
@@ -3307,10 +3307,19 @@ static Object fn_list_tail(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_list_first(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.first xs)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "List.first");
+    pred = (args[0].is_list());
+    ELix::validate_type(
+        pred, "`(List.first xs)'", "expect `xs' to be a List object."
+    );
+    auto xs = args[0].as_list();
+    auto result = xs.tail();
+    return Object(result);
 }
 
+// -*-
 static Object fn_list_last(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3349,9 +3358,9 @@ static Object fn_list_find(const Vec<Object>& args){}       // (List.find xs obj
 static Object fn_list_reverse(const Vec<Object>& args){}    // (List.reverse xs)
 static Object fn_list_concat(const Vec<Object>& args){}     // (List.concat xs ys)
 static Object fn_list_len(const Vec<Object>& args){}        // (List.len xs)
-static Object fn_list_head(const Vec<Object>& args){}       // (List.)
+static Object fn_list_head(const Vec<Object>& args){}       // (List.head xs)
 static Object fn_list_tail(const Vec<Object>& args){}       // (List.tail xs)
-static Object fn_list_first(const Vec<Object>& args){}
+static Object fn_list_first(const Vec<Object>& args){}      // (List.first xs)
 static Object fn_list_last(const Vec<Object>& args){}
 static Object fn_list_push(const Vec<Object>& args){}
 static Object fn_list_pop(const Vec<Object>& args){}
