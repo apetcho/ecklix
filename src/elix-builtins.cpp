@@ -2426,10 +2426,28 @@ void ELix::initialize_misc(void){
 // -*- String APIs -*-
 // -*---------------*-
 static Object fn_str_find(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.find haystack needle)
+    // (String.find haystack needle from)
+    auto pred = (args.size()==2 || args.size()==3);
+    ELix::validate_argc(pred, "String.find");
+    auto arg1 = args[0];
+    auto arg2 = args[1];
+    auto arg3 = (args.size()==3 ? args[2] : Object(Number(i64(0))));
+    pred = (arg1.is_string() && arg2.is_string() && arg3.is_integer());
+    ELix::validate_type(
+        pred, "`(String.find haystack needle [from])'",
+        "expect `haystack' and `needle' to be strings.\n"
+        "If `from' is given, it must be an integer >= 0"
+    );
+    auto haystack = arg1.as_string();
+    auto needle = arg2.as_string();
+    auto from = arg3.as_integer();
+    auto ans = haystack.find(needle, from);
+
+    return Object(Number(ans));
 }
 
+// -*-
 static Object fn_str_reverse(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
