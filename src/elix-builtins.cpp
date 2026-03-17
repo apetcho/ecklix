@@ -401,6 +401,7 @@ void ELix::initialize_constructors(void){
 // -*- Builtin predicates -*-
 // -*----------------------*-
 static Object fn_is_empty(const Vec<Object>& args, ELix* elix){
+    // (empty? arg)
     auto pred = (args.size()==1);
     ELix::validate_argc(pred, "empty?");
     auto arg = args[0];
@@ -423,8 +424,12 @@ static Object fn_is_empty(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_is_hashable(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (hashable? arg)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "hashable?");
+    auto arg = args[0];
+
+    return Object((arg.is_hashable() ? true : false));
 }
 
 static Object fn_is_iterable(const Vec<Object>& args, ELix* elix){
