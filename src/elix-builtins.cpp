@@ -34,9 +34,9 @@ static void add_builtin(const std::string& name, const Object& obj, const std::s
 static Object fn_symbol(const Vec<Object>& args, ELix* elix){
     // (Symbol args)
     auto pred = (args.size()==1);
-    ELix::validate_argc(pred, "Symbol");
+    ELix::validate_argc(pred, "Symbol.new");
     pred = (args[0].is_symbol() || args[0].is_string());
-    ELix::validate_type(pred, "Symbol", "argument must a String or a Symbol.");
+    ELix::validate_type(pred, "Symbol.new", "argument must a String or a Symbol.");
     Object result{};
     if(args[0].is_symbol()){
         result = Object(args[0].as_symbol());
@@ -49,14 +49,14 @@ static Object fn_symbol(const Vec<Object>& args, ELix* elix){
 
 static Object fn_string(const Vec<Object>& args, ELix* elix){
     /*
-        (String)
-        (String arg)
+        (String.new)
+        (String.new arg)
 
         type(arg) = Any
     */
     [[maybe_unused]] auto _ = elix;
     auto pred = (args.size()<=1);
-    ELix::validate_argc(pred, "String");
+    ELix::validate_argc(pred, "String.new");
     Object result{Object(String{""})};
     if(!args.empty()){
         result = Object(String{args[0].str()});
@@ -65,8 +65,10 @@ static Object fn_string(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_integer(const Vec<Object>& args, ELix* elix){
+    // (Integer.new )
+    // (Integer.new arg)
     auto pred = (args.size() <= 1);
-    ELix::validate_argc(pred, "Integer");
+    ELix::validate_argc(pred, "Integer.new");
     if(args.empty()){
         return Object(Number{});
     }
@@ -74,7 +76,7 @@ static Object fn_integer(const Vec<Object>& args, ELix* elix){
         args[0].is_bool() || args[0].is_number() ||
         args[0].is_string()
     );
-    ELix::validate_type(pred, "Integer", "argument must be a boolean, a number or a string");
+    ELix::validate_type(pred, "Integer.new", "argument must be a boolean, a number or a string");
     auto arg = args[0];
     if(arg.is_bool()){
         auto num = (arg.as_bool() ? i64(1) : i64(0));
@@ -86,7 +88,7 @@ static Object fn_integer(const Vec<Object>& args, ELix* elix){
     auto xstr = arg.as_string().split();
     if(xstr.size() > 1){
         std::stringstream ss;
-        ss << "Invalid argument to `Integer': " << arg.str() << " is not a numeric string.";
+        ss << "Invalid argument to `Integer.new': " << arg.str() << " is not a numeric string.";
         throw ELixError(ELixError::ValueError, ss.str());
     }
     auto numstr = xstr[0].str();
@@ -95,7 +97,7 @@ static Object fn_integer(const Vec<Object>& args, ELix* elix){
     auto self = parser.parse()[0]->eval(elix);
     if(!self.is_number()){
         std::stringstream ss;
-        ss << "Invalid argument to `Integer': " << arg.str() << " is not a numeric string.";
+        ss << "Invalid argument to `Integer.new': " << arg.str() << " is not a numeric string.";
         throw ELixError(ELixError::ValueError, ss.str());
     }
     auto num = self.as_integer();
@@ -103,8 +105,10 @@ static Object fn_integer(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_float(const Vec<Object>& args, ELix* elix){
+    // (Float.new )
+    // (Float.new arg)
     auto pred = (args.size() <= 1);
-    ELix::validate_argc(pred, "Integer");
+    ELix::validate_argc(pred, "Float.new");
     if(args.empty()){
         return Object(Number{0.0});
     }
@@ -112,7 +116,7 @@ static Object fn_float(const Vec<Object>& args, ELix* elix){
         args[0].is_bool() || args[0].is_number() ||
         args[0].is_string()
     );
-    ELix::validate_type(pred, "Integer", "argument must be a boolean, a number or a string");
+    ELix::validate_type(pred, "Float.new", "argument must be a boolean, a number or a string");
     auto arg = args[0];
     if(arg.is_bool()){
         auto num = (arg.as_bool() ? 1.0 : 0.0);
@@ -124,7 +128,7 @@ static Object fn_float(const Vec<Object>& args, ELix* elix){
     auto xstr = arg.as_string().split();
     if(xstr.size() > 1){
         std::stringstream ss;
-        ss << "Invalid argument to `Integer': " << arg.str() << " is not a numeric string.";
+        ss << "Invalid argument to `Float.new': " << arg.str() << " is not a numeric string.";
         throw ELixError(ELixError::ValueError, ss.str());
     }
     auto numstr = xstr[0].str();
@@ -133,7 +137,7 @@ static Object fn_float(const Vec<Object>& args, ELix* elix){
     auto self = parser.parse()[0]->eval(elix);
     if(!self.is_number()){
         std::stringstream ss;
-        ss << "Invalid argument to `Integer': " << arg.str() << " is not a numeric string.";
+        ss << "Invalid argument to `Float.new': " << arg.str() << " is not a numeric string.";
         throw ELixError(ELixError::ValueError, ss.str());
     }
     auto num = self.as_float();
@@ -141,11 +145,11 @@ static Object fn_float(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_array(const Vec<Object>& args, ELix* elix){
-    // (Array)
-    // (Array size item)
-    // (Array iterable)
+    // (Array.new)
+    // (Array.new size item)
+    // (Array.new iterable)
     auto pred = (args.size() <= 2);
-    ELix::validate_argc(pred, "Array");
+    ELix::validate_argc(pred, "Array.new");
     if(args.empty()){
         return Object(Array{});
     }
@@ -153,7 +157,7 @@ static Object fn_array(const Vec<Object>& args, ELix* elix){
         auto arg = args[0];
         if(!arg.is_iterable()){
             std::stringstream ss;
-            ss << "`(Array arg)': expect an iterable object but got " << std::quoted(arg.type().str());
+            ss << "`(Array.new arg)': expect an iterable object but got " << std::quoted(arg.type().str());
             throw ELixError(ELixError::TypeError, ss.str());
         }
         Vec<Object> vec{};
@@ -179,13 +183,13 @@ static Object fn_array(const Vec<Object>& args, ELix* elix){
     }else{
         if(!args[0].is_integer()){
             std::stringstream ss;
-            ss << "`(Array size obj)': size must be an integer. Got " << std::quoted(args[0].type().str());
+            ss << "`(Array.new size obj)': size must be an integer. Got " << std::quoted(args[0].type().str());
             throw ELixError(ELixError::TypeError, ss.str());
         }
         auto size = args[0].as_integer();
         if(size <= 0){
             std::stringstream ss;
-            ss << "`(Array size obj)': Except size > 0 but got " << size;
+            ss << "`(Array.new size obj)': Except size > 0 but got " << size;
             throw ELixError(ELixError::ValueError, ss.str());
         }
         Vec<Object> vec{};
@@ -197,17 +201,17 @@ static Object fn_array(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
-    // (Dict )
-    // (Dict iterable)
+    // (Dict.new )
+    // (Dict.new iterable)
     auto pred = (args.size() <= 0);
-    ELix::validate_argc(pred, "Dict");
+    ELix::validate_argc(pred, "Dict.new");
     if(args.empty()){
         return Object(Dict{});
     }
     auto arg = args[0];
     if(!arg.is_iterable()){
         std::stringstream ss;
-        ss << "`(Array iterable)': expect an iterable object as argument but got ";
+        ss << "`(Dict.new iterable)': expect an iterable object as argument but got ";
         ss << std::quoted(arg.type().str());
         throw ELixError(ELixError::TypeError, ss.str());
     }
@@ -229,7 +233,7 @@ static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
         for(const auto& entry: vec){
             if(!entry.is_pair()){
                 std::stringstream ss;
-                ss << "`(Dict iterable)': Expect the elements of the iterable to be a pair.\n";
+                ss << "`(Dict.new iterable)': Expect the elements of the iterable to be a pair.\n";
                 ss << "Got " << std::quoted(entry.type().str());
                 throw ELixError(ELixError::TypeError, ss.str());
             }
@@ -241,7 +245,7 @@ static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
         for(const auto& entry: vec){
             if(!entry.is_pair()){
                 std::stringstream ss;
-                ss << "`(Dict iterable)': Expect the elements of the iterable to be a pair.\n";
+                ss << "`(Dict.new iterable)': Expect the elements of the iterable to be a pair.\n";
                 ss << "Got " << std::quoted(entry.type().str());
                 throw ELixError(ELixError::TypeError, ss.str());
             }
@@ -252,7 +256,7 @@ static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
         for(const auto& entry: arg.as_set().hset){
             if(!entry.is_pair()){
                 std::stringstream ss;
-                ss << "`(Dict iterable)': Expect the elements of the iterable to be a pair.\n";
+                ss << "`(Dict.new iterable)': Expect the elements of the iterable to be a pair.\n";
                 ss << "Got " << std::quoted(entry.type().str());
                 throw ELixError(ELixError::TypeError, ss.str());
             }
@@ -268,8 +272,51 @@ static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_hashset(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.new )
+    // (Set.new iterable)
+    auto pred = (args.size() <= 0);
+    ELix::validate_argc(pred, "Set.new");
+    if(args.empty()){
+        return Object(Dict{});
+    }
+    auto arg = args[0];
+    if(!arg.is_iterable()){
+        std::stringstream ss;
+        ss << "`(Set.new iterable)': expect an iterable object as argument but got ";
+        ss << std::quoted(arg.type().str());
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    // -*-
+    HashSet hset{};
+    if(arg.is_string()){
+        std::set<char> myset{};
+        auto text = arg.str();
+        for(auto c: text){
+            if(std::isspace(c)){ continue; }
+            myset.insert(c);
+        }
+        for(const auto& c: myset){
+            hset.insert(Object(String{std::string(1, c)}));
+        }
+    }else if(arg.is_array()){
+        auto vec = arg.as_array().items;
+        for(const auto& entry: vec){
+            hset.insert(entry);
+        }
+    }else if(arg.is_list()){
+        auto vec = arg.as_list().items;
+        for(const auto& entry: vec){
+            hset.insert(entry);
+        }
+    }else if(arg.is_set()){
+        hset = arg.as_set().hset;
+    }else if(arg.is_dict()){
+        for(auto& [key, val]: arg.as_dict().hmap){
+            hset.insert(Object(Pair{key, val}));
+        }
+    }
+
+    return Object(Set{hset});
 }
 
 static Object fn_list(const Vec<Object>& args, ELix* elix){
