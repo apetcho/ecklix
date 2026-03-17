@@ -2482,7 +2482,7 @@ static Object fn_str_len(const Vec<Object>& args, ELix* elix){
     // (String.len obj)
     auto pred = (args.size()==1);
     ELix::validate_argc(pred, "String.len");
-    pred = (args[0].is_string() && args[1].is_string());
+    pred = (args[0].is_string());
     ELix::validate_type(
         pred, "`(String.len arg)'", "expect `arg' to be a string."
     );
@@ -2494,10 +2494,21 @@ static Object fn_str_len(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_eq(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.equal obj)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "String.equal");
+    pred = (args[0].is_string() && args[1].is_string());
+    ELix::validate_type(
+        pred, "`(String.equal arg)'", "expect `arg' to be a string."
+    );
+    auto x = args[0].as_string().text;
+    auto y = args[1].as_string().text;
+
+    auto ans = (x==y);
+    return Object(ans);
 }
 
+// -*-
 static Object fn_str_ne(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
