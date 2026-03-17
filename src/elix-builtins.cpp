@@ -3073,10 +3073,22 @@ static Object fn_array_splice(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_array_any(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.any xarr predicate)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Array.any");
+    pred = (args[0].is_array() && args[1].is_callable());
+    ELix::validate_type(
+        pred, "`(Array.any xarr predicate)'",
+        "expect `xarr' to be an Array object and `predicate' to be a callable."
+    );
+    auto self = args[0].as_array();
+    auto predicate = args[1];
+
+    auto ans = self.any(predicate);
+    return Object(ans);
 }
 
+// -*-
 static Object fn_array_all(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
