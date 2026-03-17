@@ -1963,7 +1963,53 @@ static Object fn_macro_expand(const Vec<Object>& args, ELix* elix){
     return Object(String{result});
 }
 
+// -*-
+static std::map<i64, std::string> ASCII = {
+    {0, "NUL"}, {1, "SOH"}, {2, "STX"}, {3, "ETX"}, {4, "EOT"},
+    {5, "ENQ"}, {6, "ACK"}, {7, "BEL"}, {8, "BS"}, {9, "HT"},
+    {10, "LF/NL"}, {11, "VT"}, {12, "FF"}, {13, "CR"}, {14, "SO"},
+    {15, "SI"}, {16, "DLE"}, {17, "DC1"}, {18, "DC2"}, {19, "DC3"},
+    {20, "DC4"}, {21, "NAK"}, {22, "SYN"}, {23, "ETB"}, {24, "CAN"},
+    {25, "EM"}, {26, "SUB"}, {27, "ESC"}, {28, "FS"}, {29, "GS"},
+    {30, "RS"}, {31, "US"}, {32, "SPACE"}, {33, "!"}, {34, "\""},
+    {35, "#"}, {36, "$"}, {37, "%"}, {38, "&"}, {39, "'"}, {40, "("},
+    {41, ")"}, {42, "*"}, {43, "+"}, {44, ","}, {45, "-"}, {46, "."},
+    {47, "/"}, {48, "0"}, {49, "1"}, {50, "2"}, {51, "3"}, {52, "4"},
+    {53, "5"}, {54, "6"}, {55, "7"}, {56, "8"}, {57, "9"}, {58, ":"},
+    {59, ";"}, {60, "<"}, {61, "="}, {62, ">"}, {63, "?"}, {64, "@"},
+    {65, "A"}, {66, "B"}, {67, "C"}, {68, "D"}, {69, "E"}, {70, "F"},
+    {71, "G"}, {72, "H"}, {73, "I"}, {74, "J"}, {75, "K"}, {76, "L"},
+    {77, "M"}, {78, "N"}, {79, "O"}, {80, "P"}, {81, "Q"}, {82, "R"},
+    {83, "S"}, {84, "T"}, {85, "U"}, {86, "V"}, {87, "W"}, {88, "X"},
+    {89, "Y"}, {90, "Z"}, {91, "["}, {92, "\\"}, {93, "]"}, {94, "^"},
+    {95, "_"}, {96, "`"}, {97, "a"}, {98, "b"}, {99, "c"}, {100, "d"},
+    {101, "e"}, {102, "f"}, {103, "g"}, {104, "h"}, {105, "i"}, {106, "j"},
+    {107, "k"}, {108, "l"}, {109, "m"}, {110, "n"}, {111, "o"}, {112, "p"},
+    {113, "q"}, {114, "r"}, {115, "s"}, {116, "t"}, {117, "u"}, {118, "v"},
+    {119, "w"}, {120, "x"}, {121, "y"}, {122, "z"}, {123, "{"}, {124, "|"},
+    {125, "}"}, {126, "~"}, {127, "DEL"},
+};
 static Object fn_ascii_chr(const Vec<Object>& args, ELix* elix){
+    // (Ascii.chr obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Ascii.chr");
+    pred = (args[0].is_integer());
+    ELix::validate_type(
+        pred, "(chr obj)", "expect `obj' to be an integer."
+    );
+    auto n = args[0].as_integer();
+    pred = (n >= 0 && n < 128);
+    ELix::validate_value(
+        pred, "`(chr obj)'", "expect `obj' in the range [0, 128)"
+    );
+    
+    auto ans = ASCII[n];
+    if(ans.length()!=1){ ans = "?????"; }
+
+    return Object(String{ans});
+}
+
+static Object fn_ascii_isasccii(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -2160,6 +2206,7 @@ static Object fn_isinstance(const Vec<Object>& args);
 static Object fn_symbols(const Vec<Object>& args);
 static Object fn_macro_expand(const Vec<Object>& args);
 static Object fn_ascii_chr(const Vec<Object>& args);
+static Object fn_ascii_isascii(const Vec<Object>& args);
 static Object fn_ascii_ord(const Vec<Object>& args);
 static Object fn_panic(const Vec<Object>& args);
 static Object fn_format(const Vec<Object>& args);
