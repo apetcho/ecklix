@@ -2449,10 +2449,20 @@ static Object fn_str_find(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_reverse(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.reverse obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "String.reverse");
+    pred = args[0].is_string();
+    ELix::validate_type(
+        pred, "`(String.reverse arg)'", "expect `arg' to be a string."
+    );
+    auto result = args[0].as_string();
+    result.reverse();
+
+    return Object(result);
 }
 
+// -*-
 static Object fn_str_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
