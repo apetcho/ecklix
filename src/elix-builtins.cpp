@@ -140,8 +140,59 @@ static Object fn_float(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_array(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array)
+    // (Array size item)
+    // (Array iterable)
+    auto pred = (args.size() <= 2);
+    ELix::validate_argc(pred, "Array");
+    if(args.empty()){
+        return Object(Array{});
+    }
+    if(args.size()==1){
+        auto arg = args[0];
+        if(!arg.is_iterable()){
+            std::stringstream ss;
+            ss << "`(Array arg)': expect an iterable object but got " << std::quoted(arg.type().str());
+            throw ELixError(ELixError::TypeError, ss.str());
+        }
+        Vec<Object> vec{};
+        if(arg.is_string()){
+            auto text = arg.str();
+            for(const auto& c: text){
+                vec.push_back(Object{String{std::string(1, c)}});
+            }
+        }else if(arg.is_array()){
+            return Object(arg.as_array());
+        }else if(arg.is_list()){
+            vec = arg.as_list().items;
+        }else if(arg.is_set()){
+            for(const auto& obj: arg.as_set().hset){
+                vec.push_back(obj);
+            }
+        }else if(arg.is_dict()){
+            for(const auto& [key, val]: arg.as_dict().hmap){
+                vec.push_back(Object(Pair{key, val}));
+            }
+        }
+        return Object(Array{vec});
+    }else{
+        if(!args[0].is_integer()){
+            std::stringstream ss;
+            ss << "`(Array size obj)': size must be an integer. Got " << std::quoted(args[0].type().str());
+            throw ELixError(ELixError::TypeError, ss.str());
+        }
+        auto size = args[0].as_integer();
+        if(size <= 0){
+            std::stringstream ss;
+            ss << "`(Array size obj)': Except size > 0 but got " << size;
+            throw ELixError(ELixError::ValueError, ss.str());
+        }
+        Vec<Object> vec{};
+        for(decltype(size) i=0; i < size; i++){
+            vec.push_back(args[1]);
+        }
+        return Object(Array{vec});
+    }
 }
 
 static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
