@@ -2749,10 +2749,34 @@ static Object fn_str_replace_all(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_substr(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.substr text start [stop])
+    auto pred = (args.size()==2 || args.size()==3);
+    ELix::validate_argc(pred, "String.substr");
+    pred = (args[0].is_string() && args[1].is_integer());
+    if(args.size()==3){
+        pred = (pred && args[2].is_integer());
+    }
+    ELix::validate_type(
+        pred, "`(String.substr text start [stop])'",
+        "expect `text' to a string, `start' and the optional `stop' to be integers."
+    );
+
+    auto text = args[0].as_string();
+    auto start = args[1].as_integer();
+    auto stop = (args.size()==3 ? args[2].as_integer() : text.len()+1);
+    if(start > stop){}
+    pred = (start > stop);
+    ELix::validate_value(
+        pred, "`(String.substr text start stop)'",
+        "expect `start' and `stop' to be integers such that start < stop."
+    );
+
+    auto result = text.substr(start, stop);
+
+    return Object(result);
 }
 
+// -*-
 static Object fn_str_at(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
