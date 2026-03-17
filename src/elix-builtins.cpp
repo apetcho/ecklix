@@ -442,8 +442,47 @@ static Object fn_is_iterable(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_contains(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (contains? container item)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "contains?");
+    auto container = args[0];
+    auto item = args[1];
+    if(!container.is_iterable()){
+        std::stringstream ss;
+        ss << "`(contains? iterable item)': expect the first argument to be an iterable.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    if(container.is_string()){
+        if(!item.is_string()){
+            std::stringstream ss;
+            ss << "`(contains? iterable item)': the iterable is a String object but not the `item'.";
+            ss << "\nExpect `item' to be a String. Got " << std::quoted(item.type().str()) << " object type.";
+            throw ELixError(ELixError::TypeError, ss.str());
+        }
+        auto ans = container.as_string().find(item.as_string());
+        if(ans==-1){ return Object(false); }
+        return Object(true);
+    }
+
+    if(container.is_array()){
+        auto ans = container.as_array().find(item);
+        if(ans==-1){ return Object(false); }
+        return Object(true);
+    }
+
+    if(container.is_list()){
+        auto ans = container.as_list().find(item);
+        if(ans==-1){ return Object(false); }
+        return Object(true);
+    }
+
+    if(container.is_set()){
+        auto ans = container.as_set().find(item);
+        return Object(ans);
+    }
+
+    auto ans = container.as_dict().find(item);
+    return Object(ans);
 }
 
 // -*-
