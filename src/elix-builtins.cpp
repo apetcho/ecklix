@@ -2673,10 +2673,21 @@ static Object fn_str_capitalize(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_title(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.title text)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "String.title");
+    ELix::validate_type(
+        args[0].is_string(), "`(String.title text)'",
+        "expect `text' to be a strings."
+    );
+
+    auto text = args[0].as_string();
+    text.title();
+
+    return Object(text);
 }
 
+// -*-
 static Object fn_str_find_all(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
