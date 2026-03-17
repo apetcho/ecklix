@@ -1951,8 +1951,8 @@ static Object fn_symbols(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_macro_expand(const Vec<Object>& args, ELix* elix){
-    // (Macro.expand obj args)
-    auto pred = (args.size()==2);
+    // (Macro.expand obj arg1 arg2 ... argN)
+    auto pred = (args.size()>=2);
     ELix::validate_argc(pred, "Macro.expand");
     pred = (args[0].is_macro());
     ELix::validate_type(
@@ -2400,30 +2400,26 @@ static Object fn_lcm(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_misc(void){
-    //! @todo
-    /*
-static Object fn_clone(const Vec<Object>& args);
-static Object fn_typeof(const Vec<Object>& args);
-static Object fn_isinstance(const Vec<Object>& args);
-static Object fn_symbols(const Vec<Object>& args);
-static Object fn_macro_expand(const Vec<Object>& args);
-static Object fn_ascii_chr(const Vec<Object>& args);
-static Object fn_ascii_isascii(const Vec<Object>& args);
-static Object fn_ascii_ord(const Vec<Object>& args);
-static Object fn_panic(const Vec<Object>& args);
-static Object fn_format(const Vec<Object>& args);
-static Object fn_help(const Vec<Object>& args);
-static Object fn_eval(const Vec<Object>& args);
-static Object fn_getenv(const Vec<Object>& args){}
-static Object fn_setenv(const Vec<Object>& args){}
-static Object fn_quit(const Vec<Object>& args){}
-static Object fn_exit(const Vec<Object>& args){}
-static Object fn_bye(const Vec<Object>& args){}
-static Object fn_clamp(const Vec<Object>& args){}
-static Object fn_gcd(const Vec<Object>& args){}
-static Object fn_lcm(const Vec<Object>& args){}
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("clone", fn_clone, 1, 1);               // (clone obj)
+    add_builtin("typeof", fn_typeof, 1, 1);             // (typeof obj)
+    add_builtin("isintance?", fn_isinstance, 2, 2);     // (isinstance? obj ty)
+    add_builtin("symbols", fn_symbols, 0, 0);           // (symbols)
+    add_builtin("Macro.expand", fn_macro_expand, 2, -1);// (Macro.expand obj args)
+    add_builtin("chr", fn_ascii_chr, 1, 1);             // (chr obj)
+    add_builtin("isascii?", fn_ascii_isascii, 1, 1);    // (isascii? obj)
+    add_builtin("ord", fn_ascii_ord, 1, 1);             // (ord obj)
+    add_builtin("panic", fn_panic, -1, -1);             // (panic ...)
+    add_builtin("format", fn_format, 1, 1);             // (format obj)
+    add_builtin("help", fn_help, 1, 1);                 // (help obj)
+    add_builtin("eval", fn_eval, 1, 1);                 // (eval obj)
+    add_builtin("getenv", fn_getenv, 1, 1);             // (getenv obj)
+    add_builtin("setenv", fn_setenv, 3, 3);             // (setenv var val flag)
+    add_builtin("quit", fn_quit, 0, 0);                 // (quit)
+    add_builtin("exit", fn_exit, 1, 1);                 // (exit obj)
+    add_builtin("bye", fn_bye, 1, 1);                   // (bye obj)
+    add_builtin("clamp", fn_clamp, 3, 3);               // (clamp val vmin, vmax)
+    add_builtin("gcd", fn_gcd, 2, 2);                   // (gcd m n)
+    add_builtin("lcm", fn_lcm, 2, 2);                   // (lcm m n)
 }
 
 // -*---------------*-
