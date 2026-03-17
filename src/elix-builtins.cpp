@@ -631,53 +631,44 @@ static Object fn_or(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_lt(const Vec<Object>& args, ELix* elix){
-    // (< x y ...)
-    auto pred = (args.size() >= 2);
+    // (< x y)
+    auto pred = (args.size() == 2);
     ELix::validate_argc(pred, "<");
-    auto acc = args[0];
+    auto acc = (args[0] < args[1]);
     
-    for(size_t i=1; i < args.size(); i++){
-        acc = (acc < args[i] ? acc : args[i]);
-    }
     return Object(acc);
 }
 
 static Object fn_le(const Vec<Object>& args, ELix* elix){
-    // (<= x y ...)
-    auto pred = (args.size() >= 2);
+    // (<= x y)
+    auto pred = (args.size() == 2);
     ELix::validate_argc(pred, "<=");
-    auto acc = args[0];
-    for(size_t i=1; i < args.size(); i++){
-        acc = (acc <= args[i] ? acc : args[i]);
-    }
+    auto acc = (args[0] <= args[1]);
     return Object(acc);
 }
 
 static Object fn_gt(const Vec<Object>& args, ELix* elix){
-    // (> x ...)
-    auto pred = (args.size() >= 2);
+    // (> x y)
+    auto pred = (args.size() == 2);
     ELix::validate_argc(pred, ">");
-    auto acc = args[0];
-    for(size_t i=1; i < args.size(); i++){
-        acc = (acc > args[i] ? acc : args[i]);
-    }
+    auto acc = (args[0] > args[1]);
     return Object(acc);
 }
 
 static Object fn_ge(const Vec<Object>& args, ELix* elix){
-    // (>= x ...)
-    auto pred = (args.size() >= 2);
+    // (>= x y)
+    auto pred = (args.size() == 2);
     ELix::validate_argc(pred, ">=");
-    auto acc = args[0];
-    for(size_t i=1; i < args.size(); i++){
-        acc = (acc >= args[i] ? acc : args[i]);
-    }
+    auto acc = (args[0] >= args[1]);
     return Object(acc);
 }
 
 static Object fn_eq(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (== x y)
+    auto pred = (args.size() == 2);
+    ELix::validate_argc(pred, "==");
+    auto acc = (args[0]==args[1]);
+    return Object(acc);
 }
 
 static Object fn_ne(const Vec<Object>& args, ELix* elix){
