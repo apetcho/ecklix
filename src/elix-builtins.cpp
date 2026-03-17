@@ -2562,8 +2562,19 @@ static Object fn_str_startswith(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_str_endswith(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.endswith text suffix)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "String.endswith");
+    pred = (args[0].is_string() && args[1].is_string());
+    ELix::validate_type(
+        pred, "`(String.endswith text suffix)'",
+        "expect `text' and `suffix' to be strings."
+    );
+    auto self = args[0].as_string();
+    auto suffix = args[1].as_string();
+
+    auto ans = self.endswith(suffix);
+    return Object(ans);
 }
 
 static Object fn_str_ltrim(const Vec<Object>& args, ELix* elix){
