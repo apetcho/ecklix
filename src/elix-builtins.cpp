@@ -1908,8 +1908,31 @@ static Object fn_typeof(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_isinstance(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (insintance? obj ty)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "isinstance?");
+    pred = (args[1].is_symbol());
+    ELix::validate_type(
+        pred, "`(isinstance? obj ty)'",
+        "expect `ty' to be the name of type we are comparing against."
+    );
+    auto ty = args[0].as_symbol();
+    std::set<std::string> types = {
+        "Nil", "Bool", "Integer", "Float",
+        "Array", "List", "Set", "Dict", "Func",
+        "Function", "Lambda", "Macro",
+        "String", "Symbol", "Pair",
+    };
+    if(types.find(ty.str())==types.end()){
+        std::stringstream ss;
+        ss << "`(isinstanace? obj ty)'" << "unknow type name `ty' ";
+        ss << std::quoted(ty.str());
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    auto ans = (ty==args[0].type());
+    
+    return Object(ans);
 }
 
 static Object fn_symbols(const Vec<Object>& args, ELix* elix){
