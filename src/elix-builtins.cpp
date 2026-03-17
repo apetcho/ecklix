@@ -2910,8 +2910,23 @@ void ELix::initialize_pair(void){
 // -*- Array APIs -*-
 // -*--------------*-
 static Object fn_array_find(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.find array needle [from])
+    auto pred = (args.size()==2 || args.size()==3);
+    ELix::validate_argc(pred, "Array.find");
+    pred = (args[0].is_array());
+    if(args.size()==3){
+        pred = (pred && args[2].is_integer());
+    }
+    ELix::validate_type(
+        pred, "`(Array.find array needle [from])'",
+        "expect `array' to be an Array object and the optional `from' to be an integer."
+    );
+    auto self = args[0].as_array();
+    auto needle = args[1];
+    auto from = (args.size()==3 ? args[2].as_integer() : 0);
+    auto ans = self.find(needle, from);
+
+    return Object(Number(ans));
 }
 
 static Object fn_array_reverse(const Vec<Object>& args, ELix* elix){
