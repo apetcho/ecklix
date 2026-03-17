@@ -2494,12 +2494,12 @@ static Object fn_str_len(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_eq(const Vec<Object>& args, ELix* elix){
-    // (String.equal obj)
+    // (String.equal x y)
     auto pred = (args.size()==2);
     ELix::validate_argc(pred, "String.equal");
     pred = (args[0].is_string() && args[1].is_string());
     ELix::validate_type(
-        pred, "`(String.equal arg)'", "expect `arg' to be a string."
+        pred, "`(String.equal arg1 arg2)'", "expect `arg1' and `arg2' to be strings."
     );
     auto x = args[0].as_string().text;
     auto y = args[1].as_string().text;
@@ -2510,8 +2510,18 @@ static Object fn_str_eq(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_ne(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.not_equal obj)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "String.equal");
+    pred = (args[0].is_string() && args[1].is_string());
+    ELix::validate_type(
+        pred, "`(String.not_equal arg1 arg2)'", "expect `arg1' and `arg2' to be strings."
+    );
+    auto x = args[0].as_string().text;
+    auto y = args[1].as_string().text;
+
+    auto ans = (x!=y);
+    return Object(ans);
 }
 
 static Object fn_str_split(const Vec<Object>& args, ELix* elix){
