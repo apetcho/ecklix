@@ -6,6 +6,7 @@
 #include<random>
 #include<cctype>
 #include<numeric>
+#include<cstdlib>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -2230,11 +2231,29 @@ static Object fn_help(const Vec<Object>& args, ELix* elix){
     return Object(String{ss.str()});
 }
 
+// -*-
 static Object fn_eval(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (eval obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "eval");
+    pred = args[0].is_string();
+    ELix::validate_type(
+        pred, "`(eval obj)'", "expect `obj' to be a String object."
+    );
+
+    auto src = args[0].as_string().text;
+    Tokenizer tokenizer(src);
+    Parser parser(tokenizer);
+    auto exprs = parser.parse();
+    Object result{};
+    for(auto&& expr: exprs){
+        result = expr->eval(elix);
+    }
+
+    return result;
 }
 
+// -*-
 static Object fn_getenv(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
