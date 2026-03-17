@@ -1830,11 +1830,18 @@ static Object fn_println(const Vec<Object>& args, ELix* elix){
         std::cout << args[i].str();
     }
     std::cout << std::endl;
+    return Object();
 }
 
 static Object fn_eprintln(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (eprintln ...)
+    for(usize i=0; i < args.size(); i++){
+        if(i > 0){ std::cout << " "; }
+        std::cerr << args[i].str();
+    }
+    std::cerr << std::endl;
+    
+    return Object();
 }
 
 static Object fn_print(const Vec<Object>& args, ELix* elix){
