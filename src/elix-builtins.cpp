@@ -2823,8 +2823,17 @@ void ELix::initialize_string(void){
 // -*- Symbol APIs -*-
 // -*---------------*-
 static Object fn_symbol_eq(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Symbol.equal xsym ysym)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Symbol.equal");
+    pred = (args[0].is_symbol() && args[1].is_symbol());
+    ELix::validate_type(
+        pred, "`(Symbol.equal xsym ysym)'", "expect `xsym' and `ysym' to be symbol."
+    );
+
+    auto ans = (args[0].as_symbol()==args[1].as_symbol());
+
+    return Object(ans);
 }
 
 static Object fn_symbol_ne(const Vec<Object>& args, ELix* elix){
