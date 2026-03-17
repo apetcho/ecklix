@@ -45,8 +45,19 @@ static Object fn_symbol(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_string(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    /*
+        (String)
+        (String arg)
+
+        type(arg) = Any
+    */
+    auto pred = (args.size()<=1);
+    ELix::validate_argc(pred, "String");
+    Object result{Object(String{""})};
+    if(!args.empty()){
+        result = Object(String{args[0].str()});
+    }
+    return result;
 }
 
 static Object fn_integer(const Vec<Object>& args, ELix* elix){

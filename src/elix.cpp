@@ -1252,7 +1252,7 @@ Expression ELix::handle_unquote_splicing(Vec<Expression> exprs){
                     throw ELixError(ELixError::SyntaxError, ss.str());
                 }
             }else{
-                Vec<Object> vec{Object(Symbol{"list"})};
+                Vec<Object> vec{Object(Symbol{"List"})};
                 argv.push_back(std::move(this->build_expression(Object(List{vec}))));
             }
         }else{
