@@ -1163,8 +1163,19 @@ static Object fn_enumerate(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_len(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (len iterable)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "len");
+    auto arg = args[0];
+    ELix::validate_type(arg.is_iterable(), "len", "expect argument to an iterable object.");
+    i64 size{};
+
+    if(arg.is_string()){ size = arg.as_string().len(); }
+    else if(arg.is_array()){ size = arg.as_array().len(); }
+    else if(arg.is_list()){ size = arg.as_list().len(); }
+    else if(arg.is_set()){ size = arg.as_set().len(); }
+    else{ size = arg.as_dict().len(); }
+    return Object(Number(size));
 }
 
 static Object fn_push(const Vec<Object>& args, ELix* elix){
