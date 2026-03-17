@@ -1073,9 +1073,45 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
     return result;
 }
 
+// -*-
 static Object fn_zip(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (zip iterable1 iterable2 ... iterableN)
+    auto pred = (args.size() >= 2);
+    ELix::validate_argc(pred, "zip");
+    Vec<i64> sizes{};
+    auto validate = [](const Object& arg){
+        return (arg.is_list() || arg.is_array() || arg.is_string());
+    };
+    Vec<Object> hsetVec{};
+    for(auto arg: args){
+        if(!validate(arg)){
+            std::stringstream ss;
+            ss << "`(zip arg1 arg2 ... argN)': expect all argument to `zip' to be ";
+            ss << "a sequenced iterable,\ni.e a String, a List or an Array object.";
+            throw ELixError(ELixError::TypeError, ss.str());
+        }
+        if(arg.is_string()){ sizes.push_back(arg.as_string().len()); }
+        else if(arg.is_array()){ sizes.push_back(arg.as_array().len()); }
+        else{ sizes.push_back(arg.as_list().len()); }
+    }
+    std::sort(sizes.begin(), sizes.end(), [](i64 x, i64 y){ return x < y; });
+    auto size = sizes[0];
+    Vec<Object> result{};
+    for(decltype(size) i=0; i < size; i++){
+        Vec<Object> entry{};
+        for(auto arg: args){
+            if(arg.is_string()){
+                entry.push_back(Object(String{std::string(1, arg.as_string().text[i])}));
+            }else if(arg.is_array()){
+                entry.push_back(arg.as_array().items[i]);
+            }else if(arg.is_list()){
+                entry.push_back(arg.as_list().items[i]);
+            }
+        }
+        result.push_back(Object(Array{entry}));
+    }
+
+    return Object(Array{result});
 }
 
 static Object fn_enumerate(const Vec<Object>& args, ELix* elix){
