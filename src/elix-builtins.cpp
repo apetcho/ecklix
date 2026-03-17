@@ -2840,10 +2840,10 @@ static Object fn_symbol_eq(const Vec<Object>& args, ELix* elix){
 static Object fn_symbol_ne(const Vec<Object>& args, ELix* elix){
     // (Symbol.equal xsym ysym)
     auto pred = (args.size()==2);
-    ELix::validate_argc(pred, "Symbol.equal");
+    ELix::validate_argc(pred, "Symbol.not_equal");
     pred = (args[0].is_symbol() && args[1].is_symbol());
     ELix::validate_type(
-        pred, "`(Symbol.equal xsym ysym)'", "expect `xsym' and `ysym' to be symbol."
+        pred, "`(Symbol.not_equal xsym ysym)'", "expect `xsym' and `ysym' to be symbol."
     );
 
     auto ans = (args[0].as_symbol()!=args[1].as_symbol());
@@ -2853,10 +2853,20 @@ static Object fn_symbol_ne(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_symbol_name(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Symbol.equal sym)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Symbol.name");
+    pred = (args[0].is_symbol());
+    ELix::validate_type(
+        pred, "`(Symbol.name sym)'", "expect `sym' to be a symbol."
+    );
+
+    auto result = args[0].as_symbol().str();
+
+    return Object(String{result});
 }
 
+// -*-
 void ELix::initialize_symbol(void){
     //! @todo
     /*
