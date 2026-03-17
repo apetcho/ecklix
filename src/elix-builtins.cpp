@@ -2868,13 +2868,9 @@ static Object fn_symbol_name(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_symbol(void){
-    //! @todo
-    /*
-static Object fn_symbol_eq(const Vec<Object>& args){}
-static Object fn_symbol_ne(const Vec<Object>& args){}
-static Object fn_symbol_name(const Vec<Object>& args){}
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("Symbol.equal", fn_symbol_eq, 2, 2);            // (Symbol.equal xsym ysym)
+    add_builtin("Symbol.not_equal", fn_symbol_ne, 2, 2);        // (Symbol.not_equal xsym ysym)
+    add_builtin("Symbol.name", fn_symbol_name, 1, 1);           // (Symbol.name sym)
 }
 
 // -*-------------*-
