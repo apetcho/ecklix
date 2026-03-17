@@ -3315,16 +3315,25 @@ static Object fn_list_first(const Vec<Object>& args, ELix* elix){
         pred, "`(List.first xs)'", "expect `xs' to be a List object."
     );
     auto xs = args[0].as_list();
-    auto result = xs.tail();
+    auto result = xs.first();
     return Object(result);
 }
 
 // -*-
 static Object fn_list_last(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.last xs)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "List.last");
+    pred = (args[0].is_list());
+    ELix::validate_type(
+        pred, "`(List.last xs)'", "expect `xs' to be a List object."
+    );
+    auto xs = args[0].as_list();
+    auto result = xs.last();
+    return Object(result);
 }
 
+// -*-
 static Object fn_list_push(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
