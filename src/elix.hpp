@@ -16,6 +16,13 @@
 #include<map>
 #include<set>
 
+/*
+
+    ELIX_DEF(And, "and")                            \
+    ELIX_DEF(Or, "or")                              \
+    ELIX_DEF(Not, "not")                            \
+*/
+
 #define ELIX_RESERVED_WORDS()                       \
     ELIX_DEF(Import, "import")                      \
     ELIX_DEF(Progn, "progn")                        \
@@ -28,15 +35,12 @@
     ELIX_DEF(Lambda, "lambda")                      \
     ELIX_DEF(Fun, "fun")                            \
     ELIX_DEF(Macro, "macro")                        \
-    ELIX_DEF(And, "and")                            \
-    ELIX_DEF(Or, "or")                              \
-    ELIX_DEF(Not, "not")                            \
     ELIX_DEF(NIL, "nil")                            \
     ELIX_DEF(True, "true")                          \
     ELIX_DEF(False, "false")                        \
     ELIX_DEF(Quote, "quote")                        \
     ELIX_DEF(Cycle, "continue")                     \
-    ELIX_DEF(Stop, "break")                          \
+    ELIX_DEF(Stop, "break")                         \
     ELIX_DEF(Unquote, "unquote")                    \
     ELIX_DEF(Quasiquote, "quasiquote")              \
     ELIX_DEF(UnquoteSplicing, "unquote-splicing")
@@ -852,9 +856,9 @@ private:
     Object handle_fun(Vec<Expression> exprs);
     Object handle_macro(Vec<Expression> exprs);
     Object handle_lambda(Vec<Expression> exprs);
-    Object handle_and(Vec<Expression> exprs);
-    Object handle_or(Vec<Expression> exprs);
-    Object handle_not(Vec<Expression> exprs);
+    //Object handle_and(Vec<Expression> exprs);
+    //Object handle_or(Vec<Expression> exprs);
+    //Object handle_not(Vec<Expression> exprs);
     Object handle_continue(Vec<Expression> exprs);
     Object handle_break(Vec<Expression> exprs);
     Expression handle_quote(Vec<Expression> exprs);

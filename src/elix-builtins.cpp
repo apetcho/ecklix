@@ -681,29 +681,25 @@ static Object fn_ne(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_operators(void){
-    //! @todo
-    /*
-static Object fn_add(const Vec<Object>& args);
-static Object fn_sub(const Vec<Object>& args);
-static Object fn_mul(const Vec<Object>& args);
-static Object fn_div(const Vec<Object>& args);
-static Object fn_mod(const Vec<Object>& args);
-static Object fn_band(const Vec<Object>& args);
-static Object fn_bor(const Vec<Object>& args);
-static Object fn_xor(const Vec<Object>& args);
-static Object fn_lshift(const Vec<Object>& args);
-static Object fn_rshift(const Vec<Object>& args);
-static Object fn_not(const Vec<Object>& args);
-static Object fn_and(const Vec<Object>& args);
-static Object fn_or(const Vec<Object>& args);
-static Object fn_lt(const Vec<Object>& args);
-static Object fn_le(const Vec<Object>& args);
-static Object fn_gt(const Vec<Object>& args);
-static Object fn_ge(const Vec<Object>& args);
-static Object fn_eq(const Vec<Object>& args);
-static Object fn_ne(const Vec<Object>& args);
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("+", fn_add, 1, -1);
+    add_builtin("-", fn_sub, 1, -1);
+    add_builtin("*", fn_mul, 2, -1);
+    add_builtin("/", fn_div, 2, -1);
+    add_builtin("%", fn_mod, 1, -1);
+    add_builtin("~", fn_band, 1, 1);
+    add_builtin("|", fn_bor, 2, 2);
+    add_builtin("^", fn_xor, 2, 2);
+    add_builtin("<<", fn_lshift, 2, 2);
+    add_builtin(">>", fn_rshift, 2, 2);
+    add_builtin("not", fn_not, 1, 1);
+    add_builtin("and", fn_and, 2, 2);
+    add_builtin("or", fn_or, 2, 2);
+    add_builtin("<", fn_lt, 2, 2);
+    add_builtin("<=", fn_le, 2, 2);
+    add_builtin(">", fn_gt, 2, 2);
+    add_builtin(">=", fn_ge, 2, 2);
+    add_builtin("==", fn_eq, 2, 2);
+    add_builtin("!=", fn_ne, 2, 2);
 }
 
 // -*-------------------------------------*-

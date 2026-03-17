@@ -400,9 +400,9 @@ Object ELix::eval(ListExpr& expr){
         else if(word=="lambda"){ result = this->handle_lambda(args); }
         else if(word=="fun"){ result = this->handle_fun(args); }
         else if(word=="macro"){ result = this->handle_macro(args); }
-        else if(word=="and"){ result = this->handle_and(args); }
-        else if(word=="or"){ result = this->handle_or(args); }
-        else if(word=="not"){ result = this->handle_not(args); }
+        // else if(word=="and"){ result = this->handle_and(args); }
+        // else if(word=="or"){ result = this->handle_or(args); }
+        // else if(word=="not"){ result = this->handle_not(args); }
         else if(word=="continue"){ result = this->handle_continue(args); }
         else if(word=="break"){ result = this->handle_break(args); }
         else if(word=="quote"){ result = this->handle_quote(args)->eval(this); }
@@ -1032,59 +1032,59 @@ Object ELix::handle_lambda(Vec<Expression> exprs){
     return std::move(lambda);
 }
 
-// -*-
-Object ELix::handle_and(Vec<Expression> exprs){
-    // (and expr1 expr2)
-    auto pred = (exprs.size()==2);
-    this->check_argc(pred, "and");
-    auto x = exprs[0]->eval(this);
-    auto y = exprs[1]->eval(this);
-    if(!x.is_bool() && !y.is_bool()){
-        std::stringstream ss;
-        ss << "Malformed `and' expression. The two arguments of the `and'\n";
-        ss << "operator must evaluate to a boolean.";
-        throw ELixError(ELixError::SyntaxError, ss.str());
-    }
-    if(x.as_bool() && y.as_bool()){
-        return Object(true);
-    }
-    return Object(false);
-}
+// // -*-
+// Object ELix::handle_and(Vec<Expression> exprs){
+//     // (and expr1 expr2)
+//     auto pred = (exprs.size()==2);
+//     this->check_argc(pred, "and");
+//     auto x = exprs[0]->eval(this);
+//     auto y = exprs[1]->eval(this);
+//     if(!x.is_bool() && !y.is_bool()){
+//         std::stringstream ss;
+//         ss << "Malformed `and' expression. The two arguments of the `and'\n";
+//         ss << "operator must evaluate to a boolean.";
+//         throw ELixError(ELixError::SyntaxError, ss.str());
+//     }
+//     if(x.as_bool() && y.as_bool()){
+//         return Object(true);
+//     }
+//     return Object(false);
+// }
 
-// -*-
-Object ELix::handle_or(Vec<Expression> exprs){
-    // (or expr1 expr2)
-    auto pred = (exprs.size()==2);
-    this->check_argc(pred, "or");
-    auto x = exprs[0]->eval(this);
-    auto y = exprs[1]->eval(this);
-    if(!x.is_bool() && !y.is_bool()){
-        std::stringstream ss;
-        ss << "Malformed `or' expression. The two arguments of the `or'\n";
-        ss << "operator must evaluate to a boolean.";
-        throw ELixError(ELixError::SyntaxError, ss.str());
-    }
-    if(x.as_bool() || y.as_bool()){
-        return Object(true);
-    }
-    return Object(false);
-}
+// // -*-
+// Object ELix::handle_or(Vec<Expression> exprs){
+//     // (or expr1 expr2)
+//     auto pred = (exprs.size()==2);
+//     this->check_argc(pred, "or");
+//     auto x = exprs[0]->eval(this);
+//     auto y = exprs[1]->eval(this);
+//     if(!x.is_bool() && !y.is_bool()){
+//         std::stringstream ss;
+//         ss << "Malformed `or' expression. The two arguments of the `or'\n";
+//         ss << "operator must evaluate to a boolean.";
+//         throw ELixError(ELixError::SyntaxError, ss.str());
+//     }
+//     if(x.as_bool() || y.as_bool()){
+//         return Object(true);
+//     }
+//     return Object(false);
+// }
 
-// -*-
-Object ELix::handle_not(Vec<Expression> exprs){
-    // (not expr)
-    auto pred = (exprs.size()==1);
-    this->check_argc(pred, "not");
-    auto arg = exprs[0]->eval(this);
-    if(!arg.is_bool()){
-        std::stringstream ss;
-        ss << "Malformed `not' expression. The argument of the `not'\n";
-        ss << "operator must evaluate to a boolean.";
-        throw ELixError(ELixError::SyntaxError, ss.str());
-    }
-    auto val = !arg.as_bool();
-    return Object(val);
-}
+// // -*-
+// Object ELix::handle_not(Vec<Expression> exprs){
+//     // (not expr)
+//     auto pred = (exprs.size()==1);
+//     this->check_argc(pred, "not");
+//     auto arg = exprs[0]->eval(this);
+//     if(!arg.is_bool()){
+//         std::stringstream ss;
+//         ss << "Malformed `not' expression. The argument of the `not'\n";
+//         ss << "operator must evaluate to a boolean.";
+//         throw ELixError(ELixError::SyntaxError, ss.str());
+//     }
+//     auto val = !arg.as_bool();
+//     return Object(val);
+// }
 
 // -*-
 Object ELix::handle_continue(Vec<Expression> exprs){
