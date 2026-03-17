@@ -2689,8 +2689,23 @@ static Object fn_str_title(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_find_all(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.find_all text needle)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "String.find_all");
+    ELix::validate_type(
+        args[0].is_string(), "`(String.find_all text needle)'",
+        "expect `text' to be a strings."
+    );
+
+    auto text = args[0].as_string();
+    auto needle = args[1].as_string();
+    auto ans = text.find_all(needle);
+    Vec<Object> result{};
+    for(const auto& item: ans){
+        result.push_back(Object(Number(item)));
+    }
+
+    return Object(Array{result});
 }
 
 static Object fn_str_replace(const Vec<Object>& args, ELix* elix){
