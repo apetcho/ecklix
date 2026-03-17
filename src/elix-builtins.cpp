@@ -2464,8 +2464,17 @@ static Object fn_str_reverse(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_concat(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.concat arg1 arg2)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "String.concat");
+    pred = (args[0].is_string() && args[1].is_string());
+    ELix::validate_type(
+        pred, "`(String.concat x y)'", "expect `x' and `y' to be string."
+    );
+    auto self = args[0].as_string();
+    self.concat(args[1].as_string());
+
+    return Object(self);
 }
 
 static Object fn_str_len(const Vec<Object>& args, ELix* elix){
