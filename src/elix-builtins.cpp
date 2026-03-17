@@ -1,6 +1,7 @@
 #include "elix.hpp"
 #include<sstream>
 #include<iomanip>
+#include<cctype>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -196,10 +197,76 @@ static Object fn_array(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict )
+    // (Dict iterable)
+    auto pred = (args.size() <= 0);
+    ELix::validate_argc(pred, "Dict");
+    if(args.empty()){
+        return Object(Dict{});
+    }
+    auto arg = args[0];
+    if(!arg.is_iterable()){
+        std::stringstream ss;
+        ss << "`(Array iterable)': expect an iterable object as argument but got ";
+        ss << std::quoted(arg.type().str());
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+    // -*-
+    HashMap hmap{};
+    if(arg.is_string()){
+        std::map<char, i64> dict{};
+        auto text = arg.str();
+        for(auto c: text){
+            if(std::isspace(c)){ continue; }
+            if(dict.find(c)==dict.end()){ dict[c] = 1; }
+            else{ dict[c] += 1; }
+        }
+        for(const auto& [key, val]: dict){
+            hmap[Object(String{std::string(1, key)})] = Object(Number{val});
+        }
+    }else if(arg.is_array()){
+        auto vec = arg.as_array().items;
+        for(const auto& entry: vec){
+            if(!entry.is_pair()){
+                std::stringstream ss;
+                ss << "`(Dict iterable)': Expect the elements of the iterable to be a pair.\n";
+                ss << "Got " << std::quoted(entry.type().str());
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            auto pair = entry.as_pair();
+            hmap[pair.key] = pair.val;
+        }
+    }else if(arg.is_list()){
+        auto vec = arg.as_list().items;
+        for(const auto& entry: vec){
+            if(!entry.is_pair()){
+                std::stringstream ss;
+                ss << "`(Dict iterable)': Expect the elements of the iterable to be a pair.\n";
+                ss << "Got " << std::quoted(entry.type().str());
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            auto pair = entry.as_pair();
+            hmap[pair.key] = pair.val;
+        }
+    }else if(arg.is_set()){
+        for(const auto& entry: arg.as_set().hset){
+            if(!entry.is_pair()){
+                std::stringstream ss;
+                ss << "`(Dict iterable)': Expect the elements of the iterable to be a pair.\n";
+                ss << "Got " << std::quoted(entry.type().str());
+                throw ELixError(ELixError::TypeError, ss.str());
+            }
+            auto pair = entry.as_pair();
+            hmap[pair.key] = pair.val;
+        }
+    }else if(arg.is_dict()){
+        hmap = arg.as_dict().hmap;
+    }
+
+    return Object(Dict{hmap});
 }
 
+// -*-
 static Object fn_hashset(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
