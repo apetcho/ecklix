@@ -3231,8 +3231,18 @@ static Object fn_list_find(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_list_reverse(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.find xs)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "List.reverse");
+    pred = (args[0].is_list());
+    ELix::validate_type(
+        pred, "`(List.reverse xs)'", "expect `xs' to be a List object."
+    );
+    auto xs = args[0].as_list();
+    xs.reverse();
+
+    return Object(xs);
+    
 }
 
 static Object fn_list_concat(const Vec<Object>& args, ELix* elix){
