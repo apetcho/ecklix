@@ -1629,34 +1629,114 @@ static Object fn_repeat(const Vec<Object>& args, ELix* elix){
     return Object(Array{result});
 }
 
-static Object fn_partial(const Vec<Object>& args, ELix* elix){
+// static Object fn_partial(const Vec<Object>& args, ELix* elix){
+//     // (partial fn args)
+//     auto pred = (args.size()==2);
+//     ELix::validate_argc(pred, "partial");
+//     ELix::validate_type(
+//         args[0].is_function(), "`(partial fn args)'",
+//         "expect `fn' to be a user-defined function, not a lambda, not a macro,\n"
+//         "and not a builtin function."
+//     );
+//     pred = (
+//         args[1].is_array() || args[1].is_list() ||
+//         args[1].is_dict() || args[1].is_set()
+//     );
+//     ELix::validate_type(
+//         pred, "`(partial fn args)'",
+//         "expect `args' to be a List, an Array, a Dict or a Set."
+//     );
+//     auto func = args[0].as_function();
+//     auto argv = args[1];
+//     if(argv.is_array()){
+//         pred = (func.params.size()>=argv.as_array().len());
+//     }else if(argv.is_list()){
+//         pred = (func.params.size()>=argv.as_list().len());
+//     }else if(argv.is_set()){
+//         pred = (func.params.size()>=argv.as_set().len());
+//     }else{
+//         pred = (func.params.size()>=argv.as_dict().len());
+//     }
+
+//     ELix::validate_type(
+//         pred, "`(partial fn args)'",
+//         "expect `args' to be a List, an Array, a Dict or a Set."
+//     );
+
+//     Vec<Pair> pairs{};
+//     if(argv.is_array() || argv.is_list()){
+//         auto items = (
+//             argv.is_list() ? argv.as_list().items : argv.as_array().items
+//         );
+//         for(const auto& item: items){
+//             ELix::validate_type(
+//                 item.is_pair(), "`(partial fn args)'",
+//                 "If args is a List or an Array, expect each element to be a Pair."
+//             );
+//             auto pair = item.as_pair();
+//             ELix::validate_type(
+//                 pair.key.is_symbol(), "`(partial fn args)'",
+//                 "If args is a List or an Array, expect each element to be a Pair\n"
+//                 "where the key component of Pair is a symbol."
+//             );
+//             pairs.push_back(pair);
+//         }
+//     }else if(argv.is_set()){
+//         for(const auto& item: argv.as_set().hset){
+//             ELix::validate_type(
+//                 item.is_pair(), "`(partial fn args)'",
+//                 "If args is a Set, expect each element to be a Pair."
+//             );
+//             auto pair = item.as_pair();
+//             ELix::validate_type(
+//                 pair.key.is_symbol(), "`(partial fn args)'",
+//                 "If args is a Set, expect each element to be a Pair\n"
+//                 "where the key component of Pair is a symbol."
+//             );
+//             pairs.push_back(pair);
+//         }
+//     }else{
+//         for(const auto pair: argv.as_dict().items()){
+//             ELix::validate_type(
+//                 pair.key.is_symbol(), "`(partial fn args)'",
+//                 "If args is a Dict, expect each the key of each entry to be a Symbol."
+//             );
+//             pairs.push_back(pair);
+//         }
+//     }
+
+//     for(;;){}
+
+// }
+
+// -*- (reduce fn arg init)
+static Object fn_reduce(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*-
 void ELix::initialize_functional(void){
-    //! @todo
+    add_builtin("map", fn_map, 2, 2);               // (map fn arg)
+    add_builtin("filter", fn_filter, 2, 2);         // (filter fn arg)
+    add_builtin("reduce", fn_reduce, 3, 3);         // (reduce fn arg init)
+    add_builtin("zip", fn_zip, 2, -1);              // (zip arg1 arg2 ... argN)
+    add_builtin("enumerate", fn_enumerate, 1, 1);   // (enumerate arg)
+    add_builtin("len", fn_len, 1, 1);               // (len arg)
+    add_builtin("push", fn_push, 2, 2);             // (push arg x)
+    add_builtin("pop", fn_pop, 1, 1);               // (pop arg)
+    add_builtin("clear", fn_clear, 1, 1);           // (clear arg)
+    add_builtin("concat", fn_concat, 2, -1);        // (concat arg1 arg2 ... argN)
+    add_builtin("reverse", fn_reverse, 1, 1);       // (reverse arg)
+    add_builtin("find", fn_find, 2, 2);             // (find arg x)
+    add_builtin("min", fn_min, 1, -1);              // (min arg [arg2 arg3 ... argN])
+    add_builtin("max", fn_max, 1, -1);              // (max arg [arg2 arg3 ... argN])
+    add_builtin("range", fn_range, 1, 3);           // (range N) | (range vmin vmax [step])
+    add_builtin("linspace", fn_linspace, 2, 3);     // (linspace vmin vmax [N])
+    add_builtin("repeat", fn_repeat, 2, 2);         // (repeat N obj)
     /*
-static Object fn_map(const Vec<Object>& args);
-static Object fn_filter(const Vec<Object>& args);
-static Object fn_zip(const Vec<Object>& args);
-static Object fn_enumerate(const Vec<Object>& args);
-static Object fn_len(const Vec<Object>& args);
-static Object fn_push(const Vec<Object>& args);
-static Object fn_pop(const Vec<Object>& args);
-static Object fn_clear(const Vec<Object>& args);
-static Object fn_concat(const Vec<Object>& args);
-static Object fn_reverse(const Vec<Object>& args);
-static Object fn_find(const Vec<Object>& args);
-static Object fn_min(const Vec<Object>& args);
-static Object fn_max(const Vec<Object>& args);
-static Object fn_range(const Vec<Object>& args);
-static Object fn_linspace(const Vec<Object>& args);
-static Object fn_repeat(const Vec<Object>& args);
 static Object fn_partial(const Vec<Object>& args);
     */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
 // -*----------------------------------------*-
