@@ -3186,27 +3186,24 @@ static Object fn_array_clear(const Vec<Object>& args, ELix* elix){
     return Object(self);
 }
 
+// -*-
 void ELix::initialize_array(void){
-    //! @todo
-    /*
-static Object fn_array_find(const Vec<Object>& args){}
-static Object fn_array_reverse(const Vec<Object>& args){}
-static Object fn_array_concat(const Vec<Object>& args){}
-static Object fn_array_len(const Vec<Object>& args){}
-static Object fn_array_slice(const Vec<Object>& args){}
-static Object fn_array_insert(const Vec<Object>& args){}
-static Object fn_array_get(const Vec<Object>& args){}
-static Object fn_array_set(const Vec<Object>& args){}
-static Object fn_array_splice(const Vec<Object>& args){}
-static Object fn_array_any(const Vec<Object>& args){}
-static Object fn_array_all(const Vec<Object>& args){}
-static Object fn_array_sort(const Vec<Object>& args){}
-static Object fn_array_reduce(const Vec<Object>& args){}
-static Object fn_array_push(const Vec<Object>& args){}
-static Object fn_array_pop(const Vec<Object>& args){}
-static Object fn_array_clear(const Vec<Object>& args){}
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("Array.find", fn_array_find, 2, 3);             // (Array.find xarr obj [from])
+    add_builtin("Array.reverse", fn_array_reverse, 1, 1);       // (Array.reverse xarr)
+    add_builtin("Array.concat", fn_array_concat, 2, 2);         // (Array.concat xarr yarr)
+    add_builtin("Array.len", fn_array_len, 1, 1);               // (Array.len xarr)
+    add_builtin("Array.slice", fn_array_slice, 2, 3);           // (Array.slice xarr start [stop])
+    add_builtin("Array.insert", fn_array_insert, 3, 3);         // (Array.insert xarr index obj)
+    add_builtin("Array.get", fn_array_get, 2, 2);               // (Array.get xarr index)
+    add_builtin("Array.set", fn_array_set, 3, 3);               // (Array.set xarr index obj)
+    add_builtin("Array.splice", fn_array_splice, 3, 3);         // (Array.splice xarr index yarr)
+    add_builtin("Array.any", fn_array_any, 2, 2);               // (Array.any xarr predicate)
+    add_builtin("Array.all", fn_array_all, 2, 2);               // (Array.all xarr predicate)
+    add_builtin("Array.sort", fn_array_sort, 2, 2);             // (Array.all xarr predicate)
+    add_builtin("Array.reduce", fn_array_reduce, 3, 3);         // (Array.reduce xarr fn init)
+    add_builtin("Array.push", fn_array_push, 2, 2);             // (Array.push xarr obj)
+    add_builtin("Array.pop", fn_array_pop, 1, 1);               // (Array.pop xarr)
+    add_builtin("Array.clear", fn_array_clear, 1, 1);           // (Array.clear xarr)
 }
 
 // -*-------------*-
