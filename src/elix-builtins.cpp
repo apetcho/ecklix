@@ -2531,7 +2531,7 @@ static Object fn_str_split(const Vec<Object>& args, ELix* elix){
     pred = (args[0].is_string() && args[1].is_string());
     ELix::validate_type(
         pred, "`(String.split text [delim])'",
-        "expect `text' and the optional `from' to be a string."
+        "expect `text' and the optional `from' to be strings."
     );
     auto self = args[0].as_string();
     auto delim = (args.size()==2 ? args[1].as_string() : String{" "});
@@ -2546,8 +2546,19 @@ static Object fn_str_split(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_startswith(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.startswith text prefix)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "String.startswith");
+    pred = (args[0].is_string() && args[1].is_string());
+    ELix::validate_type(
+        pred, "`(String.startswith text prefix)'",
+        "expect `text' and `prefix' to be strings."
+    );
+    auto self = args[0].as_string();
+    auto prefix = args[1].as_string();
+
+    auto ans = self.startswith(prefix);
+    return Object(ans);
 }
 
 static Object fn_str_endswith(const Vec<Object>& args, ELix* elix){
