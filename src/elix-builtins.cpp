@@ -2778,10 +2778,23 @@ static Object fn_str_substr(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_str_at(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.at text index)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "String.at");
+    pred = (args[0].is_string() && args[1].is_integer());
+    ELix::validate_type(
+        pred, "`(String.at text index)'",
+        "expect `text' to a string, `index' to be an integer."
+    );
+
+    auto text = args[0].as_string();
+    auto idx = args[1].as_integer();
+    auto result = text.at(idx);
+
+    return Object(result);
 }
 
+// -*-
 void ELix::initialize_string(void){
     //! @todo
     /*
