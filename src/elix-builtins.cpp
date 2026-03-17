@@ -2009,11 +2009,33 @@ static Object fn_ascii_chr(const Vec<Object>& args, ELix* elix){
     return Object(String{ans});
 }
 
-static Object fn_ascii_isasccii(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+static Object fn_ascii_isascii(const Vec<Object>& args, ELix* elix){
+    // (isascii? obj)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "isascii?");
+    auto obj = args[0];
+    ELix::validate_type(
+        obj.is_string(), "`(isascii? obj)'",
+        "expect `obj' to be a string."
+    );
+    auto xstr = obj.as_string().text;
+    pred = (xstr.length()==1);
+    ELix::validate_value(
+        pred, "`(isascii? obj)'", "expect `obj' is a String with len==1"
+    );
+    bool ans{false};
+    for(const auto& [_, val]: ASCII){
+        if(val==xstr){
+            ans = true;
+            break;
+        }
+    }
+
+    return Object(ans);
 }
 
+
+// -*-
 static Object fn_ascii_ord(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
