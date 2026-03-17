@@ -1873,21 +1873,17 @@ static Object fn_input(const Vec<Object>& args, ELix* elix){
     }
     std::string line{};
     std::getline(std::cin >> std::ws, line);
-    
+
     return Object(String{line});
 }
 
 // -*-
 void ELix::initialize_basic_io(void){
-    //! @todo
-    /*
-static Object fn_println(const Vec<Object>& args);
-static Object fn_eprintln(const Vec<Object>& args);
-static Object fn_print(const Vec<Object>& args);
-static Object fn_eprint(const Vec<Object>& args);
-static Object fn_input(const Vec<Object>& args);
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("println", fn_println, -1, -1);         // (println ...)
+    add_builtin("eprintln", fn_eprintln, -1, -1);       // (eprintln ...)
+    add_builtin("print", fn_print, -1, -1);             // (print ...)
+    add_builtin("eprint", fn_eprint, -1, -1);           // (eprint ...)
+    add_builtin("input", fn_input, 0, 1);               // (input [prompt])
 }
 
 // -*-----------------------------------*-
