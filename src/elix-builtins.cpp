@@ -2609,8 +2609,18 @@ static Object fn_str_rtrim(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_str_trim(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (String.trim text)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "String.trim");
+    ELix::validate_type(
+        args[0].is_string(), "`(String.trim text)'",
+        "expect `text' to be a strings."
+    );
+
+    auto text = args[0].as_string();
+    text.trim();
+
+    return Object(text);
 }
 
 static Object fn_str_lower(const Vec<Object>& args, ELix* elix){
