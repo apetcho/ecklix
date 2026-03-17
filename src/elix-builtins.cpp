@@ -64,7 +64,6 @@ static Object fn_string(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_integer(const Vec<Object>& args, ELix* elix){
-    [[maybe_unused]] auto _ = elix;
     auto pred = (args.size() <= 1);
     ELix::validate_argc(pred, "Integer");
     if(args.empty()){
@@ -77,10 +76,11 @@ static Object fn_integer(const Vec<Object>& args, ELix* elix){
     ELix::validate_type(pred, "Integer", "argument must be a boolean, a number or a string");
     auto arg = args[0];
     if(arg.is_bool()){
-        auto num = (arg.as_bool() ? i64(0) : i64(1));
+        auto num = (arg.as_bool() ? i64(1) : i64(0));
         return Object(Number{num});
     }else if(arg.is_number()){
-        return Object(arg.as_number());
+        auto num = arg.as_integer();
+        return Object(Number{num});
     }
     auto xstr = arg.as_string().split();
     if(xstr.size() > 1){
@@ -102,9 +102,43 @@ static Object fn_integer(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_float(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    auto pred = (args.size() <= 1);
+    ELix::validate_argc(pred, "Integer");
+    if(args.empty()){
+        return Object(Number{0.0});
+    }
+    pred = (
+        args[0].is_bool() || args[0].is_number() ||
+        args[0].is_string()
+    );
+    ELix::validate_type(pred, "Integer", "argument must be a boolean, a number or a string");
+    auto arg = args[0];
+    if(arg.is_bool()){
+        auto num = (arg.as_bool() ? 1.0 : 0.0);
+        return Object(Number{num});
+    }else if(arg.is_number()){
+        auto num = arg.as_float();
+        return Object(Number{num});
+    }
+    auto xstr = arg.as_string().split();
+    if(xstr.size() > 1){
+        std::stringstream ss;
+        ss << "Invalid argument to `Integer': " << arg.str() << " is not a numeric string.";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    auto numstr = xstr[0].str();
+    Tokenizer tokenizer(numstr);
+    Parser parser(tokenizer);
+    auto self = parser.parse()[0]->eval(elix);
+    if(!self.is_number()){
+        std::stringstream ss;
+        ss << "Invalid argument to `Integer': " << arg.str() << " is not a numeric string.";
+        throw ELixError(ELixError::ValueError, ss.str());
+    }
+    auto num = self.as_float();
+    return Object(Number{num});
 }
+
 static Object fn_array(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
