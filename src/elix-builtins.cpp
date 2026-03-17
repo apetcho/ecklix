@@ -3363,9 +3363,21 @@ static Object fn_list_pop(const Vec<Object>& args, ELix* elix){
     return Object(xs);
 }
 
+// -*-
 static Object fn_list_insert(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.insert xs idx obj)
+    auto pred = (args.size()==3);
+    ELix::validate_argc(pred, "List.insert");
+    pred = (args[0].is_list() && args[1].is_integer());
+    ELix::validate_type(
+        pred, "`(List.insert xs idx obj)'",
+        "expect `xs' to be a List object and idx must be an integer."
+    );
+    auto xs = args[0].as_list();
+    auto idx = args[1].as_integer();
+    xs.insert(idx, args[2]);
+
+    return Object(xs);
 }
 
 static Object fn_list_remove(const Vec<Object>& args, ELix* elix){
