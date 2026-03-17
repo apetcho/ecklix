@@ -624,14 +624,14 @@ Lambda Lambda::clone(void) const{
 }
 
 // -*-
-Object Lambda::operator()(const Vec<Object>& args){
+Object Lambda::operator()(const Vec<Object>& args, ELix* elix){
     if(this->params.size() != args.size()){
         std::stringstream ss;
         ss << "Incorrect number of arguments.\n";
         ss << "Expect " << this->params.size() << " but got " << args.size();
     }
     auto myctx = this->ctx;
-    this->ctx = std::make_shared<Env>(Lambda::elix->m_runtime);
+    this->ctx = std::make_shared<Env>(elix->m_runtime);
     for(const auto& [key, val]: myctx->bindings()){
         this->ctx->define(key, val);
     }
@@ -641,9 +641,9 @@ Object Lambda::operator()(const Vec<Object>& args){
         this->ctx->define(key, val);
     }
     Object result{};
-    Lambda::elix->m_runtime = this->ctx;
+    elix->m_runtime = this->ctx;
     for(auto&& expr: this->body){
-        result = expr->eval(Lambda::elix);
+        result = expr->eval(elix);
     }
     this->ctx = myctx;
     return result;
@@ -985,7 +985,7 @@ Array& Array::splice(i64 idx, const Array& rhs){
 }
 
 // -*-
-bool Array::any(const Object& predicate) const{
+bool Array::any(const Object& predicate, ELix* elix) const{
     auto check = (
         predicate.is_func() ||
         predicate.is_lambda() ||
@@ -998,10 +998,11 @@ bool Array::any(const Object& predicate) const{
         throw ELixError(ELixError::TypeError, ss.str());
     }
     bool ans{false};
+    
     if(predicate.is_lambda() || predicate.is_function()){
         auto fun = predicate.as_lambda();
         for(const auto& arg: this->items){
-            auto rv = fun(Vec<Object>{arg});
+            auto rv = fun(Vec<Object>{arg}, elix);
             if(!rv.is_bool()){
                 std::stringstream ss;
                 ss << "Incorrect argument type to `Array.any'. Expect a predicate";
@@ -1015,7 +1016,7 @@ bool Array::any(const Object& predicate) const{
     }else{
         auto fun = predicate.as_func();
         for(const auto& arg: this->items){
-            auto rv = fun(Vec<Object>{arg});
+            auto rv = fun(Vec<Object>{arg}, elix);
             if(!rv.is_bool()){
                 std::stringstream ss;
                 ss << "Incorrect argument type to `Array.any'. Expect a predicate";
@@ -1032,7 +1033,7 @@ bool Array::any(const Object& predicate) const{
 }
 
 // -*-
-bool Array::all(const Object& predicate) const{
+bool Array::all(const Object& predicate, ELix* elix) const{
     auto check = (
         predicate.is_func() ||
         predicate.is_lambda() ||
@@ -1048,7 +1049,7 @@ bool Array::all(const Object& predicate) const{
     if(predicate.is_lambda() || predicate.is_function()){
         auto fun = predicate.as_lambda();
         for(const auto& arg: this->items){
-            auto rv = fun(Vec<Object>{arg});
+            auto rv = fun(Vec<Object>{arg}, elix);
             if(!rv.is_bool()){
                 std::stringstream ss;
                 ss << "Incorrect argument type to `Array.all'. Expect a predicate";
@@ -1062,7 +1063,7 @@ bool Array::all(const Object& predicate) const{
     }else{
         auto fun = predicate.as_func();
         for(const auto& arg: this->items){
-            auto rv = fun(Vec<Object>{arg});
+            auto rv = fun(Vec<Object>{arg}, elix);
             if(!rv.is_bool()){
                 std::stringstream ss;
                 ss << "Incorrect argument type to `Array.all'. Expect a predicate";
@@ -1079,7 +1080,7 @@ bool Array::all(const Object& predicate) const{
 }
 
 // -*-
-Object Array::reduce(const Object& predicate, const Object& initVal) const{
+Object Array::reduce(const Object& predicate, const Object& initVal, ELix* elix) const{
     auto check = (
         predicate.is_func() ||
         predicate.is_lambda() ||
@@ -1098,12 +1099,12 @@ Object Array::reduce(const Object& predicate, const Object& initVal) const{
     if(predicate.is_func()){
         auto func = predicate.as_func();
         for(const auto& val: this->items){
-            acc = func(Vec<Object>{acc, val});
+            acc = func(Vec<Object>{acc, val}, elix);
         }
     }else{
         auto func = predicate.as_lambda();
         for(const auto& val: this->items){
-            acc = func(Vec<Object>{acc, val});
+            acc = func(Vec<Object>{acc, val}, elix);
         }
     }
 
@@ -1111,7 +1112,7 @@ Object Array::reduce(const Object& predicate, const Object& initVal) const{
 }
 
 // -*-
-Array& Array::sort(const Object& predicate){
+Array& Array::sort(const Object& predicate, ELix* elix){
     if(predicate.is_nil()){
         std::sort(
             this->items.begin(), this->items.end(),
@@ -1136,7 +1137,7 @@ Array& Array::sort(const Object& predicate){
     if(predicate.is_func()){
         auto func = predicate.as_func();
         // check func is a predicate
-        auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2));
+        auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2), elix);
         if(!check.is_bool()){
             std::stringstream ss;
             ss << "Incorrect argument type to `Array.sort'. Expect a predicate.";
@@ -1144,15 +1145,15 @@ Array& Array::sort(const Object& predicate){
         }
         std::sort(
             this->items.begin(), this->items.end(),
-            [&func](const Object& x, const Object& y){
-                return func(Vec<Object>{x, y});
+            [&func, elix](const Object& x, const Object& y) mutable {
+                return func(Vec<Object>{x, y}, elix);
             }
         );
         return *this;
     }else{
         auto func = predicate.as_lambda();
         // check func is a predicate
-        auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2));
+        auto check = func(Vec<Object>(this->items.cbegin(), this->items.cbegin()+2), elix);
         if(!check.is_bool()){
             std::stringstream ss;
             ss << "Incorrect argument type to `Array.sort'. Expect a predicate.";
@@ -1160,8 +1161,8 @@ Array& Array::sort(const Object& predicate){
         }
         std::sort(
             this->items.begin(), this->items.end(),
-            [&func](const Object& x, const Object& y){
-                return func(Vec<Object>{x, y});
+            [&func, elix](const Object& x, const Object& y) mutable {
+                return func(Vec<Object>{x, y}, elix);
             }
         );
         return *this;
@@ -1821,9 +1822,9 @@ Func Func::clone(void) const{
     return func;
 }
 
-Object Func::operator()(const Vec<Object>& args){
+Object Func::operator()(const Vec<Object>& args, ELix* elix){
     if(this->minArgc==-1 && this->maxArgc==-1){ // variadic case
-        return this->fn(args);
+        return this->fn(args, elix);
     }
     auto argc = args.size();
     if(argc < this->minArgc || argc > this->maxArgc){
@@ -1833,7 +1834,7 @@ Object Func::operator()(const Vec<Object>& args){
         throw ELixError(ELixError::RuntimeError, ss.str());
     }
 
-    return this->fn(args);
+    return this->fn(args, elix);
 }
 
 // -*------------------------*-
@@ -1871,7 +1872,7 @@ Macro Macro::clone(void) const{
 }
 
 // -*-
-Expression Macro::expand(const Vec<Object>& args){
+Expression Macro::expand(const Vec<Object>& args, ELix* elix){
     if(this->params.size()!=args.size()){
         std::stringstream ss;
         ss << "Invalid number or arguments encountered while expanding ";
@@ -1881,7 +1882,7 @@ Expression Macro::expand(const Vec<Object>& args){
         throw ELixError(ELixError::RuntimeError, ss.str());
     }
     auto myctx = this->ctx;
-    this->ctx = std::make_shared<Env>(Macro::elix->m_runtime);
+    this->ctx = std::make_shared<Env>(elix->m_runtime);
     for(const auto& [key, val]: this->ctx->bindings()){
         this->ctx->define(key, val);
     }
@@ -1891,7 +1892,7 @@ Expression Macro::expand(const Vec<Object>& args){
         this->ctx->define(key, args[i]);
     }
 
-    Macro::elix->m_runtime = this->ctx;
+    //Macro::elix->m_runtime = this->ctx;
     std::map<std::type_index, std::string> typesmap;
     typesmap[std::type_index(typeid(ListExpr))] = "ListExpr";
     typesmap[std::type_index(typeid(ArrayExpr))] = "ArrayExpr";
@@ -1920,7 +1921,7 @@ Expression Macro::expand(const Vec<Object>& args){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(Macro::elix->handle_quote(xs)));
+                        expanded.push_back(std::move(elix->handle_quote(xs)));
                         continue;
                     }
                 }
@@ -1935,7 +1936,7 @@ Expression Macro::expand(const Vec<Object>& args){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(Macro::elix->handle_unquote(xs)));
+                        expanded.push_back(std::move(elix->handle_unquote(xs)));
                         continue;
                     }
                 }
@@ -1950,7 +1951,7 @@ Expression Macro::expand(const Vec<Object>& args){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(Macro::elix->handle_quasiquote(xs)));
+                        expanded.push_back(std::move(elix->handle_quasiquote(xs)));
                         continue;
                     }
                 }
@@ -1965,7 +1966,7 @@ Expression Macro::expand(const Vec<Object>& args){
                         auto xs = Vec<Expression>{};
                         xs.push_back(std::move(this->body[(i+1)]));
                         i += 1;
-                        expanded.push_back(std::move(Macro::elix->handle_unquote_splicing(xs)));
+                        expanded.push_back(std::move(elix->handle_unquote_splicing(xs)));
                         continue;
                     }
                 }else if(sym=="macro"){
@@ -1986,9 +1987,9 @@ Expression Macro::expand(const Vec<Object>& args){
 }
 
 // -*-
-Object Macro::operator()(const Vec<Object>& args){
-    auto expaned = this->expand(args);
-    return expaned->eval(Macro::elix);
+Object Macro::operator()(const Vec<Object>& args, ELix* elix){
+    auto expaned = this->expand(args, elix);
+    return expaned->eval(elix);
 }
 
 // -*------------------------------*-

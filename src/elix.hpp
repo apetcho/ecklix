@@ -75,6 +75,7 @@ struct ExprBase;
 struct ExprVisitor;
 class Object;
 class Env;
+class ELix;
 
 template<typename T>
 using SharedPtr = std::shared_ptr<T>;
@@ -99,7 +100,7 @@ using isize = std::int64_t;
 
 using Context = std::shared_ptr<Env>;
 using Expression = std::unique_ptr<ExprBase>;
-using Fn = std::function<Object(const Vec<Object>&, Context& ctx)>;
+using Fn = std::function<Object(const Vec<Object>&, ELix*)>;
 //using Visitor = std::unique_ptr<ExprVisitor>;
 typedef ExprVisitor* Visitor;
 
@@ -254,9 +255,9 @@ struct Lambda final{
     std::string repr(void) const;
     Lambda clone(void) const;
 
-    Object operator()(const Vec<Object>& args);
+    Object operator()(const Vec<Object>& args, ELix* elix);
 
-    static ELix* elix;
+    // static ELix* elix;
 };
 
 // -*-
@@ -297,10 +298,10 @@ struct Array final {
     Object get(i64 idx) const;
     Array& set(i64 idx, const Object& arg);
     Array& splice(i64 idx, const Array& rhs);
-    bool any(const Object& predicate) const;
-    bool all(const Object& predicate) const;
-    Object reduce(const Object& fn, const Object& initVal) const;
-    Array& sort(const Object& fn);
+    bool any(const Object& predicate, ELix* elix) const;
+    bool all(const Object& predicate, ELix* elix) const;
+    Object reduce(const Object& fn, const Object& initVal, ELix* elix) const;
+    Array& sort(const Object& fn, ELix* elix);
     Array& clear(void);
     Array& push(const Object& rhs);
     Array& pop(void);
@@ -404,7 +405,7 @@ struct Func final{
     std::string repr(void) const;
     Func clone(void) const;
 
-    Object operator()(const Vec<Object>& args);
+    Object operator()(const Vec<Object>& args, ELix* elix);
 };
 
 struct Macro final{
@@ -416,10 +417,10 @@ struct Macro final{
     std::string repr(void) const;
     Macro clone(void) const;
 
-    Expression expand(const Vec<Object>& args);
-    Object operator()(const Vec<Object>& args);
+    Expression expand(const Vec<Object>& args, ELix* elix);
+    Object operator()(const Vec<Object>& args, ELix* elix);
 
-    static ELix* elix;
+    // static ELix* elix;
 };
 
 // -*-
@@ -787,9 +788,11 @@ public:
     static ModuleSet BuiltinModules;
     static void add_builtin_module(const Module& mymodule);
     static void validate_argc(bool pred, const std::string& prefix);
-    static void validate_type(bool pred, const std::string& emsg);
-    static void validate_value(bool pred, const std::string& emsg);
+    static void validate_type(bool pred, const std::string& prefix, const std::string& emsg);
+    static void validate_value(bool pred, const std::string& prefix, const std::string& emsg);
 
+    const Context& runtime(void) const{ return this->m_runtime; }
+    Context& runtime(void){ return this->m_runtime; }
 private:
     //ModuleLoader m_moduleLoader{};
     Context m_runtime{nullptr};

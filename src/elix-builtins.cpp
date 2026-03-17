@@ -28,47 +28,57 @@ static void add_builtin(const std::string& name, const Object& obj, const std::s
 // -*----------------*-
 // -*- Constructors -*-
 // -*----------------*-
-static Object fn_symbol(const Vec<Object>& args){
+static Object fn_symbol(const Vec<Object>& args, ELix* elix){
     // (Symbol args)
     auto pred = (args.size()==1);
     ELix::validate_argc(pred, "Symbol");
+    pred = (args[0].is_symbol() || args[0].is_string());
+    ELix::validate_type(pred, "Symbol", "argument must a String or a Symbol.");
+    Object result{};
+    if(args[0].is_symbol()){
+        result = Object(args[0].as_symbol());
+    }else{
+        result = Object(Symbol{args[0].str()});
+    }
+    elix->runtime()->define(result.str(), result);
+    return result;
 }
 
-static Object fn_string(const Vec<Object>& args){
+static Object fn_string(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_integer(const Vec<Object>& args){
+static Object fn_integer(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_float(const Vec<Object>& args){
+static Object fn_float(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
-static Object fn_array(const Vec<Object>& args){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
-}
-
-static Object fn_hashmap(const Vec<Object>& args){
+static Object fn_array(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset(const Vec<Object>& args){
+static Object fn_hashmap(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list(const Vec<Object>& args){
+static Object fn_hashset(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_pair(const Vec<Object>& args){
+static Object fn_list(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_pair(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -94,22 +104,22 @@ static Object fn_pair(const Vec<Object>& args);
 // -*----------------------*-
 // -*- Builtin predicates -*-
 // -*----------------------*-
-static Object fn_is_empty(const Vec<Object>& args){
+static Object fn_is_empty(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_is_hashable(const Vec<Object>& args){
+static Object fn_is_hashable(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_is_iterable(const Vec<Object>& args){
+static Object fn_is_iterable(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_contains(const Vec<Object>& args){
+static Object fn_contains(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -129,97 +139,97 @@ static Object fn_contains(const Vec<Object>& args);
 // -*---------------------*-
 // -*- Builtin operators -*-
 // -*---------------------*-
-static Object fn_add(const Vec<Object>& args){
+static Object fn_add(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_sub(const Vec<Object>& args){
+static Object fn_sub(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_mul(const Vec<Object>& args){
+static Object fn_mul(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_div(const Vec<Object>& args){
+static Object fn_div(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_mod(const Vec<Object>& args){
+static Object fn_mod(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_band(const Vec<Object>& args){
+static Object fn_band(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_bor(const Vec<Object>& args){
+static Object fn_bor(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_xor(const Vec<Object>& args){
+static Object fn_xor(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_lshift(const Vec<Object>& args){
+static Object fn_lshift(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_rshift(const Vec<Object>& args){
+static Object fn_rshift(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_not(const Vec<Object>& args){
+static Object fn_not(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_and(const Vec<Object>& args){
+static Object fn_and(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_or(const Vec<Object>& args){
+static Object fn_or(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_lt(const Vec<Object>& args){
+static Object fn_lt(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_le(const Vec<Object>& args){
+static Object fn_le(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_gt(const Vec<Object>& args){
+static Object fn_gt(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_ge(const Vec<Object>& args){
+static Object fn_ge(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_eq(const Vec<Object>& args){
+static Object fn_eq(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_ne(const Vec<Object>& args){
+static Object fn_ne(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -254,87 +264,87 @@ static Object fn_ne(const Vec<Object>& args);
 // -*-------------------------------------*-
 // -*- Basic functional programming APIs -*-
 // -*-------------------------------------*-
-static Object fn_map(const Vec<Object>& args){
+static Object fn_map(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_filter(const Vec<Object>& args){
+static Object fn_filter(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_zip(const Vec<Object>& args){
+static Object fn_zip(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_enumerate(const Vec<Object>& args){
+static Object fn_enumerate(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_len(const Vec<Object>& args){
+static Object fn_len(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_push(const Vec<Object>& args){
+static Object fn_push(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_pop(const Vec<Object>& args){
+static Object fn_pop(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_clear(const Vec<Object>& args){
+static Object fn_clear(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_concat(const Vec<Object>& args){
+static Object fn_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_reverse(const Vec<Object>& args){
+static Object fn_reverse(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_find(const Vec<Object>& args){
+static Object fn_find(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_min(const Vec<Object>& args){
+static Object fn_min(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_max(const Vec<Object>& args){
+static Object fn_max(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_range(const Vec<Object>& args){
+static Object fn_range(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_linspace(const Vec<Object>& args){
+static Object fn_linspace(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_repeat(const Vec<Object>& args){
+static Object fn_repeat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_partial(const Vec<Object>& args){
+static Object fn_partial(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -367,27 +377,27 @@ static Object fn_partial(const Vec<Object>& args);
 // -*----------------------------------------*-
 // -*- Basic builtin Input/Output functions -*-
 // -*----------------------------------------*-
-static Object fn_println(const Vec<Object>& args){
+static Object fn_println(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_eprintln(const Vec<Object>& args){
+static Object fn_eprintln(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_print(const Vec<Object>& args){
+static Object fn_print(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_eprint(const Vec<Object>& args){
+static Object fn_eprint(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_input(const Vec<Object>& args){
+static Object fn_input(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -408,42 +418,42 @@ static Object fn_input(const Vec<Object>& args);
 // -*-----------------------------------*-
 // -*- Miscellaneous builtin functions -*-
 // -*-----------------------------------*-
-static Object fn_clone(const Vec<Object>& args){
+static Object fn_clone(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_typeof(const Vec<Object>& args){
+static Object fn_typeof(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_isinstance(const Vec<Object>& args){
+static Object fn_isinstance(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_symbols(const Vec<Object>& args){
+static Object fn_symbols(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_macro_expand(const Vec<Object>& args){
+static Object fn_macro_expand(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_ascii_chr(const Vec<Object>& args){
+static Object fn_ascii_chr(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_ascii_ord(const Vec<Object>& args){
+static Object fn_ascii_ord(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_panic(const Vec<Object>& args){
+static Object fn_panic(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -464,10 +474,11 @@ struct Formatter{
 
 private:
     std::string m_src;
+    ELix* m_elix;
 
     // -*-
     // (format "Some fancy text with {var} embedded")
-    std::string format(const Object& obj) const{
+    std::string format(const Object& obj, ELix* elix) const{
         //! @todo
         throw ELixError(Symbol{"NotImplementedError"}, __func__);
     }
@@ -564,42 +575,42 @@ private:
     }
 };
 
-static Object fn_format(const Vec<Object>& args){
+static Object fn_format(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_help(const Vec<Object>& args){
+static Object fn_help(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_eval(const Vec<Object>& args){
+static Object fn_eval(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_getenv(const Vec<Object>& args){
+static Object fn_getenv(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_setenv(const Vec<Object>& args){
+static Object fn_setenv(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_quit(const Vec<Object>& args){
+static Object fn_quit(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_exit(const Vec<Object>& args){
+static Object fn_exit(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_bye(const Vec<Object>& args){
+static Object fn_bye(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -631,107 +642,107 @@ static Object fn_bye(const Vec<Object>& args){}
 // -*---------------*-
 // -*- String APIs -*-
 // -*---------------*-
-static Object fn_str_find(const Vec<Object>& args){
+static Object fn_str_find(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_reverse(const Vec<Object>& args){
+static Object fn_str_reverse(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_concat(const Vec<Object>& args){
+static Object fn_str_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_len(const Vec<Object>& args){
+static Object fn_str_len(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_eq(const Vec<Object>& args){
+static Object fn_str_eq(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_ne(const Vec<Object>& args){
+static Object fn_str_ne(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_split(const Vec<Object>& args){
+static Object fn_str_split(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_startswith(const Vec<Object>& args){
+static Object fn_str_startswith(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_endswith(const Vec<Object>& args){
+static Object fn_str_endswith(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_ltrim(const Vec<Object>& args){
+static Object fn_str_ltrim(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_rtrim(const Vec<Object>& args){
+static Object fn_str_rtrim(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_trim(const Vec<Object>& args){
+static Object fn_str_trim(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_lower(const Vec<Object>& args){
+static Object fn_str_lower(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_upper(const Vec<Object>& args){
+static Object fn_str_upper(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_capitalize(const Vec<Object>& args){
+static Object fn_str_capitalize(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_title(const Vec<Object>& args){
+static Object fn_str_title(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_find_all(const Vec<Object>& args){
+static Object fn_str_find_all(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_replace(const Vec<Object>& args){
+static Object fn_str_replace(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_replace_all(const Vec<Object>& args){
+static Object fn_str_replace_all(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_substr(const Vec<Object>& args){
+static Object fn_str_substr(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_str_at(const Vec<Object>& args){
+static Object fn_str_at(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -767,17 +778,17 @@ static Object fn_str_at(const Vec<Object>& args){}
 // -*---------------*-
 // -*- Symbol APIs -*-
 // -*---------------*-
-static Object fn_symbol_eq(const Vec<Object>& args){
+static Object fn_symbol_eq(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_symbol_ne(const Vec<Object>& args){
+static Object fn_symbol_ne(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_symbol_name(const Vec<Object>& args){
+static Object fn_symbol_name(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -795,12 +806,12 @@ static Object fn_symbol_name(const Vec<Object>& args){}
 // -*-------------*-
 // -*- Pair APIs -*-
 // -*-------------*-
-static Object fn_pair_key(const Vec<Object>& args){
+static Object fn_pair_key(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_pair_value(const Vec<Object>& args){
+static Object fn_pair_value(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -817,77 +828,77 @@ static Object fn_pair_value(const Vec<Object>& args){}
 // -*--------------*-
 // -*- Array APIs -*-
 // -*--------------*-
-static Object fn_array_find(const Vec<Object>& args){
+static Object fn_array_find(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_reverse(const Vec<Object>& args){
+static Object fn_array_reverse(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_concat(const Vec<Object>& args){
+static Object fn_array_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_len(const Vec<Object>& args){
+static Object fn_array_len(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_slice(const Vec<Object>& args){
+static Object fn_array_slice(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_insert(const Vec<Object>& args){
+static Object fn_array_insert(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_get(const Vec<Object>& args){
+static Object fn_array_get(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_set(const Vec<Object>& args){
+static Object fn_array_set(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_splice(const Vec<Object>& args){
+static Object fn_array_splice(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_any(const Vec<Object>& args){
+static Object fn_array_any(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_all(const Vec<Object>& args){
+static Object fn_array_all(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_sort(const Vec<Object>& args){
+static Object fn_array_sort(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_reduce(const Vec<Object>& args){
+static Object fn_array_reduce(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_push(const Vec<Object>& args){
+static Object fn_array_push(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_pop(const Vec<Object>& args){
+static Object fn_array_pop(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -917,62 +928,62 @@ static Object fn_array_pop(const Vec<Object>& args){}
 // -*-------------*-
 // -*- List APIs -*-
 // -*-------------*-
-static Object fn_list_find(const Vec<Object>& args){
+static Object fn_list_find(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_reverse(const Vec<Object>& args){
+static Object fn_list_reverse(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_concat(const Vec<Object>& args){
+static Object fn_list_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_len(const Vec<Object>& args){
+static Object fn_list_len(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_head(const Vec<Object>& args){
+static Object fn_list_head(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_tail(const Vec<Object>& args){
+static Object fn_list_tail(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_first(const Vec<Object>& args){
+static Object fn_list_first(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_last(const Vec<Object>& args){
+static Object fn_list_last(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_push(const Vec<Object>& args){
+static Object fn_list_push(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_pop(const Vec<Object>& args){
+static Object fn_list_pop(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_insert(const Vec<Object>& args){
+static Object fn_list_insert(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_list_remove(const Vec<Object>& args){
+static Object fn_list_remove(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -1000,62 +1011,62 @@ static Object fn_list_remove(const Vec<Object>& args){}
 // -*-------------*-
 // -*- Dict APIs -*-
 // -*-------------*-
-static Object fn_dict_find(const Vec<Object>& args){
+static Object fn_dict_find(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_concat(const Vec<Object>& args){
+static Object fn_dict_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_len(const Vec<Object>& args){
+static Object fn_dict_len(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_get(const Vec<Object>& args){
+static Object fn_dict_get(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_set(const Vec<Object>& args){
+static Object fn_dict_set(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_update(const Vec<Object>& args){
+static Object fn_dict_update(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_keys(const Vec<Object>& args){
+static Object fn_dict_keys(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_values(const Vec<Object>& args){
+static Object fn_dict_values(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_popitem(const Vec<Object>& args){
+static Object fn_dict_popitem(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_clear(const Vec<Object>& args){
+static Object fn_dict_clear(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_remove(const Vec<Object>& args){
+static Object fn_dict_remove(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_dict_items(const Vec<Object>& args){
+static Object fn_dict_items(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -1083,67 +1094,67 @@ static Object fn_dict_items(const Vec<Object>& args){}
 // -*------------*-
 // -*- Set APIs -*-
 // -*------------*-
-static Object fn_hashset_find(const Vec<Object>& args){
+static Object fn_hashset_find(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_concat(const Vec<Object>& args){
+static Object fn_hashset_concat(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_len(const Vec<Object>& args){
+static Object fn_hashset_len(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_add(const Vec<Object>& args){
+static Object fn_hashset_add(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_union(const Vec<Object>& args){
+static Object fn_hashset_union(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_intersection(const Vec<Object>& args){
+static Object fn_hashset_intersection(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_symmetric_difference(const Vec<Object>& args){
+static Object fn_hashset_symmetric_difference(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_clear(const Vec<Object>& args){
+static Object fn_hashset_clear(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_remove(const Vec<Object>& args){
+static Object fn_hashset_remove(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_pop(const Vec<Object>& args){
+static Object fn_hashset_pop(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_isdisjoint(const Vec<Object>& args){
+static Object fn_hashset_isdisjoint(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_issubset(const Vec<Object>& args){
+static Object fn_hashset_issubset(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_hashset_issuperset(const Vec<Object>& args){
+static Object fn_hashset_issuperset(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }

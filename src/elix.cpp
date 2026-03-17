@@ -491,16 +491,20 @@ void ELix::validate_argc(bool pred, const std::string& prefix){
 }
 
 // -*-
-void ELix::validate_type(bool pred, const std::string& emsg){
+void ELix::validate_type(bool pred, const std::string& prefix, const std::string& emsg){
     if(!pred){
-        throw ELixError(ELixError::TypeError, emsg);
+        std::stringstream ss;
+        ss << std::quoted(prefix) << " " << emsg;
+        throw ELixError(ELixError::ValueError, ss.str());
     }
 }
 
 // -*-
-void ELix::validate_value(bool pred, const std::string& emsg){
+void ELix::validate_value(bool pred, const std::string& prefix, const std::string& emsg){
     if(!pred){
-        throw ELixError(ELixError::ValueError, emsg);
+        std::stringstream ss;
+        ss << std::quoted(prefix) << " " << emsg;
+        throw ELixError(ELixError::ValueError, ss.str());
     }
 }
 
@@ -926,7 +930,6 @@ Object ELix::handle_fun(Vec<Expression> exprs){
     lambda.body = std::move(body);
     lambda.ctx = std::make_shared<Env>(this->m_runtime);
     lambda.named = true;
-    lambda.elix = this;
     this->m_runtime->define(fname, Object(lambda));
 
     return std::move(lambda);
@@ -981,7 +984,6 @@ Object ELix::handle_macro(Vec<Expression> exprs){
     macro.params = std::move(params);
     macro.body = std::move(body);
     macro.ctx = std::make_shared<Env>(this->m_runtime);
-    macro.elix = this;
     this->m_runtime->define(fname, Object(macro));
 
     return std::move(macro);
@@ -1026,7 +1028,6 @@ Object ELix::handle_lambda(Vec<Expression> exprs){
     lambda.body = std::move(body);
     lambda.ctx = std::make_shared<Env>(this->m_runtime);
     lambda.named = false;
-    lambda.elix = this;
 
     return std::move(lambda);
 }
@@ -1119,13 +1120,13 @@ Object ELix::handle_list(Vec<Expression> exprs){
         }
         if(fun.is_macro()){
             auto macro = fun.as_macro();
-            result = macro(argv);
+            result = macro(argv, this);
         }else if(fun.is_lambda() || fun.is_function()){
             auto lambda = fun.as_lambda();
-            result = lambda(argv);
+            result = lambda(argv, this);
         }else if(fun.is_func()){
             auto func = fun.as_func();
-            result = func(argv);
+            result = func(argv, this);
         }
     }
 
