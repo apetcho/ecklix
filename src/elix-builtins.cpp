@@ -3173,8 +3173,17 @@ static Object fn_array_pop(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_array_clear(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.any xarr)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Array.clear");
+    pred = (args[0].is_array());
+    ELix::validate_type(
+        pred, "`(Array.clear xarr)'", "expect `xarr' to be an Array object."
+    );
+    auto self = args[0].as_array();
+    self.clear();
+
+    return Object(self);
 }
 
 void ELix::initialize_array(void){
