@@ -7,6 +7,7 @@
 #include<cctype>
 #include<numeric>
 #include<cstdlib>
+#include<stdlib.h>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -2278,8 +2279,22 @@ static Object fn_getenv(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_setenv(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (setenv var val flag)
+    auto pred = (args.size()==3);
+    ELix::validate_argc(pred, "setenv");
+    pred = (args[0].is_string() && args[1].is_string() && args[0].is_bool());
+    ELix::validate_type(
+        pred, "`(setenv var val flag)'",
+        "expect `var' and `val' to be Strings and `flag' a Boolean."
+    );
+
+    auto var = args[0].as_string().text.c_str();
+    auto val = args[1].as_string().text.c_str();
+    auto flag = (args[2].as_bool() ? 1 : 0);
+    auto rc = ::setenv(var, val, flag);
+    auto ans = (rc==0 ? true : false);
+
+    return Object(ans);
 }
 
 static Object fn_quit(const Vec<Object>& args, ELix* elix){
