@@ -2974,11 +2974,34 @@ static Object fn_array_len(const Vec<Object>& args, ELix* elix){
     return Object(Number(self.len()));
 }
 
+// -*-
 static Object fn_array_slice(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.slice xarr start [stop])
+    auto pred = (args.size()==2 || args.size()==3);
+    ELix::validate_argc(pred, "Array.slice");
+    pred = (args[0].is_array() && args[1].is_integer());
+    if(args.size()==3){
+        pred = (pred && args[2].is_integer());
+    }
+    ELix::validate_type(
+        pred, "`(Array.slice xarr start [stop])'",
+        "expect `xarr' to be an Array,  `start' and the optional `stop' to be integers."
+    );
+    auto self = args[0].as_array();
+    auto start = args[1].as_integer();
+    auto stop = (args.size()==3 ? args[2].as_integer() : self.len());
+    pred = (start <= stop && (stop <= self.len()));
+    ELix::validate_value(
+        pred, "`(Array.slice xarr start stop)'",
+        "expect `xarr' to be an Array, `start' and `stop' to be an integers ans start <= stop\n"
+        "stop <= xarr.len()"
+    );
+
+    auto ans = self.slice(start, stop);
+    return Object(ans);
 }
 
+// -*-
 static Object fn_array_insert(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
