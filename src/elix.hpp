@@ -330,7 +330,7 @@ struct String final{
     friend bool operator>(const String& lhs, const String& rhs);
 
 
-    Vec<String> split(const String delim=String{});
+    Vec<String> split(const String delim=String{" "});
     //String slice(i64 i, i64 j) const;
     bool startswith(const String& rhs) const;
     bool endswith(const String& rhs) const;
