@@ -3380,11 +3380,23 @@ static Object fn_list_insert(const Vec<Object>& args, ELix* elix){
     return Object(xs);
 }
 
+// -*-
 static Object fn_list_remove(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (List.remove xs idx)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "List.remove");
+    pred = (args[0].is_list() && args[1].is_integer());
+    ELix::validate_type(
+        pred, "`(List.remove xs idx)'",
+        "expect `xs' to be a List object and `idx' to be an integer."
+    );
+    auto xs = args[0].as_list();
+    
+    xs.remove(args[1].as_integer());
+    return Object(xs);
 }
 
+// -*-
 static Object fn_list_clear(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3404,9 +3416,9 @@ static Object fn_list_first(const Vec<Object>& args){}      // (List.first xs)
 static Object fn_list_last(const Vec<Object>& args){}       // (List.last xs)
 static Object fn_list_push(const Vec<Object>& args){}       // (List.push xs obj)
 static Object fn_list_pop(const Vec<Object>& args){}        // (List.pos xs)
-static Object fn_list_insert(const Vec<Object>& args){}
-static Object fn_list_remove(const Vec<Object>& args){}
-static Object fn_list_clear(const Vec<Object>& args){}
+static Object fn_list_insert(const Vec<Object>& args){}     // (List.insert xs idx obj)
+static Object fn_list_remove(const Vec<Object>& args){}     // (List.remove xs idx)
+static Object fn_list_clear(const Vec<Object>& args){}      // (List.clear xs)
     */
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
