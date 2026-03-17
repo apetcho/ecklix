@@ -609,14 +609,17 @@ static Object fn_rshift(const Vec<Object>& args, ELix* elix){
 static Object fn_not(const Vec<Object>& args, ELix* elix){
     // (not x)
     auto pred = (args.size() == 1);
-    ELix::validate_argc(pred, "*");
+    ELix::validate_argc(pred, "not");
     auto acc = args[0].logical_not();
     return Object(acc);
 }
 
 static Object fn_and(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (and x y)
+    auto pred = (args.size() == 2);
+    ELix::validate_argc(pred, "and");
+    auto acc = (args[0] && args[1]);
+    return Object(acc);
 }
 
 static Object fn_or(const Vec<Object>& args, ELix* elix){
