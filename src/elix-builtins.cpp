@@ -3037,10 +3037,23 @@ static Object fn_array_get(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_array_set(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.set xarr index obj)
+    auto pred = (args.size()==3);
+    ELix::validate_argc(pred, "Array.set");
+    pred = (args[0].is_array() && args[1].is_integer());
+    ELix::validate_type(
+        pred, "`(Array.set xarr index obj)'",
+        "expect `xarr' to be an Array object and the  `index' to be an integer."
+    );
+    auto self = args[0].as_array();
+    auto index = args[1].as_integer();
+    auto obj = args[2];
+
+    self.set(index, obj);
+    return Object(self);
 }
 
+// -*-
 static Object fn_array_splice(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
