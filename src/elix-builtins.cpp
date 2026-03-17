@@ -1845,7 +1845,7 @@ static Object fn_eprintln(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_print(const Vec<Object>& args, ELix* elix){
-    // (println ...)
+    // (print ...)
     for(usize i=0; i < args.size(); i++){
         if(i > 0){ std::cout << " "; }
         std::cout << args[i].str();
@@ -1853,8 +1853,11 @@ static Object fn_print(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_eprint(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (eprint ...)
+    for(usize i=0; i < args.size(); i++){
+        if(i > 0){ std::cout << " "; }
+        std::cerr << args[i].str();
+    }
 }
 
 static Object fn_input(const Vec<Object>& args, ELix* elix){
