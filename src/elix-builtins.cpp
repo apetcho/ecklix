@@ -1931,13 +1931,21 @@ static Object fn_isinstance(const Vec<Object>& args, ELix* elix){
     }
 
     auto ans = (ty==args[0].type());
-    
+
     return Object(ans);
 }
 
 static Object fn_symbols(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (symbols)
+    auto pred = (args.empty());
+    ELix::validate_argc(pred, "symbols");
+
+    Vec<Object> result{};
+    for(const auto& [key, _]: elix->runtime()->bindings()){
+        result.push_back(Object(Symbol{key}));
+    }
+
+    return Object(Array{result});
 }
 
 static Object fn_macro_expand(const Vec<Object>& args, ELix* elix){
