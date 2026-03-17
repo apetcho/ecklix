@@ -487,14 +487,10 @@ static Object fn_contains(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_predicates(void){
-    //! @todo
-    /*
-static Object fn_is_empty(const Vec<Object>& args);
-static Object fn_is_hashable(const Vec<Object>& args);
-static Object fn_is_iterable(const Vec<Object>& args);
-static Object fn_contains(const Vec<Object>& args);
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("empty?", fn_is_empty, 1, 1);
+    add_builtin("hashable?", fn_is_hashable, 1, 1);
+    add_builtin("iterable?", fn_is_iterable, 1, 1);
+    add_builtin("contains?", fn_contains, 1, 1);
 }
 
 // -*---------------------*-
