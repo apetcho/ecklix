@@ -706,8 +706,173 @@ void ELix::initialize_operators(void){
 // -*- Basic functional programming APIs -*-
 // -*-------------------------------------*-
 static Object fn_map(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (map callable iterable)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "map");
+    auto callable = args[0];
+    if(!callable.is_callable()){
+        std::stringstream ss;
+        ss << "`(map arg1 arg2)': expected the first argument `arg1' to be a callable.\n";
+        ss << "Got " << std::quoted(callable.type().str()) << " object type.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    auto iterable = args[1];
+    if(!iterable.is_iterable()){
+        std::stringstream ss;
+        ss << "`(map arg1 arg2)': expected the second argument `arg2' to be an iterable.\n";
+        ss << "Got " << std::quoted(callable.type().str()) << " object type.";
+        throw ELixError(ELixError::TypeError, ss.str());
+    }
+
+    Object result{};
+    if(callable.is_lambda() || callable.is_function()){
+        auto fun = callable.as_lambda();
+        if(iterable.is_string()){
+            std::transform(
+                iterable.as_string().text.begin(), iterable.as_string().text.end(),
+                iterable.as_string().text.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_array()){
+            std::transform(
+                iterable.as_array().items.begin(), iterable.as_array().items.end(),
+                iterable.as_array().items.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_list()){
+            std::transform(
+                iterable.as_list().items.begin(), iterable.as_list().items.end(),
+                iterable.as_list().items.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_set()){
+            std::transform(
+                iterable.as_set().hset.begin(), iterable.as_set().hset.end(),
+                iterable.as_set().hset.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else{
+            std::transform(
+                iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
+                iterable.as_dict().hmap.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }
+    }else if(callable.is_func()){
+        auto fun = callable.as_func();
+        if(iterable.is_string()){
+            std::transform(
+                iterable.as_string().text.begin(), iterable.as_string().text.end(),
+                iterable.as_string().text.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_array()){
+            std::transform(
+                iterable.as_array().items.begin(), iterable.as_array().items.end(),
+                iterable.as_array().items.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_list()){
+            std::transform(
+                iterable.as_list().items.begin(), iterable.as_list().items.end(),
+                iterable.as_list().items.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_set()){
+            std::transform(
+                iterable.as_set().hset.begin(), iterable.as_set().hset.end(),
+                iterable.as_set().hset.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else{
+            std::transform(
+                iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
+                iterable.as_dict().hmap.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }
+    }else{
+        auto fun = callable.as_macro();
+        if(iterable.is_string()){
+            std::transform(
+                iterable.as_string().text.begin(), iterable.as_string().text.end(),
+                iterable.as_string().text.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_array()){
+            std::transform(
+                iterable.as_array().items.begin(), iterable.as_array().items.end(),
+                iterable.as_array().items.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_list()){
+            std::transform(
+                iterable.as_list().items.begin(), iterable.as_list().items.end(),
+                iterable.as_list().items.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else if(iterable.is_set()){
+            std::transform(
+                iterable.as_set().hset.begin(), iterable.as_set().hset.end(),
+                iterable.as_set().hset.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }else{
+            std::transform(
+                iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
+                iterable.as_dict().hmap.begin(),
+                [&fun, elix](const Object& obj) mutable {
+                    return fun(Vec<Object>{obj}, elix);
+                }
+            );
+            result = Object(iterable);
+        }
+    }
+
+    return result;
 }
 
 static Object fn_filter(const Vec<Object>& args, ELix* elix){
