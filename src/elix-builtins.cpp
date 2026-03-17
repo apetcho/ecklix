@@ -2336,11 +2336,38 @@ static Object fn_bye(const Vec<Object>& args, ELix* elix){
     return Object();
 }
 
+// -*-
 static Object fn_clamp(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (clamp val vmin vmax)
+    auto pred = (args.size()==3);
+    ELix::validate_argc(pred, "clamp");
+    pred = (args[0].is_number() && args[1].is_number() && args[2].is_number());
+    ELix::validate_type(
+        pred, "`(clamp val vmin vmax)'",
+        "expect `val', `vmin', and `vmax' to be integer"
+    );
+    pred = (args[0].is_integer() && args[1].is_integer() && args[2].is_integer());
+    Object result{};
+    if(pred){
+        auto val = args[0].as_integer();
+        auto vmin = args[1].as_integer();
+        auto vmax = args[2].as_integer();
+        if(vmin > vmax){ std::swap(vmin, vmax); }
+        auto ans = std::clamp(val, vmin, vmax);
+        result = Object(Number(ans));
+    }else{
+        auto val = args[0].as_float();
+        auto vmin = args[1].as_float();
+        auto vmax = args[2].as_float();
+        if(vmin > vmax){ std::swap(vmin, vmax); }
+        auto ans = std::clamp(val, vmin, vmax);
+        result = Object(Number(ans));
+    }
+
+    return result;
 }
 
+// -*-
 static Object fn_gcd(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
