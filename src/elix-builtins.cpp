@@ -1949,8 +1949,18 @@ static Object fn_symbols(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_macro_expand(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Macro.expand obj args)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Macro.expand");
+    pred = (args[0].is_macro());
+    ELix::validate_type(
+        pred, "`(Macro.expand obj args)'", "expect `obj' to be a Macro."
+    );
+    auto argv = Vec<Object>(args.begin()+1, args.end());
+    auto expr = args[0].as_macro().expand(argv, elix);
+    auto result = expr->repr();
+
+    return Object(String{result});
 }
 
 static Object fn_ascii_chr(const Vec<Object>& args, ELix* elix){
