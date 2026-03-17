@@ -3140,12 +3140,30 @@ static Object fn_array_reduce(const Vec<Object>& args, ELix* elix){
     return Object(ans);
 }
 
+// -*-
 static Object fn_array_push(const Vec<Object>& args, ELix* elix){
+    // (Array.any xarr obj)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Array.push");
+    pred = (args[0].is_array());
+    ELix::validate_type(
+        pred, "`(Array.any xarr predicate)'",
+        "expect `xarr' to be an Array object and `predicate' to be a callable."
+    );
+    auto self = args[0].as_array();
+    auto obj = args[1];
+    self.push(obj);
+
+    return Object(self);
+}
+
+// -*-
+static Object fn_array_pop(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
 
-static Object fn_array_pop(const Vec<Object>& args, ELix* elix){
+static Object fn_array_clear(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
