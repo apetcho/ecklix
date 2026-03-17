@@ -433,8 +433,12 @@ static Object fn_is_hashable(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_is_iterable(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (iterable? arg)
+    auto pred = (args.size()==0);
+    ELix::validate_argc(pred, "iterable?");
+    auto arg = args[0];
+
+    return Object(arg.is_iterable() ? true : false);
 }
 
 static Object fn_contains(const Vec<Object>& args, ELix* elix){
