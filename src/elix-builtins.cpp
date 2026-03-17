@@ -2956,13 +2956,22 @@ static Object fn_array_concat(const Vec<Object>& args, ELix* elix){
     auto xarr = args[0].as_array();
     auto yarr = args[1].as_array();
     xarr.concat(yarr);
-    
+
     return Object(xarr);
 }
 
+// -*-
 static Object fn_array_len(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Array.len xarr)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Array.len");
+    pred = (args[0].is_array());
+    ELix::validate_type(
+        pred, "`(Array.len xarr)'", "expect `xarr' to be an Array."
+    );
+    auto self = args[0].as_array();
+
+    return Object(Number(self.len()));
 }
 
 static Object fn_array_slice(const Vec<Object>& args, ELix* elix){
