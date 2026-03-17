@@ -3293,7 +3293,16 @@ static Object fn_list_head(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_list_tail(const Vec<Object>& args, ELix* elix){
-    
+    // (List.tail xs)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "List.tail");
+    pred = (args[0].is_list());
+    ELix::validate_type(
+        pred, "`(List.tail)'", "expect `xs' to be a List object."
+    );
+    auto xs = args[0].as_list();
+    auto result = xs.tail();
+    return Object(result);
 }
 
 // -*-
