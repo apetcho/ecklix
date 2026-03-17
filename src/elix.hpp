@@ -794,6 +794,7 @@ public:
     static void validate_argc(bool pred, const std::string& prefix);
     static void validate_type(bool pred, const std::string& prefix, const std::string& emsg);
     static void validate_value(bool pred, const std::string& prefix, const std::string& emsg);
+    //! @todo
     static void validate_predicate(Lambda lambda, const Vec<Object>& argv, ELix* elix, const std::string& prefix);
     static void validate_predicate(Func func, const Vec<Object>& argv, ELix* elix, const std::string& prefix);
     static void validate_predicate(Macro macro, const Vec<Object>& argv, ELix* elix, const std::string& prefix);

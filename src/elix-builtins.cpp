@@ -1343,8 +1343,28 @@ static Object fn_concat(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_reverse(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (reverse arg)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "reverse");
+    auto arg = args[0];
+    ELix::validate_type(
+        (arg.is_string() || arg.is_array() || arg.is_list()),
+        "`(reverse arg)'",
+        "expect `arg' to be either a String, a List or an Array."
+    );
+    Object result{};
+    if(args[0].is_string()){
+        arg.as_string().reverse();
+        result = Object(arg.as_string());
+    }else if(args[0].is_array()){
+        arg.as_array().reverse();
+        result = Object(arg.as_array());
+    }else{
+        arg.as_list().reverse();
+        result = Object(arg.as_list());
+    }
+
+    return result;
 }
 
 static Object fn_find(const Vec<Object>& args, ELix* elix){
