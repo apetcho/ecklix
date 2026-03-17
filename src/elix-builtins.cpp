@@ -2063,8 +2063,13 @@ static Object fn_ascii_ord(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_panic(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (panic ...)
+    for(auto i=0; i < args.size(); i++){
+        if(i > 0){ std::cerr << " "; }
+        std::cerr << args[i].str();
+    }
+    std::cerr << std::endl;
+    std::exit(1);
 }
 
 // -*-
