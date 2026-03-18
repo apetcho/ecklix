@@ -3479,8 +3479,18 @@ static Object fn_dict_len(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_dict_get(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.get xdict key)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Dict.get");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.get xdict key)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    auto key = args[1];
+    auto result = xdict.get(key);
+
+    return result;
 }
 
 static Object fn_dict_set(const Vec<Object>& args, ELix* elix){
