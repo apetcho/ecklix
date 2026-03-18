@@ -3589,10 +3589,21 @@ static Object fn_dict_clear(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_dict_remove(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.remove xdict key)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Dict.remove");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.remove xdict key)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    auto key = args[1];
+    xdict.remove(key);
+
+    return Object(xdict);
 }
 
+// -*-
 static Object fn_dict_items(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
