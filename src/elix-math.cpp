@@ -228,8 +228,14 @@ static Object fn_math_atanh(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_math_exp(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.exp num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.exp");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.exp num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().exp();
+
+    return Object(result);
 }
 
 static Object fn_math_exp2(const Vec<Object>& args, ELix* elix){
