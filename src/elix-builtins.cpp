@@ -3543,10 +3543,20 @@ static Object fn_dict_keys(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_dict_values(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.values xdict)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Dict.values");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.values xdict)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    
+    auto ans = xdict.values();
+    return Object(Array{ans});
 }
 
+// -*-
 static Object fn_dict_popitem(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
