@@ -443,20 +443,25 @@ public:
     i64 nextInt();
     i64 nextInt(i64 vmax);
     i64 nextInt(i64 vmin, i64 vmax);
-    void seed(i64 val);
+
+    void seed(i64 val){ this->m_seed = val; }
 
 private:
-    void setup(i64 vmin, i64 vmax, std::optional<i64> seed=std::nullopt){
+    std::optional<i64> m_seed{std::nullopt};
+
+    void get(i64 vmin, i64 vmax, std::optional<i64> state=std::nullopt, i64& result){
         static std::random_device dev;
         static std::mt19937 rng(dev());
-        /*
-         std::seed_seq sseq{1, 2};
-        gen.seed(sseq);
-        */
-       if(0){}
-
+        if(state){
+            std::seed_seq sseq{state.value()};
+            rng.seed(sseq);
+        }
+        static std::uniform_int_distribution<i64> dist(vmin, vmax);
+        result = dist(rng);
     }
-    void setup(f64 vmin, f64 vmax);
+
+
+    void get(f64 vmin, f64 vmax, std::optional<i64> state=std::nullopt, f64& result);
 };
 
 // -*-
