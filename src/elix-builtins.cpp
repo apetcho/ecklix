@@ -3800,9 +3800,21 @@ static Object fn_hashset_clear(const Vec<Object>& args, ELix* elix){
     return Object(xset);
 }
 
+// -*-
 static Object fn_hashset_remove(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.remove xset key)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.remove");
+    pred = (args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.remove xset key)'", "expect arguments `xset' to be Set object."
+    );
+
+    auto xset = args[0].as_set();
+    auto key = args[1];
+    xset.remove(key);
+
+    return Object(xset);
 }
 
 static Object fn_hashset_pop(const Vec<Object>& args, ELix* elix){
