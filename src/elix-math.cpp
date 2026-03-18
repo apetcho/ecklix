@@ -410,9 +410,16 @@ static Object fn_math_log2(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_math_log10(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.log10 num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.log10");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.log10 num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().log10();
+
+    return Object(result);
 }
 
 static Object fn_math_log1p(const Vec<Object>& args, ELix* elix){
