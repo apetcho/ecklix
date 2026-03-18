@@ -130,8 +130,14 @@ static Object fn_math_acos(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_math_atan(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.atan num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.atan");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.atan num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().atan();
+
+    return Object(result);
 }
 
 static Object fn_math_atan2(const Vec<Object>& args, ELix* elix){
