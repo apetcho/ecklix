@@ -3868,9 +3868,22 @@ static Object fn_hashset_issubset(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_hashset_issuperset(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.issuperset? xset yset)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.issuperset?");
+    pred = (args[0].is_set() && args[1].is_set());
+    ELix::validate_type(
+        pred, "`(Set.issuperset? xset yset)'",
+        "expect arguments `xset' and `yset' to be Set objects."
+    );
+
+    auto xset = args[0].as_set();
+    auto yset = args[1].as_set();
+    auto result = xset.issuperset(yset);
+
+    return Object(result);
 }
 
 // -*-
