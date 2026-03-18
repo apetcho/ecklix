@@ -3605,8 +3605,23 @@ static Object fn_dict_remove(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_dict_items(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.items xdict)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Dict.items");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.items xdict)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    auto key = args[1];
+
+    auto ans = xdict.items();
+    Vec<Object> result{};
+    for(const auto& pair: ans){
+        result.push_back(Object(pair));
+    }
+
+    return Object(Array{result});
 }
 
 // -*-
