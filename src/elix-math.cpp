@@ -70,8 +70,14 @@ static Object fn_math_truncate(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_math_sin(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.sin num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.sin");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.sin num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().sin();
+
+    return Object(result);
 }
 
 static Object fn_math_cos(const Vec<Object>& args, ELix* elix){
