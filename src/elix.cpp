@@ -7,6 +7,7 @@
 #include<typeindex>
 #include<typeinfo>
 #include<limits>
+#include<stack>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -178,8 +179,11 @@ std::string ELix::readfile(const char* filename){
 
 // -*-
 std::string ELix::input(void){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // - readString 
+    // - readArray
+    // - readDict
+    // - readSet
+    // - readPair
 }
 
 void ELix::add_builtin_module(const Module& mymodule){
@@ -515,6 +519,39 @@ void ELix::validate_name(const std::string& name){
         ss << std::quoted(name) << " is a builtin reserved word. It cannot be used to ";
         ss << "name a variable.";
         throw ELixError(ELixError::ValueError, ss.str());
+    }
+}
+
+// -*-
+void ELix::validate_predicate(Lambda func, const Vec<Object>& argv, ELix* elix, const std::string& prefix){
+    auto result = func(argv, elix);
+    auto pred = result.is_bool();
+    if(!pred){
+        std::stringstream ss;
+        ss << std::quoted(prefix) << ": invalid predicate found.";
+        throw ELixError(ELixError::RuntimeError, ss.str());
+    }
+}
+
+// -*-
+void ELix::validate_predicate(Func func, const Vec<Object>& argv, ELix* elix, const std::string& prefix){
+    auto result = func(argv, elix);
+    auto pred = result.is_bool();
+    if(!pred){
+        std::stringstream ss;
+        ss << std::quoted(prefix) << ": invalid predicate found.";
+        throw ELixError(ELixError::RuntimeError, ss.str());
+    }
+}
+
+// -*-
+void ELix::validate_predicate(Macro func, const Vec<Object>& argv, ELix* elix, const std::string& prefix){
+    auto result = func(argv, elix);
+    auto pred = result.is_bool();
+    if(!pred){
+        std::stringstream ss;
+        ss << std::quoted(prefix) << ": invalid predicate found.";
+        throw ELixError(ELixError::RuntimeError, ss.str());
     }
 }
 

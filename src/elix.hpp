@@ -795,12 +795,12 @@ public:
     //static Context runtime;
     static ModuleSet BuiltinModules;
     static void add_builtin_module(const Module& mymodule);
-    static void validate_argc(bool pred, const std::string& prefix);
-    static void validate_type(bool pred, const std::string& prefix, const std::string& emsg);
-    static void validate_value(bool pred, const std::string& prefix, const std::string& emsg);
     static void add_builtin(const std::string& name, Fn fn, int minArgc, int maxArgc, const std::string& docstr="");
     static void add_builtin(const std::string& name, const Object& obj, const std::string& docstr="");
 
+    static void validate_argc(bool pred, const std::string& prefix);
+    static void validate_type(bool pred, const std::string& prefix, const std::string& emsg);
+    static void validate_value(bool pred, const std::string& prefix, const std::string& emsg);
     //! @todo
     static void validate_predicate(Lambda lambda, const Vec<Object>& argv, ELix* elix, const std::string& prefix);
     static void validate_predicate(Func func, const Vec<Object>& argv, ELix* elix, const std::string& prefix);
