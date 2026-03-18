@@ -290,6 +290,11 @@ Number Number::sqrt(void) const{
 }
 
 // -*-
+Number Number::cbrt(void) const{
+    return Number(std::cbrt(static_cast<f64>(*this)));
+}
+
+// -*-
 Number Number::log(void) const{
     return Number(std::log(static_cast<f64>(*this)));
 }
