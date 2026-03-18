@@ -3649,7 +3649,7 @@ static Object fn_hashset_find(const Vec<Object>& args, ELix* elix){
     ELix::validate_argc(pred, "Set.find");
     pred = (args[0].is_set());
     ELix::validate_type(
-        pred, "`(Set.find xset needle)'", "expect the argument `xset' to be Set object."
+        pred, "`(Set.find xset needle)'", "expect the argument `xset' to be a Set object."
     );
 
     auto xset = args[0].as_set();
@@ -3679,10 +3679,20 @@ static Object fn_hashset_concat(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_hashset_len(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.find xset)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Set.len");
+    pred = (args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.find xset)'", "expect the argument `xset' to be a Set object."
+    );
+
+    auto xset = args[0].as_set();
+
+    return Object(Number(xset.len()));
 }
 
+// -*-
 static Object fn_hashset_add(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3739,7 +3749,7 @@ void ELix::initialize_set(void){
     /*
 static Object fn_hashset_find(const Vec<Object>& args){}                // (Set.find xset needle)
 static Object fn_hashset_concat(const Vec<Object>& args){}              // (Set.concat xset yset)
-static Object fn_hashset_len(const Vec<Object>& args){}
+static Object fn_hashset_len(const Vec<Object>& args){}                 // (Set.len xset)
 static Object fn_hashset_add(const Vec<Object>& args){}
 static Object fn_hashset_union(const Vec<Object>& args){}
 static Object fn_hashset_intersection(const Vec<Object>& args){}
