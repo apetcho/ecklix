@@ -264,14 +264,19 @@ static Object fn_math_expm1(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_math_pow(const Vec<Object>& args, ELix* elix){
-    // (Math.pow num)
-    auto pred = (args.size()==1);
+    // (Math.pow base expo)
+    auto pred = (args.size()==2);
     ELix::validate_argc(pred, "Math.pow");
-    pred = args[0].is_number();
-    ELix::validate_type(pred, "`(Math.pow num)'", "expect argument `num' to be a number.");
-    //auto result = args[0].as_number().power();
+    pred = args[0].is_number() && args[1].is_number();
+    ELix::validate_type(
+        pred, "`(Math.pow base expo)'",
+        "expect arguments `base' and `expo' to be numbers."
+    );
+    auto base = args[0].as_number();
+    auto expo = args[1].as_number();
+    auto result = base.pow(expo);
 
-    return Object();
+    return Object(result);
 }
 
 static Object fn_math_sqrt(const Vec<Object>& args, ELix* elix){
