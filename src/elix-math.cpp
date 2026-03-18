@@ -140,9 +140,18 @@ static Object fn_math_atan(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_math_atan2(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.atan2 xnum ynum)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Math.atan2");
+    pred = args[0].is_number() && args[1].is_number();
+    ELix::validate_type(pred, "`(Math.atan2 x y)'", "expect arguments `x' and `y' to be numbers.");
+    auto xnum = args[0].as_number();
+    auto ynum = args[0].as_number();
+    auto result = xnum.atan2(ynum);
+
+    return Object(result);
 }
 
 static Object fn_math_sinh(const Vec<Object>& args, ELix* elix){
