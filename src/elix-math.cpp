@@ -250,9 +250,16 @@ static Object fn_math_exp2(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_math_expm1(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.expm1 num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.expm1");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.expm1 num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().expm1();
+
+    return Object(result);
 }
 
 static Object fn_math_pow(const Vec<Object>& args, ELix* elix){
