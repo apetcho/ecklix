@@ -3644,8 +3644,19 @@ void ELix::initialize_dict(void){
 // -*- Set APIs -*-
 // -*------------*-
 static Object fn_hashset_find(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.find xset needle)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.find");
+    pred = (args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.find xset needle)'", "expect the argument `xset' to be Set object."
+    );
+
+    auto xset = args[0].as_set();
+    auto needle = args[1];
+    auto ans = xset.find(needle);
+
+    return Object(ans);
 }
 
 static Object fn_hashset_concat(const Vec<Object>& args, ELix* elix){
@@ -3712,7 +3723,7 @@ static Object fn_hashset_issuperset(const Vec<Object>& args, ELix* elix){
 void ELix::initialize_set(void){
     //! @todo
     /*
-static Object fn_hashset_find(const Vec<Object>& args){}
+static Object fn_hashset_find(const Vec<Object>& args){}                // (Set.find xset needle)
 static Object fn_hashset_concat(const Vec<Object>& args){}
 static Object fn_hashset_len(const Vec<Object>& args){}
 static Object fn_hashset_add(const Vec<Object>& args){}
