@@ -181,6 +181,7 @@ public:
     Number expm1(void) const;
     Number exp2(void) const;
     Number pow(const Number& rhs) const;
+    Number sqrt(void) const;
     Number log(void) const;
     Number log2(void) const;
     Number log10(void) const;
