@@ -32,11 +32,19 @@ static Object fn_math_ceil(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_math_round(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.round num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.round");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.round num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().round();
+
+    return Object(result);
 }
 
+// -*-
 static Object fn_math_floor(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
