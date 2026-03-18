@@ -3666,7 +3666,7 @@ static Object fn_hashset_concat(const Vec<Object>& args, ELix* elix){
     ELix::validate_argc(pred, "Set.concat");
     pred = (args[0].is_set() && args[1].is_set());
     ELix::validate_type(
-        pred, "`(Set.find xset xset)'", "expect argument `xset' and `yset' to be Set objects."
+        pred, "`(Set.concat xset yset)'", "expect argument `xset' and `yset' to be Set objects."
     );
 
     auto xset = args[0].as_set();
@@ -3684,7 +3684,7 @@ static Object fn_hashset_len(const Vec<Object>& args, ELix* elix){
     ELix::validate_argc(pred, "Set.len");
     pred = (args[0].is_set());
     ELix::validate_type(
-        pred, "`(Set.find xset)'", "expect the argument `xset' to be a Set object."
+        pred, "`(Set.len xset)'", "expect the argument `xset' to be a Set object."
     );
 
     auto xset = args[0].as_set();
@@ -3694,10 +3694,22 @@ static Object fn_hashset_len(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_hashset_add(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.find xset key)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.add");
+    pred = (args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.add xset key)'", "expect the argument `xset' to be Set object."
+    );
+
+    auto xset = args[0].as_set();
+    auto key = args[1];
+    xset.add(key);
+
+    return Object(xset);
 }
 
+// -*-
 static Object fn_hashset_union(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
