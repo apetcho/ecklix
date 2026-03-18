@@ -3522,16 +3522,26 @@ static Object fn_dict_update(const Vec<Object>& args, ELix* elix){
     auto xdict = args[0].as_dict();
     auto key = args[1];
     auto val = args[2];
-    
+
     xdict.update(key, val);
     return Object(xdict);
 }
 
+// -*-
 static Object fn_dict_keys(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.keys xdict)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Dict.keys");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.keys xdict)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    auto ans = xdict.keys();
+    return Object(Array{ans});
 }
 
+// -*-
 static Object fn_dict_values(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3566,8 +3576,8 @@ static Object fn_dict_concat(const Vec<Object>& args){}     // (Dict.concat xdic
 static Object fn_dict_len(const Vec<Object>& args){}        // (Dict.len xdict)
 static Object fn_dict_get(const Vec<Object>& args){}        // (Dict.get xdict key)
 static Object fn_dict_set(const Vec<Object>& args){}        // (Dict.set xdict key val)
-static Object fn_dict_update(const Vec<Object>& args){}
-static Object fn_dict_keys(const Vec<Object>& args){}
+static Object fn_dict_update(const Vec<Object>& args){}     // (Dict.update xdict key val)
+static Object fn_dict_keys(const Vec<Object>& args){}       // (Dict.keys xdict)
 static Object fn_dict_values(const Vec<Object>& args){}
 static Object fn_dict_popitem(const Vec<Object>& args){}
 static Object fn_dict_clear(const Vec<Object>& args){}
