@@ -3406,30 +3406,26 @@ static Object fn_list_clear(const Vec<Object>& args, ELix* elix){
         pred, "`(List.clear xs)'", "expect `xs' to be a List object."
     );
     auto xs = args[0].as_list();
-    
+
     xs.clear();
     return Object(xs);
 }
 
 // -*-
 void ELix::initialize_list(void){
-    //! @todo
-    /*
-static Object fn_list_find(const Vec<Object>& args){}       // (List.find xs obj [from])
-static Object fn_list_reverse(const Vec<Object>& args){}    // (List.reverse xs)
-static Object fn_list_concat(const Vec<Object>& args){}     // (List.concat xs ys)
-static Object fn_list_len(const Vec<Object>& args){}        // (List.len xs)
-static Object fn_list_head(const Vec<Object>& args){}       // (List.head xs)
-static Object fn_list_tail(const Vec<Object>& args){}       // (List.tail xs)
-static Object fn_list_first(const Vec<Object>& args){}      // (List.first xs)
-static Object fn_list_last(const Vec<Object>& args){}       // (List.last xs)
-static Object fn_list_push(const Vec<Object>& args){}       // (List.push xs obj)
-static Object fn_list_pop(const Vec<Object>& args){}        // (List.pos xs)
-static Object fn_list_insert(const Vec<Object>& args){}     // (List.insert xs idx obj)
-static Object fn_list_remove(const Vec<Object>& args){}     // (List.remove xs idx)
-static Object fn_list_clear(const Vec<Object>& args){}      // (List.clear xs)
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("List.find", fn_list_find, 2, 3);           // (List.find xs obj ][from])
+    add_builtin("List.reverse", fn_list_reverse, 1, 1);     // (List.reverse xs)
+    add_builtin("List.concat", fn_list_concat, 2, 2);       // (List.concat xs ys)
+    add_builtin("List.len", fn_list_len, 1, 1);             // (List.len xs)
+    add_builtin("List.head", fn_list_head, 1, 1);           // (List.head xs)
+    add_builtin("List.tail", fn_list_tail, 1, 1);           // (List.tail xs)
+    add_builtin("List.first", fn_list_first, 1, 1);         // (List.first xs)
+    add_builtin("List.last", fn_list_last, 1, 1);           // (List.last xs)
+    add_builtin("List.push", fn_list_push, 2, 2);           // (List.push xs obj)
+    add_builtin("List.pop", fn_list_pop, 1, 1);             // (List.pop xs)
+    add_builtin("List.insert", fn_list_insert, 3, 3);       // (List.insert xs idx obj)
+    add_builtin("List.remove", fn_list_remove, 2, 2);       // (List.insert xs idx)
+    add_builtin("List.clear", fn_list_clear, 1, 1);         // (List.clear xs)
 }
 
 // -*-------------*-
