@@ -3834,8 +3834,20 @@ static Object fn_hashset_pop(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_hashset_isdisjoint(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.isdisjoint? xset yset)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.isdisjoint?");
+    pred = (args[0].is_set() && args[1].is_set());
+    ELix::validate_type(
+        pred, "`(Set.isdisjoint? xset yset)'",
+        "expect arguments `xset' and `yset' to be Set objects."
+    );
+
+    auto xset = args[0].as_set();
+    auto yset = args[1].as_set();
+    auto result = xset.isdisjoint(yset);
+
+    return Object(result);
 }
 
 static Object fn_hashset_issubset(const Vec<Object>& args, ELix* elix){
