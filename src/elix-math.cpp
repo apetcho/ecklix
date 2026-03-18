@@ -461,7 +461,7 @@ static Object fn_random_random(const Vec<Object>& args, ELix* elix){
 
     Object result{};
     if(args.size()==0){
-        auto num = randomizer.nextFloat();
+        auto num = randomizer.nextFloat(0.0, 1.0);
         result = Object(Number(num));
     }else if(args.size()==1){
         pred = args[0].is_integer();
@@ -475,7 +475,7 @@ static Object fn_random_random(const Vec<Object>& args, ELix* elix){
         );
         Vec<Object> vec(N);
         for(i64 i=0; i < N; i++){
-            auto num = Number(randomizer.nextFloat());
+            auto num = Number(randomizer.nextFloat(0.0, 1.0));
             vec.push_back(Object(num));
         }
         result = Object(Array{vec});
@@ -494,7 +494,7 @@ static Object fn_random_random(const Vec<Object>& args, ELix* elix){
         );
         Vec<Object> vec(N);
         for(i64 i=0; i < N; i++){
-            auto num = Number(randomizer.nextFloat(vmax));
+            auto num = Number(randomizer.nextFloat(0.0, vmax));
             vec.push_back(Object(num));
         }
         result = Object(Array{vec});
@@ -525,8 +525,41 @@ static Object fn_random_random(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_random_nextFloat(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    return Object();
+    // (Random.nextFloat)
+    // (Random.nextFloat vmax)
+    // (Random.nextFloat vmin vmax)
+    auto pred = (args.size() <= 2);
+    ELix::validate_argc(pred, "Random.nextFloat");
+
+    Object result{};
+    if(args.size()==0){
+        auto num = randomizer.nextFloat();
+        result = Object(Number(num));
+    }else if(args.size()==1){
+        pred = args[0].is_number();
+        ELix::validate_type(
+            pred, "`(Random.nextFloat vmax)'", "expect `vmax' to be a number."
+        );
+        auto vmax = args[0].as_float();
+        result = Object(Number(randomizer.nextFloat(vmax)));
+    }else{
+        pred = (args[0].is_number() && args[1].is_number());
+        ELix::validate_type(
+            pred, "`(Random.nextFloat vmin vmax)'",
+            "expect `vmin' and `vmax' as numbers."
+        );
+        auto vmin = args[0].as_float();
+        auto vmax = args[1].as_float();
+        pred = (vmin < vmax);
+        ELix::validate_value(
+            pred, "`(Random.nextFloat vmin vmax)'",
+            "expect `vmin' and `vmax' as numbers such that vmin < vmax."
+        );
+        auto num = Number(randomizer.nextFloat(vmin, vmax));
+        result = Object(num);
+    }
+
+    return result;
 }
 
 // -*-
