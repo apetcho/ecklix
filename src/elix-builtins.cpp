@@ -3766,6 +3766,25 @@ static Object fn_hashset_symmetric_difference(const Vec<Object>& args, ELix* eli
     return Object(result);
 }
 
+// -*-
+static Object fn_hashset_difference(const Vec<Object>& args, ELix* elix){
+    // (Set.difference xset yset)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.difference");
+    pred = (args[0].is_set() && args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.difference xset yset)'",
+        "expect arguments `xset' and `yset' to be Set objects."
+    );
+
+    auto xset = args[0].as_set();
+    auto yset = args[1].as_set();
+    auto result = xset.difference(yset);
+
+    return Object(result);
+}
+
+
 static Object fn_hashset_clear(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3807,6 +3826,7 @@ static Object fn_hashset_add(const Vec<Object>& args){}                 // (Set.
 static Object fn_hashset_union(const Vec<Object>& args){}               // (Set.union xset yset)
 static Object fn_hashset_intersection(const Vec<Object>& args){}        // (Set.intersection xset yset)
 static Object fn_hashset_symmetric_difference(const Vec<Object>& args){}// (Set.symetric_difference xset yset)
+static Object fn_hashset_difference(const Vec<Object>& args){}          // (Set.difference xset yset)
 static Object fn_hashset_clear(const Vec<Object>& args){}
 static Object fn_hashset_remove(const Vec<Object>& args){}
 static Object fn_hashset_pop(const Vec<Object>& args){}
