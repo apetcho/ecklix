@@ -3626,22 +3626,18 @@ static Object fn_dict_items(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_dict(void){
-    //! @todo
-    /*
-static Object fn_dict_find(const Vec<Object>& args){}       // (Dict.find xdict key)
-static Object fn_dict_concat(const Vec<Object>& args){}     // (Dict.concat xdict ydict)
-static Object fn_dict_len(const Vec<Object>& args){}        // (Dict.len xdict)
-static Object fn_dict_get(const Vec<Object>& args){}        // (Dict.get xdict key)
-static Object fn_dict_set(const Vec<Object>& args){}        // (Dict.set xdict key val)
-static Object fn_dict_update(const Vec<Object>& args){}     // (Dict.update xdict key val)
-static Object fn_dict_keys(const Vec<Object>& args){}       // (Dict.keys xdict)
-static Object fn_dict_values(const Vec<Object>& args){}     // (Dict.values xdict)
-static Object fn_dict_popitem(const Vec<Object>& args){}    // (Dict.popitem xdict key)
-static Object fn_dict_clear(const Vec<Object>& args){}      // (Dict.clear xdict)
-static Object fn_dict_remove(const Vec<Object>& args){}
-static Object fn_dict_items(const Vec<Object>& args){}
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("Dict.find", fn_dict_find, 2, 2);           // (Dict.find xdict key)
+    add_builtin("Dict.concat", fn_dict_concat, 2, 2);       // (Dict.concat xdict ydict)
+    add_builtin("Dict.len", fn_dict_len, 1, 1);             // (Dict.len xdict)
+    add_builtin("Dict.get", fn_dict_get, 2, 2);             // (Dict.get xdict key)
+    add_builtin("Dict.set", fn_dict_set, 3, 3);             // (Dict.set xdict key val)
+    add_builtin("Dict.update", fn_dict_update, 3, 3);       // (Dict.update xdict key val)
+    add_builtin("Dict.keys", fn_dict_keys, 1, 1);           // (Dict.keys xdict)
+    add_builtin("Dict.values", fn_dict_values, 1, 1);       // (Dict.values xdict)
+    add_builtin("Dict.popitem", fn_dict_popitem, 2, 2);     // (Dict.popitem xdict key)
+    add_builtin("Dict.clear", fn_dict_clear, 1, 1);         // (Dict.clear xdict)
+    add_builtin("Dict.remove", fn_dict_remove, 2, 2);       // (Dict.remove xdict key)
+    add_builtin("Dict.items", fn_dict_items, 1, 1);         // (Dict.items xdict)
 }
 
 // -*------------*-
