@@ -279,6 +279,10 @@ Number Number::exp2(void) const{
     return Number(std::exp2(static_cast<f64>(*this)));
 }
 
+Number Number::pow(const Number& rhs) const{
+    return Number(std::pow(static_cast<f64>(*this), static_cast<f64>(rhs)));
+}
+
 // -*-
 Number Number::log(void) const{
     return Number(std::log(static_cast<f64>(*this)));
