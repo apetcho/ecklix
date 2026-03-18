@@ -391,6 +391,7 @@ struct Set final{
     Set& add(const Object& key);
     Set set_union(const Set& rhs) const;
     Set intersection(const Set& rhs) const;
+    Set difference(const Set& rhs) const;
     Set symmetric_difference(const Set& rhs) const;
     Set difference(const Set& rhs) const;
     Set& clear(void);

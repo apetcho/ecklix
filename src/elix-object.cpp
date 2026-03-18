@@ -1720,6 +1720,19 @@ Set Set::intersection(const Set& rhs) const{
     return std::move(result);
 }
 
+Set Set::difference(const Set& rhs) const{
+    Set result{};
+    result.hset = {};
+    std::set_difference(
+        this->hset.begin(), this->hset.end(),
+        rhs.hset.begin(), rhs.hset.end(),
+        std::inserter(result.hset, result.hset.begin())
+    );
+
+    return std::move(result);
+}
+
+
 Set Set::symmetric_difference(const Set& rhs) const{
     Set result{};
     result.hset = {};
