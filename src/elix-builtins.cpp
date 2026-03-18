@@ -3432,8 +3432,18 @@ void ELix::initialize_list(void){
 // -*- Dict APIs -*-
 // -*-------------*-
 static Object fn_dict_find(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.find xdict key)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Dict.find");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.find xdict key)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    auto key = args[1];
+    auto result = xdict.find(key);
+
+    return result;
 }
 
 static Object fn_dict_concat(const Vec<Object>& args, ELix* elix){
@@ -3495,7 +3505,7 @@ static Object fn_dict_items(const Vec<Object>& args, ELix* elix){
 void ELix::initialize_dict(void){
     //! @todo
     /*
-static Object fn_dict_find(const Vec<Object>& args){}
+static Object fn_dict_find(const Vec<Object>& args){}       // (Dict.find xdict key)
 static Object fn_dict_concat(const Vec<Object>& args){}
 static Object fn_dict_len(const Vec<Object>& args){}
 static Object fn_dict_get(const Vec<Object>& args){}
