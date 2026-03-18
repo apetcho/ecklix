@@ -3784,10 +3784,20 @@ static Object fn_hashset_difference(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
-
+// -*-
 static Object fn_hashset_clear(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.clear xset)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Set.clear");
+    pred = (args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.clear xset)'", "expect arguments `xset' to be Set objects."
+    );
+
+    auto xset = args[0].as_set();
+    xset.clear();
+
+    return Object(xset);
 }
 
 static Object fn_hashset_remove(const Vec<Object>& args, ELix* elix){
