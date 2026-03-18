@@ -3462,11 +3462,22 @@ static Object fn_dict_concat(const Vec<Object>& args, ELix* elix){
     return Object(xdict);
 }
 
+// -*-
 static Object fn_dict_len(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.find xdict)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Dict.len");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.len xdict)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    
+    auto ans = xdict.len();
+    return Object(Number(ans));
 }
 
+// -*-
 static Object fn_dict_get(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3517,8 +3528,8 @@ void ELix::initialize_dict(void){
     //! @todo
     /*
 static Object fn_dict_find(const Vec<Object>& args){}       // (Dict.find xdict key)
-static Object fn_dict_concat(const Vec<Object>& args){}
-static Object fn_dict_len(const Vec<Object>& args){}
+static Object fn_dict_concat(const Vec<Object>& args){}     // (Dict.concat xdict ydict)
+static Object fn_dict_len(const Vec<Object>& args){}        // (Dict.len xdict)
 static Object fn_dict_get(const Vec<Object>& args){}
 static Object fn_dict_set(const Vec<Object>& args){}
 static Object fn_dict_update(const Vec<Object>& args){}
