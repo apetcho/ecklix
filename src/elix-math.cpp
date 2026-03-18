@@ -460,8 +460,18 @@ private:
         result = dist(rng);
     }
 
+    // -*-
+    void get(f64 vmin, f64 vmax, std::optional<i64> state=std::nullopt, f64& result){
+        static std::random_device dev;
+        static std::mt19937 rng(dev());
+        if(state){
+            std::seed_seq sseq{state.value()};
+            rng.seed(sseq);
+        }
+        static std::uniform_real_distribution<f64> dist(vmin, vmax);
+        result = dist(rng);
+    }
 
-    void get(f64 vmin, f64 vmax, std::optional<i64> state=std::nullopt, f64& result);
 };
 
 // -*-
