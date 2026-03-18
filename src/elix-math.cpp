@@ -439,6 +439,7 @@ public:
     f64 nextFloat();
     f64 nextFloat(f64 vmax);
     f64 nextFloat(f64 vmin, f64 vmax);
+    i64 nextInt();
     i64 nextInt(i64 vmax);
     i64 nextInt(i64 vmin, i64 vmax);
 
@@ -564,8 +565,41 @@ static Object fn_random_nextFloat(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_random_nextInteger(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    return Object();
+    // (Random.nextInteger)
+    // (Random.nextInteger vmax)
+    // (Random.nextInteger vmin vmax)
+    auto pred = (args.size() <= 2);
+    ELix::validate_argc(pred, "Random.nextInteger");
+
+    Object result{};
+    if(args.size()==0){
+        auto num = randomizer.nextInt();
+        result = Object(Number(num));
+    }else if(args.size()==1){
+        pred = args[0].is_integer();
+        ELix::validate_type(
+            pred, "`(Random.nextInteger vmax)'", "expect `vmax' to be an integer."
+        );
+        auto vmax = args[0].as_integer();
+        result = Object(Number(randomizer.nextInt(vmax)));
+    }else{
+        pred = (args[0].is_integer() && args[1].is_integer());
+        ELix::validate_type(
+            pred, "`(Random.nextInteger vmin vmax)'",
+            "expect `vmin' and `vmax' as integers."
+        );
+        auto vmin = args[0].as_integer();
+        auto vmax = args[1].as_integer();
+        pred = (vmin < vmax);
+        ELix::validate_value(
+            pred, "`(Random.nextInteger vmin vmax)'",
+            "expect `vmin' and `vmax' as numbers such that vmin < vmax."
+        );
+        auto num = Number(randomizer.nextInt(vmin, vmax));
+        result = Object(num);
+    }
+
+    return result;
 }
 
 
