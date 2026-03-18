@@ -350,9 +350,16 @@ static Object fn_math_lgamma(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_math_isinf(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.isinf? num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.isinf?");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.isinf? num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().isinf();
+
+    return Object(result);
 }
 
 static Object fn_math_isfinite(const Vec<Object>& args, ELix* elix){
@@ -361,6 +368,26 @@ static Object fn_math_isfinite(const Vec<Object>& args, ELix* elix){
 }
 
 static Object fn_math_isnan(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_math_log(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_math_log2(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_math_log10(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+}
+
+static Object fn_math_log1p(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
 }
@@ -400,6 +427,10 @@ static Object fn_math_lgamma(const Vec<Object>& args);
 static Object fn_math_isinf(const Vec<Object>& args);
 static Object fn_math_isfinite(const Vec<Object>& args);
 static Object fn_math_isnan(const Vec<Object>& args);
+static Object fn_math_log(const Vec<Object>& args);
+static Object fn_math_log2(const Vec<Object>& args);
+static Object fn_math_log10(const Vec<Object>& args);
+static Object fn_math_log1p(const Vec<Object>& args);
     */
 }
 
