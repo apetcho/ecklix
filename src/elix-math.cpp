@@ -1,6 +1,7 @@
 #include "elix.hpp"
 #include<cmath>
 #include<random>
+#include<optional>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -442,14 +443,36 @@ public:
     i64 nextInt();
     i64 nextInt(i64 vmax);
     i64 nextInt(i64 vmin, i64 vmax);
+    void seed(i64 val);
 
 private:
-    void setup(i64 vmin, i64 vmax);
+    void setup(i64 vmin, i64 vmax, std::optional<i64> seed=std::nullopt){
+        static std::random_device dev;
+        static std::mt19937 rng(dev());
+        /*
+         std::seed_seq sseq{1, 2};
+        gen.seed(sseq);
+        */
+       if(0){}
+
+    }
     void setup(f64 vmin, f64 vmax);
 };
 
 // -*-
 static Randomizer randomizer{};
+
+// -*-
+static Object fn_random_seed(const Vec<Object>& args, ELix* elix){
+    // (Random.seed val)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Random.seed");
+    pred = args[0].is_integer();
+    ELix::validate_type(pred, "`(Random.seed val)'", "expect `val' to be an integer.");
+    auto val = args[0].as_integer();
+    randomizer.seed(val);
+    return Object();
+}
 
 // -*-
 static Object fn_random_random(const Vec<Object>& args, ELix* elix){
@@ -642,6 +665,7 @@ void ELix::initialize_math(void){
     ELix::add_builtin("Math.log2", fn_math_log2, 1, 1);                 // (Math.log2 x)
     ELix::add_builtin("Math.log10", fn_math_log10, 1, 1);               // (Math.log10 x)
     ELix::add_builtin("Math.log1p", fn_math_log1p, 1, 1);               // (Math.log1p x)
+    ELix::add_builtin("Random.seed", fn_random_seed, 1, 1);             // (Random.seed val)
     ELix::add_builtin("Random.random", fn_random_random, 0, 3);         // (Random.random [vmin vmax count])
     ELix::add_builtin("Random.nextFloat", fn_random_nextFloat, 0, 2);   // (Random.nextFloat [vmin vmax])
     ELix::add_builtin("Random.nextInteger", fn_random_nextInteger, 0, 2);//(Random.nextInteger [vmin vmax])
