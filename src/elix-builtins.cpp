@@ -3749,8 +3749,21 @@ static Object fn_hashset_intersection(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_hashset_symmetric_difference(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.symmetric_difference xset yset)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.symmetric_difference");
+    pred = (args[0].is_set() && args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.symmetric_difference xset yset)'",
+        "expect arguments `xset' and `yset' to be Set objects."
+    );
+
+    auto xset = args[0].as_set();
+    auto yset = args[1].as_set();
+
+    auto result = xset.symmetric_difference(yset);
+
+    return Object(result);
 }
 
 static Object fn_hashset_clear(const Vec<Object>& args, ELix* elix){
