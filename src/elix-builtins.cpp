@@ -3711,8 +3711,21 @@ static Object fn_hashset_add(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_hashset_union(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.union xset yset)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Set.union");
+    pred = (args[0].is_set() && args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.union xset yset)'",
+        "expect arguments `xset' and `yset' to be Set objects."
+    );
+
+    auto xset = args[0].as_set();
+    auto yset = args[1].as_set();
+
+    auto result = xset.set_union(yset);
+
+    return Object(result);
 }
 
 static Object fn_hashset_intersection(const Vec<Object>& args, ELix* elix){
@@ -3762,8 +3775,8 @@ void ELix::initialize_set(void){
 static Object fn_hashset_find(const Vec<Object>& args){}                // (Set.find xset needle)
 static Object fn_hashset_concat(const Vec<Object>& args){}              // (Set.concat xset yset)
 static Object fn_hashset_len(const Vec<Object>& args){}                 // (Set.len xset)
-static Object fn_hashset_add(const Vec<Object>& args){}
-static Object fn_hashset_union(const Vec<Object>& args){}
+static Object fn_hashset_add(const Vec<Object>& args){}                 // (Set.add xset yset)
+static Object fn_hashset_union(const Vec<Object>& args){}               // (Set.union xset yset)
 static Object fn_hashset_intersection(const Vec<Object>& args){}
 static Object fn_hashset_symmetric_difference(const Vec<Object>& args){}
 static Object fn_hashset_clear(const Vec<Object>& args){}
