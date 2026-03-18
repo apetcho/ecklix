@@ -14,8 +14,8 @@
 // -*--------------------------------------------------------------------------*-
 namespace ekasoft::elx{
 // -
-
-static void add_builtin(const std::string& name, Fn fn, int minArgc, int maxArgc, const std::string& docstr=""){
+// -*-
+void ELix::add_builtin(const std::string& name, Fn fn, int minArgc, int maxArgc, const std::string& docstr){
     Func func{fn, minArgc, maxArgc};
     ELix::prelude->define(name, Object(func));
     if(ELix::docstrings.find(name)==ELix::docstrings.end()){
@@ -25,7 +25,8 @@ static void add_builtin(const std::string& name, Fn fn, int minArgc, int maxArgc
     }
 }
 
-static void add_builtin(const std::string& name, const Object& obj, const std::string& docstr=""){
+// -*-
+void ELix::add_builtin(const std::string& name, const Object& obj, const std::string& docstr){
     ELix::prelude->define(name, obj);
     if(ELix::docstrings.find(name)==ELix::docstrings.end()){
         ELix::docstrings[name] = Vec<std::string>{docstr};
@@ -391,15 +392,15 @@ static Object fn_pair(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_constructors(void){
-    add_builtin("Symbol.new", fn_symbol, 1, 1);
-    add_builtin("String.new", fn_string, 0, 1);
-    add_builtin("Integer.new", fn_symbol, 0, 1);
-    add_builtin("Float.new", fn_symbol, 0, 1);
-    add_builtin("Array.new", fn_symbol, 0, 2);
-    add_builtin("Set.new", fn_symbol, 0, 1);
-    add_builtin("Dict.new", fn_symbol, 0, 1);
-    add_builtin("List.new", fn_symbol, 0, 2);
-    add_builtin("Pair.new", fn_symbol, 2, 2);
+    ELix::add_builtin("Symbol.new", fn_symbol, 1, 1);
+    ELix::add_builtin("String.new", fn_string, 0, 1);
+    ELix::add_builtin("Integer.new", fn_symbol, 0, 1);
+    ELix::add_builtin("Float.new", fn_symbol, 0, 1);
+    ELix::add_builtin("Array.new", fn_symbol, 0, 2);
+    ELix::add_builtin("Set.new", fn_symbol, 0, 1);
+    ELix::add_builtin("Dict.new", fn_symbol, 0, 1);
+    ELix::add_builtin("List.new", fn_symbol, 0, 2);
+    ELix::add_builtin("Pair.new", fn_symbol, 2, 2);
 }
 
 
@@ -493,10 +494,10 @@ static Object fn_contains(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_predicates(void){
-    add_builtin("empty?", fn_is_empty, 1, 1);
-    add_builtin("hashable?", fn_is_hashable, 1, 1);
-    add_builtin("iterable?", fn_is_iterable, 1, 1);
-    add_builtin("contains?", fn_contains, 1, 1);
+    ELix::add_builtin("empty?", fn_is_empty, 1, 1);
+    ELix::add_builtin("hashable?", fn_is_hashable, 1, 1);
+    ELix::add_builtin("iterable?", fn_is_iterable, 1, 1);
+    ELix::add_builtin("contains?", fn_contains, 1, 1);
 }
 
 // -*---------------------*-
@@ -685,25 +686,25 @@ static Object fn_ne(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_operators(void){
-    add_builtin("+", fn_add, 1, -1);
-    add_builtin("-", fn_sub, 1, -1);
-    add_builtin("*", fn_mul, 2, -1);
-    add_builtin("/", fn_div, 2, -1);
-    add_builtin("%", fn_mod, 1, -1);
-    add_builtin("~", fn_band, 1, 1);
-    add_builtin("|", fn_bor, 2, 2);
-    add_builtin("^", fn_xor, 2, 2);
-    add_builtin("<<", fn_lshift, 2, 2);
-    add_builtin(">>", fn_rshift, 2, 2);
-    add_builtin("not", fn_not, 1, 1);
-    add_builtin("and", fn_and, 2, 2);
-    add_builtin("or", fn_or, 2, 2);
-    add_builtin("<", fn_lt, 2, 2);
-    add_builtin("<=", fn_le, 2, 2);
-    add_builtin(">", fn_gt, 2, 2);
-    add_builtin(">=", fn_ge, 2, 2);
-    add_builtin("==", fn_eq, 2, 2);
-    add_builtin("!=", fn_ne, 2, 2);
+    ELix::add_builtin("+", fn_add, 1, -1);
+    ELix::add_builtin("-", fn_sub, 1, -1);
+    ELix::add_builtin("*", fn_mul, 2, -1);
+    ELix::add_builtin("/", fn_div, 2, -1);
+    ELix::add_builtin("%", fn_mod, 1, -1);
+    ELix::add_builtin("~", fn_band, 1, 1);
+    ELix::add_builtin("|", fn_bor, 2, 2);
+    ELix::add_builtin("^", fn_xor, 2, 2);
+    ELix::add_builtin("<<", fn_lshift, 2, 2);
+    ELix::add_builtin(">>", fn_rshift, 2, 2);
+    ELix::add_builtin("not", fn_not, 1, 1);
+    ELix::add_builtin("and", fn_and, 2, 2);
+    ELix::add_builtin("or", fn_or, 2, 2);
+    ELix::add_builtin("<", fn_lt, 2, 2);
+    ELix::add_builtin("<=", fn_le, 2, 2);
+    ELix::add_builtin(">", fn_gt, 2, 2);
+    ELix::add_builtin(">=", fn_ge, 2, 2);
+    ELix::add_builtin("==", fn_eq, 2, 2);
+    ELix::add_builtin("!=", fn_ne, 2, 2);
 }
 
 // -*-------------------------------------*-
@@ -1800,23 +1801,23 @@ static Object fn_reduce(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_functional(void){
-    add_builtin("map", fn_map, 2, 2);               // (map fn arg)
-    add_builtin("filter", fn_filter, 2, 2);         // (filter fn arg)
-    add_builtin("reduce", fn_reduce, 3, 3);         // (reduce fn arg init)
-    add_builtin("zip", fn_zip, 2, -1);              // (zip arg1 arg2 ... argN)
-    add_builtin("enumerate", fn_enumerate, 1, 1);   // (enumerate arg)
-    add_builtin("len", fn_len, 1, 1);               // (len arg)
-    add_builtin("push", fn_push, 2, 2);             // (push arg x)
-    add_builtin("pop", fn_pop, 1, 1);               // (pop arg)
-    add_builtin("clear", fn_clear, 1, 1);           // (clear arg)
-    add_builtin("concat", fn_concat, 2, -1);        // (concat arg1 arg2 ... argN)
-    add_builtin("reverse", fn_reverse, 1, 1);       // (reverse arg)
-    add_builtin("find", fn_find, 2, 2);             // (find arg x)
-    add_builtin("min", fn_min, 1, -1);              // (min arg [arg2 arg3 ... argN])
-    add_builtin("max", fn_max, 1, -1);              // (max arg [arg2 arg3 ... argN])
-    add_builtin("range", fn_range, 1, 3);           // (range N) | (range vmin vmax [step])
-    add_builtin("linspace", fn_linspace, 2, 3);     // (linspace vmin vmax [N])
-    add_builtin("repeat", fn_repeat, 2, 2);         // (repeat N obj)
+    ELix::add_builtin("map", fn_map, 2, 2);               // (map fn arg)
+    ELix::add_builtin("filter", fn_filter, 2, 2);         // (filter fn arg)
+    ELix::add_builtin("reduce", fn_reduce, 3, 3);         // (reduce fn arg init)
+    ELix::add_builtin("zip", fn_zip, 2, -1);              // (zip arg1 arg2 ... argN)
+    ELix::add_builtin("enumerate", fn_enumerate, 1, 1);   // (enumerate arg)
+    ELix::add_builtin("len", fn_len, 1, 1);               // (len arg)
+    ELix::add_builtin("push", fn_push, 2, 2);             // (push arg x)
+    ELix::add_builtin("pop", fn_pop, 1, 1);               // (pop arg)
+    ELix::add_builtin("clear", fn_clear, 1, 1);           // (clear arg)
+    ELix::add_builtin("concat", fn_concat, 2, -1);        // (concat arg1 arg2 ... argN)
+    ELix::add_builtin("reverse", fn_reverse, 1, 1);       // (reverse arg)
+    ELix::add_builtin("find", fn_find, 2, 2);             // (find arg x)
+    ELix::add_builtin("min", fn_min, 1, -1);              // (min arg [arg2 arg3 ... argN])
+    ELix::add_builtin("max", fn_max, 1, -1);              // (max arg [arg2 arg3 ... argN])
+    ELix::add_builtin("range", fn_range, 1, 3);           // (range N) | (range vmin vmax [step])
+    ELix::add_builtin("linspace", fn_linspace, 2, 3);     // (linspace vmin vmax [N])
+    ELix::add_builtin("repeat", fn_repeat, 2, 2);         // (repeat N obj)
     /*
 static Object fn_partial(const Vec<Object>& args);
     */
@@ -1881,11 +1882,11 @@ static Object fn_input(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_basic_io(void){
-    add_builtin("println", fn_println, -1, -1);         // (println ...)
-    add_builtin("eprintln", fn_eprintln, -1, -1);       // (eprintln ...)
-    add_builtin("print", fn_print, -1, -1);             // (print ...)
-    add_builtin("eprint", fn_eprint, -1, -1);           // (eprint ...)
-    add_builtin("input", fn_input, 0, 1);               // (input [prompt])
+    ELix::add_builtin("println", fn_println, -1, -1);         // (println ...)
+    ELix::add_builtin("eprintln", fn_eprintln, -1, -1);       // (eprintln ...)
+    ELix::add_builtin("print", fn_print, -1, -1);             // (print ...)
+    ELix::add_builtin("eprint", fn_eprint, -1, -1);           // (eprint ...)
+    ELix::add_builtin("input", fn_input, 0, 1);               // (input [prompt])
 }
 
 // -*-----------------------------------*-
@@ -2400,26 +2401,26 @@ static Object fn_lcm(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_misc(void){
-    add_builtin("clone", fn_clone, 1, 1);               // (clone obj)
-    add_builtin("typeof", fn_typeof, 1, 1);             // (typeof obj)
-    add_builtin("isintance?", fn_isinstance, 2, 2);     // (isinstance? obj ty)
-    add_builtin("symbols", fn_symbols, 0, 0);           // (symbols)
-    add_builtin("Macro.expand", fn_macro_expand, 2, -1);// (Macro.expand obj args)
-    add_builtin("chr", fn_ascii_chr, 1, 1);             // (chr obj)
-    add_builtin("isascii?", fn_ascii_isascii, 1, 1);    // (isascii? obj)
-    add_builtin("ord", fn_ascii_ord, 1, 1);             // (ord obj)
-    add_builtin("panic", fn_panic, -1, -1);             // (panic ...)
-    add_builtin("format", fn_format, 1, 1);             // (format obj)
-    add_builtin("help", fn_help, 1, 1);                 // (help obj)
-    add_builtin("eval", fn_eval, 1, 1);                 // (eval obj)
-    add_builtin("getenv", fn_getenv, 1, 1);             // (getenv obj)
-    add_builtin("setenv", fn_setenv, 3, 3);             // (setenv var val flag)
-    add_builtin("quit", fn_quit, 0, 0);                 // (quit)
-    add_builtin("exit", fn_exit, 1, 1);                 // (exit obj)
-    add_builtin("bye", fn_bye, 1, 1);                   // (bye obj)
-    add_builtin("clamp", fn_clamp, 3, 3);               // (clamp val vmin, vmax)
-    add_builtin("gcd", fn_gcd, 2, 2);                   // (gcd m n)
-    add_builtin("lcm", fn_lcm, 2, 2);                   // (lcm m n)
+    ELix::add_builtin("clone", fn_clone, 1, 1);               // (clone obj)
+    ELix::add_builtin("typeof", fn_typeof, 1, 1);             // (typeof obj)
+    ELix::add_builtin("isintance?", fn_isinstance, 2, 2);     // (isinstance? obj ty)
+    ELix::add_builtin("symbols", fn_symbols, 0, 0);           // (symbols)
+    ELix::add_builtin("Macro.expand", fn_macro_expand, 2, -1);// (Macro.expand obj args)
+    ELix::add_builtin("chr", fn_ascii_chr, 1, 1);             // (chr obj)
+    ELix::add_builtin("isascii?", fn_ascii_isascii, 1, 1);    // (isascii? obj)
+    ELix::add_builtin("ord", fn_ascii_ord, 1, 1);             // (ord obj)
+    ELix::add_builtin("panic", fn_panic, -1, -1);             // (panic ...)
+    ELix::add_builtin("format", fn_format, 1, 1);             // (format obj)
+    ELix::add_builtin("help", fn_help, 1, 1);                 // (help obj)
+    ELix::add_builtin("eval", fn_eval, 1, 1);                 // (eval obj)
+    ELix::add_builtin("getenv", fn_getenv, 1, 1);             // (getenv obj)
+    ELix::add_builtin("setenv", fn_setenv, 3, 3);             // (setenv var val flag)
+    ELix::add_builtin("quit", fn_quit, 0, 0);                 // (quit)
+    ELix::add_builtin("exit", fn_exit, 1, 1);                 // (exit obj)
+    ELix::add_builtin("bye", fn_bye, 1, 1);                   // (bye obj)
+    ELix::add_builtin("clamp", fn_clamp, 3, 3);               // (clamp val vmin, vmax)
+    ELix::add_builtin("gcd", fn_gcd, 2, 2);                   // (gcd m n)
+    ELix::add_builtin("lcm", fn_lcm, 2, 2);                   // (lcm m n)
 }
 
 // -*---------------*-
@@ -2796,27 +2797,27 @@ static Object fn_str_at(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_string(void){
-    add_builtin("String.find", fn_str_find, 2, 2);              // (String.find text needle)
-    add_builtin("String.reverse", fn_str_reverse, 1, 1);        // (String.reverse text)
-    add_builtin("String.concat", fn_str_concat, 2, 2);          // (String.concat xtext ytext)
-    add_builtin("String.len", fn_str_len, 1, 1);                // (String.len text)
-    add_builtin("String.equal", fn_str_eq, 2, 2);               // (String.equal xtext ytext)
-    add_builtin("String.not_equal", fn_str_ne, 2, 2);           // (String.not_equal xtext ytext)
-    add_builtin("String.split", fn_str_split, 1, 2);            // (String.split text [delim])
-    add_builtin("String.startswith", fn_str_startswith, 2, 2);  // (String.startswith text prefix)
-    add_builtin("String.endswith", fn_str_endswith, 2, 2);      // (String.endswith text suffix)
-    add_builtin("String.ltrim", fn_str_ltrim, 1, 1);            // (String.ltrim text)
-    add_builtin("String.rtrim", fn_str_rtrim, 1, 1);            // (String.rtrim text)
-    add_builtin("String.trim", fn_str_trim, 1, 1);              // (String.trim text)
-    add_builtin("String.lower", fn_str_lower, 1, 1);            // (String.lower text)
-    add_builtin("String.upper", fn_str_upper, 1, 1);            // (String.upper text)
-    add_builtin("String.capitalize", fn_str_capitalize, 1, 1);  // (String.capitalize text)
-    add_builtin("String.title", fn_str_title, 1, 1);            // (String.title text)
-    add_builtin("String.find_all", fn_str_find_all, 2, 2);      // (String.find_all text needle)
-    add_builtin("String.replace", fn_str_replace, 3, 3);        // (String.replace text old neo)
-    add_builtin("String.replace_all", fn_str_replace_all, 3, 3);// (String.replace_all text old neo)
-    add_builtin("String.substr", fn_str_substr, 2, 3);          // (String.substr text start [stop])
-    add_builtin("String.at", fn_str_at, 2, 2);                  // (String.at text index)
+    ELix::add_builtin("String.find", fn_str_find, 2, 2);              // (String.find text needle)
+    ELix::add_builtin("String.reverse", fn_str_reverse, 1, 1);        // (String.reverse text)
+    ELix::add_builtin("String.concat", fn_str_concat, 2, 2);          // (String.concat xtext ytext)
+    ELix::add_builtin("String.len", fn_str_len, 1, 1);                // (String.len text)
+    ELix::add_builtin("String.equal", fn_str_eq, 2, 2);               // (String.equal xtext ytext)
+    ELix::add_builtin("String.not_equal", fn_str_ne, 2, 2);           // (String.not_equal xtext ytext)
+    ELix::add_builtin("String.split", fn_str_split, 1, 2);            // (String.split text [delim])
+    ELix::add_builtin("String.startswith", fn_str_startswith, 2, 2);  // (String.startswith text prefix)
+    ELix::add_builtin("String.endswith", fn_str_endswith, 2, 2);      // (String.endswith text suffix)
+    ELix::add_builtin("String.ltrim", fn_str_ltrim, 1, 1);            // (String.ltrim text)
+    ELix::add_builtin("String.rtrim", fn_str_rtrim, 1, 1);            // (String.rtrim text)
+    ELix::add_builtin("String.trim", fn_str_trim, 1, 1);              // (String.trim text)
+    ELix::add_builtin("String.lower", fn_str_lower, 1, 1);            // (String.lower text)
+    ELix::add_builtin("String.upper", fn_str_upper, 1, 1);            // (String.upper text)
+    ELix::add_builtin("String.capitalize", fn_str_capitalize, 1, 1);  // (String.capitalize text)
+    ELix::add_builtin("String.title", fn_str_title, 1, 1);            // (String.title text)
+    ELix::add_builtin("String.find_all", fn_str_find_all, 2, 2);      // (String.find_all text needle)
+    ELix::add_builtin("String.replace", fn_str_replace, 3, 3);        // (String.replace text old neo)
+    ELix::add_builtin("String.replace_all", fn_str_replace_all, 3, 3);// (String.replace_all text old neo)
+    ELix::add_builtin("String.substr", fn_str_substr, 2, 3);          // (String.substr text start [stop])
+    ELix::add_builtin("String.at", fn_str_at, 2, 2);                  // (String.at text index)
 }
 
 // -*---------------*-
@@ -2868,9 +2869,9 @@ static Object fn_symbol_name(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_symbol(void){
-    add_builtin("Symbol.equal", fn_symbol_eq, 2, 2);            // (Symbol.equal xsym ysym)
-    add_builtin("Symbol.not_equal", fn_symbol_ne, 2, 2);        // (Symbol.not_equal xsym ysym)
-    add_builtin("Symbol.name", fn_symbol_name, 1, 1);           // (Symbol.name sym)
+    ELix::add_builtin("Symbol.equal", fn_symbol_eq, 2, 2);            // (Symbol.equal xsym ysym)
+    ELix::add_builtin("Symbol.not_equal", fn_symbol_ne, 2, 2);        // (Symbol.not_equal xsym ysym)
+    ELix::add_builtin("Symbol.name", fn_symbol_name, 1, 1);           // (Symbol.name sym)
 }
 
 // -*-------------*-
@@ -2902,8 +2903,8 @@ static Object fn_pair_value(const Vec<Object>& args, ELix* elix){
 }
 
 void ELix::initialize_pair(void){
-    add_builtin("Pair.key", fn_pair_key, 1, 1);             // (Pair.key obj)
-    add_builtin("Pair.value", fn_pair_value, 1, 1);         // (Pair.value obj)
+    ELix::add_builtin("Pair.key", fn_pair_key, 1, 1);             // (Pair.key obj)
+    ELix::add_builtin("Pair.value", fn_pair_value, 1, 1);         // (Pair.value obj)
 }
 
 // -*--------------*-
@@ -3188,22 +3189,22 @@ static Object fn_array_clear(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_array(void){
-    add_builtin("Array.find", fn_array_find, 2, 3);             // (Array.find xarr obj [from])
-    add_builtin("Array.reverse", fn_array_reverse, 1, 1);       // (Array.reverse xarr)
-    add_builtin("Array.concat", fn_array_concat, 2, 2);         // (Array.concat xarr yarr)
-    add_builtin("Array.len", fn_array_len, 1, 1);               // (Array.len xarr)
-    add_builtin("Array.slice", fn_array_slice, 2, 3);           // (Array.slice xarr start [stop])
-    add_builtin("Array.insert", fn_array_insert, 3, 3);         // (Array.insert xarr index obj)
-    add_builtin("Array.get", fn_array_get, 2, 2);               // (Array.get xarr index)
-    add_builtin("Array.set", fn_array_set, 3, 3);               // (Array.set xarr index obj)
-    add_builtin("Array.splice", fn_array_splice, 3, 3);         // (Array.splice xarr index yarr)
-    add_builtin("Array.any", fn_array_any, 2, 2);               // (Array.any xarr predicate)
-    add_builtin("Array.all", fn_array_all, 2, 2);               // (Array.all xarr predicate)
-    add_builtin("Array.sort", fn_array_sort, 2, 2);             // (Array.all xarr predicate)
-    add_builtin("Array.reduce", fn_array_reduce, 3, 3);         // (Array.reduce xarr fn init)
-    add_builtin("Array.push", fn_array_push, 2, 2);             // (Array.push xarr obj)
-    add_builtin("Array.pop", fn_array_pop, 1, 1);               // (Array.pop xarr)
-    add_builtin("Array.clear", fn_array_clear, 1, 1);           // (Array.clear xarr)
+    ELix::add_builtin("Array.find", fn_array_find, 2, 3);             // (Array.find xarr obj [from])
+    ELix::add_builtin("Array.reverse", fn_array_reverse, 1, 1);       // (Array.reverse xarr)
+    ELix::add_builtin("Array.concat", fn_array_concat, 2, 2);         // (Array.concat xarr yarr)
+    ELix::add_builtin("Array.len", fn_array_len, 1, 1);               // (Array.len xarr)
+    ELix::add_builtin("Array.slice", fn_array_slice, 2, 3);           // (Array.slice xarr start [stop])
+    ELix::add_builtin("Array.insert", fn_array_insert, 3, 3);         // (Array.insert xarr index obj)
+    ELix::add_builtin("Array.get", fn_array_get, 2, 2);               // (Array.get xarr index)
+    ELix::add_builtin("Array.set", fn_array_set, 3, 3);               // (Array.set xarr index obj)
+    ELix::add_builtin("Array.splice", fn_array_splice, 3, 3);         // (Array.splice xarr index yarr)
+    ELix::add_builtin("Array.any", fn_array_any, 2, 2);               // (Array.any xarr predicate)
+    ELix::add_builtin("Array.all", fn_array_all, 2, 2);               // (Array.all xarr predicate)
+    ELix::add_builtin("Array.sort", fn_array_sort, 2, 2);             // (Array.all xarr predicate)
+    ELix::add_builtin("Array.reduce", fn_array_reduce, 3, 3);         // (Array.reduce xarr fn init)
+    ELix::add_builtin("Array.push", fn_array_push, 2, 2);             // (Array.push xarr obj)
+    ELix::add_builtin("Array.pop", fn_array_pop, 1, 1);               // (Array.pop xarr)
+    ELix::add_builtin("Array.clear", fn_array_clear, 1, 1);           // (Array.clear xarr)
 }
 
 // -*-------------*-
@@ -3413,19 +3414,19 @@ static Object fn_list_clear(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_list(void){
-    add_builtin("List.find", fn_list_find, 2, 3);           // (List.find xs obj ][from])
-    add_builtin("List.reverse", fn_list_reverse, 1, 1);     // (List.reverse xs)
-    add_builtin("List.concat", fn_list_concat, 2, 2);       // (List.concat xs ys)
-    add_builtin("List.len", fn_list_len, 1, 1);             // (List.len xs)
-    add_builtin("List.head", fn_list_head, 1, 1);           // (List.head xs)
-    add_builtin("List.tail", fn_list_tail, 1, 1);           // (List.tail xs)
-    add_builtin("List.first", fn_list_first, 1, 1);         // (List.first xs)
-    add_builtin("List.last", fn_list_last, 1, 1);           // (List.last xs)
-    add_builtin("List.push", fn_list_push, 2, 2);           // (List.push xs obj)
-    add_builtin("List.pop", fn_list_pop, 1, 1);             // (List.pop xs)
-    add_builtin("List.insert", fn_list_insert, 3, 3);       // (List.insert xs idx obj)
-    add_builtin("List.remove", fn_list_remove, 2, 2);       // (List.insert xs idx)
-    add_builtin("List.clear", fn_list_clear, 1, 1);         // (List.clear xs)
+    ELix::add_builtin("List.find", fn_list_find, 2, 3);           // (List.find xs obj ][from])
+    ELix::add_builtin("List.reverse", fn_list_reverse, 1, 1);     // (List.reverse xs)
+    ELix::add_builtin("List.concat", fn_list_concat, 2, 2);       // (List.concat xs ys)
+    ELix::add_builtin("List.len", fn_list_len, 1, 1);             // (List.len xs)
+    ELix::add_builtin("List.head", fn_list_head, 1, 1);           // (List.head xs)
+    ELix::add_builtin("List.tail", fn_list_tail, 1, 1);           // (List.tail xs)
+    ELix::add_builtin("List.first", fn_list_first, 1, 1);         // (List.first xs)
+    ELix::add_builtin("List.last", fn_list_last, 1, 1);           // (List.last xs)
+    ELix::add_builtin("List.push", fn_list_push, 2, 2);           // (List.push xs obj)
+    ELix::add_builtin("List.pop", fn_list_pop, 1, 1);             // (List.pop xs)
+    ELix::add_builtin("List.insert", fn_list_insert, 3, 3);       // (List.insert xs idx obj)
+    ELix::add_builtin("List.remove", fn_list_remove, 2, 2);       // (List.insert xs idx)
+    ELix::add_builtin("List.clear", fn_list_clear, 1, 1);         // (List.clear xs)
 }
 
 // -*-------------*-
@@ -3626,18 +3627,18 @@ static Object fn_dict_items(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_dict(void){
-    add_builtin("Dict.find", fn_dict_find, 2, 2);           // (Dict.find xdict key)
-    add_builtin("Dict.concat", fn_dict_concat, 2, 2);       // (Dict.concat xdict ydict)
-    add_builtin("Dict.len", fn_dict_len, 1, 1);             // (Dict.len xdict)
-    add_builtin("Dict.get", fn_dict_get, 2, 2);             // (Dict.get xdict key)
-    add_builtin("Dict.set", fn_dict_set, 3, 3);             // (Dict.set xdict key val)
-    add_builtin("Dict.update", fn_dict_update, 3, 3);       // (Dict.update xdict key val)
-    add_builtin("Dict.keys", fn_dict_keys, 1, 1);           // (Dict.keys xdict)
-    add_builtin("Dict.values", fn_dict_values, 1, 1);       // (Dict.values xdict)
-    add_builtin("Dict.popitem", fn_dict_popitem, 2, 2);     // (Dict.popitem xdict key)
-    add_builtin("Dict.clear", fn_dict_clear, 1, 1);         // (Dict.clear xdict)
-    add_builtin("Dict.remove", fn_dict_remove, 2, 2);       // (Dict.remove xdict key)
-    add_builtin("Dict.items", fn_dict_items, 1, 1);         // (Dict.items xdict)
+    ELix::add_builtin("Dict.find", fn_dict_find, 2, 2);           // (Dict.find xdict key)
+    ELix::add_builtin("Dict.concat", fn_dict_concat, 2, 2);       // (Dict.concat xdict ydict)
+    ELix::add_builtin("Dict.len", fn_dict_len, 1, 1);             // (Dict.len xdict)
+    ELix::add_builtin("Dict.get", fn_dict_get, 2, 2);             // (Dict.get xdict key)
+    ELix::add_builtin("Dict.set", fn_dict_set, 3, 3);             // (Dict.set xdict key val)
+    ELix::add_builtin("Dict.update", fn_dict_update, 3, 3);       // (Dict.update xdict key val)
+    ELix::add_builtin("Dict.keys", fn_dict_keys, 1, 1);           // (Dict.keys xdict)
+    ELix::add_builtin("Dict.values", fn_dict_values, 1, 1);       // (Dict.values xdict)
+    ELix::add_builtin("Dict.popitem", fn_dict_popitem, 2, 2);     // (Dict.popitem xdict key)
+    ELix::add_builtin("Dict.clear", fn_dict_clear, 1, 1);         // (Dict.clear xdict)
+    ELix::add_builtin("Dict.remove", fn_dict_remove, 2, 2);       // (Dict.remove xdict key)
+    ELix::add_builtin("Dict.items", fn_dict_items, 1, 1);         // (Dict.items xdict)
 }
 
 // -*------------*-
@@ -3888,20 +3889,20 @@ static Object fn_hashset_issuperset(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_set(void){
-    add_builtin("Set.find", fn_hashset_find, 2, 2);                     // (Set.find xset needle)
-    add_builtin("Set.concat", fn_hashset_concat, 2, 2);                 // (Set.concat xset yset)
-    add_builtin("Set.len", fn_hashset_len, 1, 1);                       // (Set.len xset)
-    add_builtin("Set.add", fn_hashset_add, 2, 2);                       // (Set.add xset key)
-    add_builtin("Set.union", fn_hashset_union, 2, 2);                   // (Set.union xset yset)
-    add_builtin("Set.intersection", fn_hashset_intersection, 2, 2);     // (Set.intersection xset yset)
-    add_builtin("Set.difference", fn_hashset_difference, 2, 2);         // (Set.difference xset yset)
-    add_builtin("Set.symmetric_difference", fn_hashset_symmetric_difference, 2, 2); // (Set.symmetric_difference xset yset)
-    add_builtin("Set.clear", fn_hashset_clear, 1, 1);                   // (Set.clear xset)
-    add_builtin("Set.remove", fn_hashset_remove, 2, 2);                 // (Set.remove xset key)
-    add_builtin("Set.pop", fn_hashset_pop, 1, 1);                       // (Set.pop xset)
-    add_builtin("Set.isdisjoint?", fn_hashset_isdisjoint, 2, 2);        // (Set.isdisjoint? xset yset)
-    add_builtin("Set.issubset?", fn_hashset_issubset, 2, 2);            // (Set.issubset? xset yset)
-    add_builtin("Set.issuperset?", fn_hashset_issuperset, 2, 2);        // (Set.issuperset? xset yset)
+    ELix::add_builtin("Set.find", fn_hashset_find, 2, 2);                     // (Set.find xset needle)
+    ELix::add_builtin("Set.concat", fn_hashset_concat, 2, 2);                 // (Set.concat xset yset)
+    ELix::add_builtin("Set.len", fn_hashset_len, 1, 1);                       // (Set.len xset)
+    ELix::add_builtin("Set.add", fn_hashset_add, 2, 2);                       // (Set.add xset key)
+    ELix::add_builtin("Set.union", fn_hashset_union, 2, 2);                   // (Set.union xset yset)
+    ELix::add_builtin("Set.intersection", fn_hashset_intersection, 2, 2);     // (Set.intersection xset yset)
+    ELix::add_builtin("Set.difference", fn_hashset_difference, 2, 2);         // (Set.difference xset yset)
+    ELix::add_builtin("Set.symmetric_difference", fn_hashset_symmetric_difference, 2, 2); // (Set.symmetric_difference xset yset)
+    ELix::add_builtin("Set.clear", fn_hashset_clear, 1, 1);                   // (Set.clear xset)
+    ELix::add_builtin("Set.remove", fn_hashset_remove, 2, 2);                 // (Set.remove xset key)
+    ELix::add_builtin("Set.pop", fn_hashset_pop, 1, 1);                       // (Set.pop xset)
+    ELix::add_builtin("Set.isdisjoint?", fn_hashset_isdisjoint, 2, 2);        // (Set.isdisjoint? xset yset)
+    ELix::add_builtin("Set.issubset?", fn_hashset_issubset, 2, 2);            // (Set.issubset? xset yset)
+    ELix::add_builtin("Set.issuperset?", fn_hashset_issuperset, 2, 2);        // (Set.issuperset? xset yset)
 }
 
 // -*--------------------------------------------------------------------------*-

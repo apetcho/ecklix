@@ -1,6 +1,6 @@
 #include "elix.hpp"
 #include<cmath>
-
+#include<random>
 
 // -*--------------------------------------------------------------------------*-
 // -*- begin::namespace::ekasoft::elx                                         -*-
@@ -434,45 +434,78 @@ static Object fn_math_log1p(const Vec<Object>& args, ELix* elix){
 }
 
 // -*-
-void ELix::initialize_math(void){
+class Randomizer{
+public:
+    f64 nextFloat();
+    f64 nextFloat(f64 vmax);
+    f64 nextFloat(f64 vmin, f64 vmax);
+    i64 nextInt(i64 vmax);
+    i64 nextInt(i64 vmin, i64 vmax);
+
+private:
+    void setup(i64 vmin, i64 vmax);
+    void setup(f64 vmin, f64 vmax);
+};
+
+// -*-
+static Object fn_random_random(const Vec<Object>& args, ELix* elix){
     //! @todo
-    /*
-static Object fn_math_abs(const Vec<Object>& args);
-static Object fn_math_ceil(const Vec<Object>& args);
-static Object fn_math_round(const Vec<Object>& args);
-static Object fn_math_floor(const Vec<Object>& args);
-static Object fn_math_truncate(const Vec<Object>& args);
-static Object fn_math_sin(const Vec<Object>& args);
-static Object fn_math_cos(const Vec<Object>& args);
-static Object fn_math_tan(const Vec<Object>& args);
-static Object fn_math_asin(const Vec<Object>& args);
-static Object fn_math_acos(const Vec<Object>& args);
-static Object fn_math_atan(const Vec<Object>& args);
-static Object fn_math_atan2(const Vec<Object>& args);
-static Object fn_math_sinh(const Vec<Object>& args);
-static Object fn_math_cosh(const Vec<Object>& args);
-static Object fn_math_tanh(const Vec<Object>& args);
-static Object fn_math_asinh(const Vec<Object>& args);
-static Object fn_math_acosh(const Vec<Object>& args);
-static Object fn_math_atanh(const Vec<Object>& args);
-static Object fn_math_exp(const Vec<Object>& args);
-static Object fn_math_exp2(const Vec<Object>& args);
-static Object fn_math_expm1(const Vec<Object>& args);
-static Object fn_math_pow(const Vec<Object>& args);
-static Object fn_math_sqrt(const Vec<Object>& args);
-static Object fn_math_cbrt(const Vec<Object>& args);
-static Object fn_math_erf(const Vec<Object>& args);
-static Object fn_math_erfc(const Vec<Object>& args);
-static Object fn_math_tgamma(const Vec<Object>& args);
-static Object fn_math_lgamma(const Vec<Object>& args);
-static Object fn_math_isinf(const Vec<Object>& args);
-static Object fn_math_isfinite(const Vec<Object>& args);
-static Object fn_math_isnan(const Vec<Object>& args);
-static Object fn_math_log(const Vec<Object>& args);
-static Object fn_math_log2(const Vec<Object>& args);
-static Object fn_math_log10(const Vec<Object>& args);
-static Object fn_math_log1p(const Vec<Object>& args);
-    */
+    return Object();
+}
+
+// -*-
+static Object fn_random_nextFloat(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    return Object();
+}
+
+// -*-
+static Object fn_random_nextInteger(const Vec<Object>& args, ELix* elix){
+    //! @todo
+    return Object();
+}
+
+
+// -*-
+void ELix::initialize_math(void){
+    ELix::add_builtin("Math.abs", fn_math_abs, 1, 1);                   // (Math.abs x)
+    ELix::add_builtin("Math.ceil", fn_math_ceil, 1, 1);                 // (Math.ceil x)
+    ELix::add_builtin("Math.round", fn_math_round, 1, 1);               // (Math.round x)
+    ELix::add_builtin("Math.floor", fn_math_floor, 1, 1);               // (Math.floor x)
+    ELix::add_builtin("Math.truncate", fn_math_truncate, 1, 1);         // (Math.truncate x)
+    ELix::add_builtin("Math.sin", fn_math_sin, 1, 1);                   // (Math.sin x)
+    ELix::add_builtin("Math.cos", fn_math_cos, 1, 1);                   // (Math.cos x)
+    ELix::add_builtin("Math.tan", fn_math_tan, 1, 1);                   // (Math.tan x)
+    ELix::add_builtin("Math.asin", fn_math_asin, 1, 1);                 // (Math.asin x)
+    ELix::add_builtin("Math.acos", fn_math_acos, 1, 1);                 // (Math.acos x)
+    ELix::add_builtin("Math.atan", fn_math_atan, 1, 1);                 // (Math.atan x)
+    ELix::add_builtin("Math.atan2", fn_math_atan2, 1, 1);               // (Math.atan2 x)
+    ELix::add_builtin("Math.sinh", fn_math_sinh, 1, 1);                 // (Math.sinh x)
+    ELix::add_builtin("Math.cosh", fn_math_cosh, 1, 1);                 // (Math.cosh x)
+    ELix::add_builtin("Math.tanh", fn_math_tanh, 1, 1);                 // (Math.tanh x)
+    ELix::add_builtin("Math.asinh", fn_math_asinh, 1, 1);               // (Math.asinh x)
+    ELix::add_builtin("Math.acosh", fn_math_acosh, 1, 1);               // (Math.acosh x)
+    ELix::add_builtin("Math.atanh", fn_math_atanh, 1, 1);               // (Math.atanh x)
+    ELix::add_builtin("Math.exp", fn_math_exp, 1, 1);                   // (Math.exp x)
+    ELix::add_builtin("Math.exp2", fn_math_exp2, 1, 1);                 // (Math.exp2 x)
+    ELix::add_builtin("Math.expm1", fn_math_expm1, 1, 1);               // (Math.expm1 x)
+    ELix::add_builtin("Math.pow", fn_math_pow, 2, 2);                   // (Math.pow base expo)
+    ELix::add_builtin("Math.sqrt", fn_math_sqrt, 1, 1);                 // (Math.sqrt x)
+    ELix::add_builtin("Math.cbrt", fn_math_cbrt, 1, 1);                 // (Math.cbrt x)
+    ELix::add_builtin("Math.erf", fn_math_erf, 1, 1);                   // (Msth.erf x)
+    ELix::add_builtin("Math.erfc", fn_math_erfc, 1, 1);                 // (Math.erfc x)
+    ELix::add_builtin("Math.tgamma", fn_math_tgamma, 1, 1);             // (Math.tgamma x)
+    ELix::add_builtin("Math.lgamma", fn_math_lgamma, 1, 1);             // (Math.lgamma x)
+    ELix::add_builtin("Math.isinf?", fn_math_isinf, 1, 1);              // (Math.isinf? x)
+    ELix::add_builtin("Math.isfinite?", fn_math_isfinite, 1, 1);        // (Math.isfinite? x)
+    ELix::add_builtin("Math.isnan?", fn_math_isnan, 1, 1);              // (Math.isnan? x)
+    ELix::add_builtin("Math.log", fn_math_log, 1, 1);                   // (Math.log x)
+    ELix::add_builtin("Math.log2", fn_math_log2, 1, 1);                 // (Math.log2 x)
+    ELix::add_builtin("Math.log10", fn_math_log10, 1, 1);               // (Math.log10 x)
+    ELix::add_builtin("Math.log1p", fn_math_log1p, 1, 1);               // (Math.log1p x)
+    ELix::add_builtin("Random.random", fn_random_random, 0, 3);         // (Random.random [vmin vmax count])
+    ELix::add_builtin("Random.nextFloat", fn_random_nextFloat, 0, 2);   // (Random.nextFloat [vmin vmax])
+    ELix::add_builtin("Random.nextInteger", fn_random_nextInteger, 0, 2);//(Random.nextInteger [vmin vmax])
 }
 
 // -*--------------------------------------------------------------------------*-
