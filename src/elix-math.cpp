@@ -447,7 +447,15 @@ public:
         return result;
     }
 
-    f64 nextFloat(f64 vmax);
+    // -*-
+    f64 nextFloat(f64 vmax){
+        static constexpr f64 vmin = std::numeric_limits<f64>::min();
+        
+        f64 result{};
+        this->get(vmin, vmax, this->m_seed, result);
+        return result;
+    }
+
     f64 nextFloat(f64 vmin, f64 vmax);
     i64 nextInt();
     i64 nextInt(i64 vmax);
