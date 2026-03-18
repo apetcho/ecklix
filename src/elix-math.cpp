@@ -168,8 +168,14 @@ static Object fn_math_sinh(const Vec<Object>& args, ELix* elix){
 
 // -*-
 static Object fn_math_cosh(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.cosh num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.cosh");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.cosh num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().cosh();
+
+    return Object(result);
 }
 
 static Object fn_math_tanh(const Vec<Object>& args, ELix* elix){
