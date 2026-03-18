@@ -1,6 +1,7 @@
 #include "elix.hpp"
 #include<cmath>
 #include<random>
+#include<limits>
 #include<optional>
 
 // -*--------------------------------------------------------------------------*-
@@ -437,7 +438,15 @@ static Object fn_math_log1p(const Vec<Object>& args, ELix* elix){
 // -*-
 class Randomizer{
 public:
-    f64 nextFloat();
+    f64 nextFloat(){
+        static constexpr f64 vmin = std::numeric_limits<f64>::min();
+        static constexpr f64 vmax = std::numeric_limits<f64>::max();
+
+        f64 result{};
+        this->get(vmin, vmax, this->m_seed, result);
+        return result;
+    }
+
     f64 nextFloat(f64 vmax);
     f64 nextFloat(f64 vmin, f64 vmax);
     i64 nextInt();
