@@ -179,11 +179,227 @@ std::string ELix::readfile(const char* filename){
 
 // -*-
 std::string ELix::input(void){
-    // - readString 
-    // - readArray
-    // - readDict
-    // - readSet
-    // - readPair
+    // static i64 linenum = 0;
+    // static i64 promptId = 0;
+    
+    // auto prompt = [](i64 id){
+    //     std::cout << "\x1b[32melix\x1b[m:\x1b[33m" << id << "\x1b[m>> ";
+    // };
+
+    std::string result{};
+    struct Reader{
+        std::string read(void){
+            std::string src{};
+            char c{};
+            std::cin >> c;
+            switch(c){
+            case '"':
+                src = this->read_string();
+                break;
+            case '(':
+                src = this->read_list();
+                break;
+            case '[':
+                src = this->read_array();
+                break;
+            case '{':
+                src = this->read_dict();
+                break;
+            case '#':
+                std::cin >> c;
+                if(c=='{'){ src = this->read_set(); }
+                else if(c=='('){ src = this->read_pair();}
+                else{ src = this->read_literal(); }
+            default:
+                src = this->read_literal();
+                break;
+            }
+
+            return src;
+        }
+    private:
+        std::string read_string(){
+            std::string text{"\""};
+            char c{};
+            std::cin >> c;
+            while(c!='"'){
+                if(c=='\\'){
+                    std::cin >> c;
+                    switch(c){
+                    case 'n': text += "\n"; break;
+                    case 't': text += "\t"; break;
+                    case 'r': text += "\r"; break;
+                    case 'f': text += "\f"; break;
+                    case '"': text += "\""; break;
+                    default: text += c; break;
+                    }
+                }else{
+                    text += c;
+                }
+                std::cin >> c;
+                //if(std::cin.eof()){ break; }
+            }
+            text += "\"";
+            // if(!std::cin.eof()){
+            //     text += "\"";
+            // }
+            return text;
+        };
+
+        // -*-
+        std::string read_array(){
+            std::string text{"["};
+            std::stack<char> mystack{};
+            mystack.push('[');
+            char c{};
+            std::cin >> c;
+            while(true){
+                if(mystack.empty()){ break; }
+                else if(c=='['){
+                    mystack.push('[');
+                    text += this->read_array();
+                }
+                else if(c==']'){
+                    text += "]";
+                    mystack.pop();
+                }
+                else if(c=='"'){ text += this->read_string(); }
+                else if(c=='('){text += this->read_list(); }
+                else if(c=='{'){text += this->read_dict(); }
+                else if(c=='#'){
+                    std::cin >> c;
+                    if(c=='{'){ text += this->read_set(); }
+                    else if(c=='('){ text += this->read_pair(); }
+                    else{ text += this->read_literal(); }
+                }else{ text += c; }
+                std::cin >> c;
+            }
+            return text;
+        };
+
+        // -*-
+        std::string read_list(){
+            std::string text{"("};
+            std::stack<char> mystack{};
+            mystack.push('(');
+            char c{};
+            std::cin >> c;
+            while(true){
+                if(mystack.empty()){ break; }
+                else if(c=='('){
+                    mystack.push('(');
+                    text += this->read_list();
+                }
+                else if(c==')'){
+                    text += ")";
+                    mystack.pop();
+                }
+                else if(c=='"'){ text += this->read_string(); }
+                else if(c=='['){text += this->read_array(); }
+                else if(c=='{'){text += this->read_dict(); }
+                else if(c=='#'){
+                    std::cin >> c;
+                    if(c=='{'){ text += this->read_set(); }
+                    else if(c=='('){ text += this->read_pair(); }
+                    else{ text += this->read_literal(); }
+                }else{ text += c; }
+                std::cin >> c;
+            }
+            return text;
+        };
+
+        std::string read_pair(){
+            std::string text{"#("};
+            std::stack<char> mystack{};
+            mystack.push('(');
+            char c{};
+            std::cin >> c;
+            while(true){
+                if(mystack.empty()){ break; }
+                else if(c==')'){
+                    mystack.pop();
+                    text += ")";
+                }
+                else if(c=='['){ text += this->read_array(); }
+                else if(c=='"'){ text += this->read_string(); }
+                else if(c=='('){text += this->read_list(); }
+                else if(c=='{'){text += this->read_dict(); }
+                else if(c=='#'){
+                    std::cin >> c;
+                    if(c=='{'){ text += this->read_set(); }
+                    else if(c=='('){text += this->read_pair(); }
+                    else{ text += this->read_literal(); }
+                }else{ text += c; }
+                std::cin >> c;
+            }
+            return text;
+        };
+
+        std::string read_dict(){
+            std::string text{"{"};
+            std::stack<char> mystack{};
+            mystack.push('{');
+            char c{};
+            std::cin >> c;
+            while(true){
+                if(mystack.empty()){ break; }
+                else if(c=='{'){
+                    mystack.push('{');
+                    text += this->read_dict();
+                }else if(c=='}'){
+                    mystack.pop();
+                    text += "}";
+                }
+                else if(c=='"'){ text += this->read_string(); }
+                else if(c=='('){text += this->read_list(); }
+                else if(c=='['){text += this->read_array(); }
+                else if(c=='#'){
+                    std::cin >> c;
+                    if(c=='{'){ text += this->read_set(); }
+                    else if(c=='('){ text += this->read_pair(); }
+                    else{ text += this->read_literal(); }
+                }else{ text += c; }
+                std::cin >> c;
+            }
+            return text;
+        };
+
+        std::string read_set(){
+            std::string text{"#{"};
+            std::stack<char> mystack{};
+            mystack.push('{');
+            char c{};
+            std::cin >> c;
+            while(true){
+                if(mystack.empty()){ break; }
+                else if(c=='}'){
+                    mystack.pop();
+                    text += "}";
+                }
+                else if(c=='['){ text += this->read_array(); }
+                else if(c=='"'){ text += this->read_string(); }
+                else if(c=='('){text += this->read_list(); }
+                else if(c=='{'){text += this->read_dict(); }
+                else if(c=='#'){
+                    std::cin >> c;
+                    if(c=='{'){ text += this->read_set(); }
+                    else if(c=='('){ text += this->read_pair(); }
+                    else{ text += this->read_literal(); }
+                }else{ text += c; }
+                std::cin >> c;
+            }
+            return text;
+        };
+
+        std::string read_literal(){
+            std::string text{};
+            std::getline(std::cin >> std::ws, text);
+            return text;
+        };
+    };
+
+    Reader reader{};
+    return reader.read();
 }
 
 void ELix::add_builtin_module(const Module& mymodule){
