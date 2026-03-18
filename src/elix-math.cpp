@@ -480,8 +480,13 @@ public:
         this->get(vmin, vmax, this->m_seed, result);
         return result;
     }
-    
-    i64 nextInt(i64 vmin, i64 vmax);
+
+    // -*-
+    i64 nextInt(i64 vmin, i64 vmax){
+        i64 result{};
+        this->get(vmin, vmax, this->m_seed, result);
+        return result;
+    }
 
     void seed(i64 val){ this->m_seed = val; }
 
