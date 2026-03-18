@@ -463,7 +463,16 @@ public:
         return result;
     }
 
-    i64 nextInt();
+    // -*-
+    i64 nextInt(){
+        static constexpr i64 vmin = std::numeric_limits<i64>::min();
+        static constexpr i64 vmax = std::numeric_limits<i64>::max();
+
+        i64 result{};
+        this->get(vmin, vmax, this->m_seed, result);
+        return result;
+    }
+
     i64 nextInt(i64 vmax);
     i64 nextInt(i64 vmin, i64 vmax);
 
