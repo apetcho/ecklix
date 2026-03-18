@@ -56,11 +56,19 @@ static Object fn_math_floor(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_math_truncate(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.truncate num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.truncate");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.truncate num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().truncate();
+
+    return Object(result);
 }
 
+// -*-
 static Object fn_math_sin(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
