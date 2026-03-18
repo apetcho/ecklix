@@ -286,9 +286,9 @@ static Object fn_math_sqrt(const Vec<Object>& args, ELix* elix){
     ELix::validate_argc(pred, "Math.sqrt");
     pred = args[0].is_number();
     ELix::validate_type(pred, "`(Math.sqrt num)'", "expect argument `num' to be a number.");
-    //auto result = args[0].as_number().sqrt();
+    auto result = args[0].as_number().sqrt();
 
-    return Object();
+    return Object(result);
 }
 
 static Object fn_math_cbrt(const Vec<Object>& args, ELix* elix){
