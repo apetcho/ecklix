@@ -3888,24 +3888,20 @@ static Object fn_hashset_issuperset(const Vec<Object>& args, ELix* elix){
 
 // -*-
 void ELix::initialize_set(void){
-    //! @todo
-    /*
-static Object fn_hashset_find(const Vec<Object>& args){}                // (Set.find xset needle)
-static Object fn_hashset_concat(const Vec<Object>& args){}              // (Set.concat xset yset)
-static Object fn_hashset_len(const Vec<Object>& args){}                 // (Set.len xset)
-static Object fn_hashset_add(const Vec<Object>& args){}                 // (Set.add xset yset)
-static Object fn_hashset_union(const Vec<Object>& args){}               // (Set.union xset yset)
-static Object fn_hashset_intersection(const Vec<Object>& args){}        // (Set.intersection xset yset)
-static Object fn_hashset_symmetric_difference(const Vec<Object>& args){}// (Set.symetric_difference xset yset)
-static Object fn_hashset_difference(const Vec<Object>& args){}          // (Set.difference xset yset)
-static Object fn_hashset_clear(const Vec<Object>& args){}               // (Set.clear xset)
-static Object fn_hashset_remove(const Vec<Object>& args){}              // (Set.remove xset key)
-static Object fn_hashset_pop(const Vec<Object>& args){}                 // (Set.pop xset)
-static Object fn_hashset_isdisjoint(const Vec<Object>& args){}          // (Set.isdisjoint xset yset)
-static Object fn_hashset_issubset(const Vec<Object>& args){}            // (Set.issubset xset yset)
-static Object fn_hashset_issuperset(const Vec<Object>& args){}          // (Set.issuperset xset yset)
-    */
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    add_builtin("Set.find", fn_hashset_find, 2, 2);                     // (Set.find xset needle)
+    add_builtin("Set.concat", fn_hashset_concat, 2, 2);                 // (Set.concat xset yset)
+    add_builtin("Set.len", fn_hashset_len, 1, 1);                       // (Set.len xset)
+    add_builtin("Set.add", fn_hashset_add, 2, 2);                       // (Set.add xset key)
+    add_builtin("Set.union", fn_hashset_union, 2, 2);                   // (Set.union xset yset)
+    add_builtin("Set.intersection", fn_hashset_intersection, 2, 2);     // (Set.intersection xset yset)
+    add_builtin("Set.difference", fn_hashset_difference, 2, 2);         // (Set.difference xset yset)
+    add_builtin("Set.symmetric_difference", fn_hashset_symmetric_difference, 2, 2); // (Set.symmetric_difference xset yset)
+    add_builtin("Set.clear", fn_hashset_clear, 1, 1);                   // (Set.clear xset)
+    add_builtin("Set.remove", fn_hashset_remove, 2, 2);                 // (Set.remove xset key)
+    add_builtin("Set.pop", fn_hashset_pop, 1, 1);                       // (Set.pop xset)
+    add_builtin("Set.isdisjoint?", fn_hashset_isdisjoint, 2, 2);        // (Set.isdisjoint? xset yset)
+    add_builtin("Set.issubset?", fn_hashset_issubset, 2, 2);            // (Set.issubset? xset yset)
+    add_builtin("Set.issuperset?", fn_hashset_issuperset, 2, 2);        // (Set.issuperset? xset yset)
 }
 
 // -*--------------------------------------------------------------------------*-
