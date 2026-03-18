@@ -3446,9 +3446,20 @@ static Object fn_dict_find(const Vec<Object>& args, ELix* elix){
     return result;
 }
 
+// -*-
 static Object fn_dict_concat(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.concat xdict ydict)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Dict.concat");
+    pred = (args[0].is_dict() && args[1].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.concat xdict ydict)'", "expect `xdict' and `ydict' to be Dict objects."
+    );
+    auto xdict = args[0].as_dict();
+    auto ydict = args[1].as_dict();
+
+    xdict.concat(ydict);
+    return Object(xdict);
 }
 
 static Object fn_dict_len(const Vec<Object>& args, ELix* elix){
