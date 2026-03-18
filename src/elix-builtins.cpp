@@ -3572,11 +3572,22 @@ static Object fn_dict_popitem(const Vec<Object>& args, ELix* elix){
     return Object(xdict);
 }
 
+// -*-
 static Object fn_dict_clear(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Dict.clear xdict)
+    auto pred = (args.size()==2);
+    ELix::validate_argc(pred, "Dict.clear");
+    pred = (args[0].is_dict());
+    ELix::validate_type(
+        pred, "`(Dict.clear xdict)'", "expect `xdict' to be a Dict object."
+    );
+    auto xdict = args[0].as_dict();
+    xdict.clear();
+
+    return Object(xdict);
 }
 
+// -*-
 static Object fn_dict_remove(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3600,7 +3611,7 @@ static Object fn_dict_update(const Vec<Object>& args){}     // (Dict.update xdic
 static Object fn_dict_keys(const Vec<Object>& args){}       // (Dict.keys xdict)
 static Object fn_dict_values(const Vec<Object>& args){}     // (Dict.values xdict)
 static Object fn_dict_popitem(const Vec<Object>& args){}    // (Dict.popitem xdict key)
-static Object fn_dict_clear(const Vec<Object>& args){}
+static Object fn_dict_clear(const Vec<Object>& args){}      // (Dict.clear xdict)
 static Object fn_dict_remove(const Vec<Object>& args){}
 static Object fn_dict_items(const Vec<Object>& args){}
     */
