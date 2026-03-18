@@ -3714,7 +3714,7 @@ static Object fn_hashset_union(const Vec<Object>& args, ELix* elix){
     // (Set.union xset yset)
     auto pred = (args.size()==2);
     ELix::validate_argc(pred, "Set.union");
-    pred = (args[0].is_set() && args[0].is_set());
+    pred = (args[0].is_set() && args[1].is_set());
     ELix::validate_type(
         pred, "`(Set.union xset yset)'",
         "expect arguments `xset' and `yset' to be Set objects."
@@ -3733,7 +3733,7 @@ static Object fn_hashset_intersection(const Vec<Object>& args, ELix* elix){
     // (Set.union xset yset)
     auto pred = (args.size()==2);
     ELix::validate_argc(pred, "Set.intersection");
-    pred = (args[0].is_set() && args[0].is_set());
+    pred = (args[0].is_set() && args[1].is_set());
     ELix::validate_type(
         pred, "`(Set.intersection xset yset)'",
         "expect arguments `xset' and `yset' to be Set objects."
@@ -3752,7 +3752,7 @@ static Object fn_hashset_symmetric_difference(const Vec<Object>& args, ELix* eli
     // (Set.symmetric_difference xset yset)
     auto pred = (args.size()==2);
     ELix::validate_argc(pred, "Set.symmetric_difference");
-    pred = (args[0].is_set() && args[0].is_set());
+    pred = (args[0].is_set() && args[1].is_set());
     ELix::validate_type(
         pred, "`(Set.symmetric_difference xset yset)'",
         "expect arguments `xset' and `yset' to be Set objects."
@@ -3771,7 +3771,7 @@ static Object fn_hashset_difference(const Vec<Object>& args, ELix* elix){
     // (Set.difference xset yset)
     auto pred = (args.size()==2);
     ELix::validate_argc(pred, "Set.difference");
-    pred = (args[0].is_set() && args[0].is_set());
+    pred = (args[0].is_set() && args[1].is_set());
     ELix::validate_type(
         pred, "`(Set.difference xset yset)'",
         "expect arguments `xset' and `yset' to be Set objects."
@@ -3817,11 +3817,22 @@ static Object fn_hashset_remove(const Vec<Object>& args, ELix* elix){
     return Object(xset);
 }
 
+// -*-
 static Object fn_hashset_pop(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Set.pop xset)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Set.pop");
+    pred = (args[0].is_set());
+    ELix::validate_type(
+        pred, "`(Set.pop xset)'", "expect arguments `xset' to be a Set object."
+    );
+
+    auto xset = args[0].as_set();
+    auto result = xset.pop();
+    return Object(result);
 }
 
+// -*-
 static Object fn_hashset_isdisjoint(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
@@ -3849,9 +3860,9 @@ static Object fn_hashset_union(const Vec<Object>& args){}               // (Set.
 static Object fn_hashset_intersection(const Vec<Object>& args){}        // (Set.intersection xset yset)
 static Object fn_hashset_symmetric_difference(const Vec<Object>& args){}// (Set.symetric_difference xset yset)
 static Object fn_hashset_difference(const Vec<Object>& args){}          // (Set.difference xset yset)
-static Object fn_hashset_clear(const Vec<Object>& args){}
-static Object fn_hashset_remove(const Vec<Object>& args){}
-static Object fn_hashset_pop(const Vec<Object>& args){}
+static Object fn_hashset_clear(const Vec<Object>& args){}               // (Set.clear xset)
+static Object fn_hashset_remove(const Vec<Object>& args){}              // (Set.remove xset key)
+static Object fn_hashset_pop(const Vec<Object>& args){}                 // (Set.pop xset)
 static Object fn_hashset_isdisjoint(const Vec<Object>& args){}
 static Object fn_hashset_issubset(const Vec<Object>& args){}
 static Object fn_hashset_issuperset(const Vec<Object>& args){}
