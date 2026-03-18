@@ -104,11 +104,19 @@ static Object fn_math_tan(const Vec<Object>& args, ELix* elix){
     return Object(result);
 }
 
+// -*-
 static Object fn_math_asin(const Vec<Object>& args, ELix* elix){
-    //! @todo
-    throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    // (Math.asin num)
+    auto pred = (args.size()==1);
+    ELix::validate_argc(pred, "Math.asin");
+    pred = args[0].is_number();
+    ELix::validate_type(pred, "`(Math.asin num)'", "expect argument `num' to be a number.");
+    auto result = args[0].as_number().asin();
+
+    return Object(result);
 }
 
+// -*-
 static Object fn_math_acos(const Vec<Object>& args, ELix* elix){
     //! @todo
     throw ELixError(Symbol{"NotImplementedError"}, __func__);
