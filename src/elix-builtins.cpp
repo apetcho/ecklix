@@ -2082,22 +2082,118 @@ struct Formatter{
     ~Formatter() = default;
 
     // -*-
-    std::string format(void) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::string format(void){
+        /*
+        (format "hello world: {(+ 3 (len xs))}")
+        (var x (range 10))
+        (format "x = {x}")   => x = (0 1 2 3 4 5 6 7 8 9)
+        */
+        std::stringstream ss;
+        this->m_pos = 0;
+        auto ptr = this->m_src.begin();
+        auto atEnd = [this, ptr]() {
+            return (ptr != this->m_src.end());
+        };
+        auto nextChar = [this, ptr]() mutable {
+            auto c = *ptr;
+            ptr++;
+            return c;
+        };
+        while(true){
+            if(atEnd()){ break; }
+            auto c = nextChar();
+            if(c=='\\'){
+                c = nextChar();
+                if(c=='{'){ ss << "{"; }
+                else if(c=='n'){ ss << "\n"; }
+                else if(c=='t'){ ss << "\t"; }
+                else if(c=='f'){ ss << "\f"; }
+                else if(c=='b'){ ss << "\b"; }
+                else if(c=='r'){ ss << "\r"; }
+                else{ ss << c; }
+            }
+            if(c=='{'){
+                std::stack<char> braces{};
+                braces.push('{');
+                std::string fmtspec{};
+                while(!braces.empty()){
+                    if(atEnd()){ break; }
+                    c = nextChar();
+                    if(c=='}'){ braces.pop();  continue; }
+                    if(c=='{'){ braces.push('{'); continue; }
+                    fmtspec += c;
+                }
+                auto pos = fmtspec.find(':');
+                char spec = '\0';
+                char justify = '\0';
+                i32 width = -1;
+                i32 prec = -1;
+                std::string code{};
+                if(pos != std::string::npos){
+                    code = fmtspec.substr(0, pos);
+                    fmtspec = fmtspec.substr((pos+1));
+                    auto check = [&fmtspec](char x) mutable {
+                        if(fmtspec.find(x)!=std::string::npos){
+                            auto idx = fmtspec.find(x);
+                            auto [[maybe_unused]] iter = fmtspec.begin()+idx;
+                            fmtspec.erase(iter);
+                            return true;
+                        }
+                        return false;
+                    };
+                    if(check('^')){ justify = '^'; }
+                    else if(check('<')){ justify = '<'; }
+                    else if(check('>')){ justify = '>'; }
+
+                    if(check('i')){ spec = 'i'; }
+                    else if(check('f')){ spec = 'f'; }
+                    else if(check('e')){ spec = 'e'; }
+                    else if(check('r')){ spec = 'r'; }
+                    else if(check('s')){ spec = 's'; }
+                    
+                    if(fmtspec.find('.')!=std::string::npos){
+                        auto idx = fmtspec.find('.');
+                        auto wstr = fmtspec.substr(0, idx);
+                        auto pstr = fmtspec.substr((idx+1));
+                        bool ok = (
+                            (wstr.length() > 0 && std::isdigit(wstr[0])) &&
+                            (pstr.length() > 0 && std::isdigit(pstr[0]))
+                        );
+                        if(ok){
+                            width = std::stoi(wstr);
+                            prec = std::stoi(pstr);
+                        }
+                    }
+                }
+                Tokenizer tokeinzer(code);
+                Parser parser(tokeinzer);
+                auto exprs = parser.parse();
+                Object obj{};
+                for(auto& expr: exprs){
+                    obj = expr->eval(m_elix);
+                }
+                spec = (spec == '\0' ? 's' : spec);
+                justify = (justify=='\0' ? '^' : justify);
+                ss << this->format(obj, spec, justify, width, prec);
+            }
+            else{
+                ss << c;
+            }
+        }
+        return ss.str();
     }
 
     const std::string& src(void) const;
 
 private:
     std::string m_src;
+    i32 m_pos;
     ELix* m_elix;
 
     // -*-
     // (format "Some fancy text with {var} embedded")
-    std::string format(const Object& obj, ELix* elix) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+    std::string format(const Object& obj) const{
+        return obj.str();
     }
 
     // SPEC:
@@ -2106,6 +2202,7 @@ private:
     //  'i': Integer
     //  's': String or Symbol
     //  'r': Raw string
+    // OR one of '<', '>', '^'
     // (format "var: {var:f}")
     // (format "var: {var:e}")
     // (format "var: {var:i}")
@@ -2113,8 +2210,50 @@ private:
     // (format "var: {var:r}")
     // (format "var: {var}")
     std::string format(const Object& obj, char spec) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+        bool isspec = !(std::string("<^>").find(spec)==std::string::npos);
+        if(isspec){
+            if(spec=='i' || spec=='f' || spec=='e'){
+                if(!obj.is_number()){
+                    std::stringstream ss;
+                    ss << "incorrect format specification '" << spec << "' for number. Object is ";
+                    ss << std::quoted(obj.type().str()) << " type.";
+                    throw ELixError(ELixError::TypeError, ss.str());
+                }
+                if(spec=='i'){
+                    std::stringstream ss;
+                    ss << obj.as_integer();
+                    return ss.str();
+                }
+                if(spec=='f'){
+                    std::stringstream ss;
+                    ss << obj.as_float();
+                    return ss.str();
+                }
+                std::stringstream ss;
+                ss << std::scientific << obj.as_float();
+                return ss.str();
+            }
+            if(spec=='s'){ return obj.str(); }
+            if(spec=='r'){ return obj.repr(); }
+        }else{
+            if(spec=='<'){
+                std::stringstream ss;
+                ss << std::left << obj.str();
+                return ss.str();
+            }
+            if(spec=='>'){
+                std::stringstream ss;
+                ss << std::right << obj.str();
+                return ss.str();
+            }
+            if(spec=='^'){
+                //! @note: implement a custom centering algorithm.
+                return obj.str();
+            }
+        }
+        std::stringstream ss;
+        ss << "unknown format specification: '" << spec << "'";
+        throw ELixError(ELixError::RuntimeError, ss.str());
     }
 
     // JUSTIFCATION:
@@ -2125,16 +2264,27 @@ private:
     // (format "var: {var:<i}")
     // (format "var: {var:>s}")
     std::string format(const Object& obj, char spec, char justify) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+        std::stringstream ss;
+        if(justify=='<'){ ss << std::left; }
+        else if(justify=='>'){ ss << std::right; }
+        else if(justify=='^'){ /* @todo: implement a custom centering algorithm. */}
+        else{
+            std::stringstream stream;
+            stream << "unknown format justification specifier '" << justify << "'";
+            throw ELixError(ELixError::RuntimeError, stream.str());
+        }
+        ss << this->format(obj, spec);
+        return ss.str();
     }
     
     // (format "var: {var:20s}")
     // (format "var: {var:20f}")
     // (format "var: {var:20i}")
     std::string format(const Object& obj, char spec, u32 width) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+        std::stringstream ss;
+        ss << std::setw(width);
+        ss << this->format(obj, spec);
+        return ss.str();
     }
 
     // (format "var: {var:20s}")
@@ -2144,51 +2294,59 @@ private:
     // (format "var: {var:>20.3f}")
     // (format "var: {var:^20i}")
     std::string format(const Object& obj, char spec_or_justify, u32 width, u32 prec) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+        std::stringstream ss;
+        ss << std::setw(width) << std::setprecision(prec);
+        ss << this->format(obj, spec_or_justify);
+        return ss.str();
     }
 
     // (format "var : {var:.3f")
     std::string format(const Object& obj, u32 width, u32 prec) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+        std::stringstream ss;
+        ss << std::setw(width) << std::setprecision(prec);
+        ss << obj.str();
+        return ss.str();
     }
     
     // (format "var: {var:^10.2f")
-    std::string format(const Object& obj, char spec, char justify, u32 width, u32 prec) const{
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
-    }
+    std::string format(const Object& obj, char spec, char justify, i32 width, i32 prec) const{
+        std::stringstream ss;
+        bool fspec{false};
+        bool fjust{false};
+        if(width > 0){ ss << std::setw(width); }
+        if(prec > 0){ ss << std::setprecision(prec); }
+        //ss << std::setw(width) << std::setprecision(prec);
+        if(std::string("<^>").find(justify)==std::string::npos){ fjust = true; }
+        else{
+            if(justify=='<'){ ss << std::left; }
+            else if(justify=='>'){ ss << std::right; }
+        }
+        try{
+            ss << this->format(obj, spec);
+        }
+        catch(...){
+            if(std::string("fires").find(spec)==std::string::npos){
+                fspec = true;
+            }else{
+                std::stringstream err;
+                err << "unexpected error occurred while formatting.";
+                throw ELixError(ELixError::RuntimeError, err.str());
+            }
+        }
+        std::stringstream err;
+        if(fspec){
+            err << "incorrect type specificcation '" << spec << "' found while formatting.";
+        }
+        if(fjust){
+            if(fspec){ err << "\nInvalid justication format '" << justify << "' found."; }
+            else{ err << "\nInvalid justication format '" << justify << "' found."; }
+        }
 
-    enum class Kind{
-        EOS,        // END_OF_STRING
-        LBRACE,     // '{'
-        RBRACE,     // '}'
-        SYMBOL,     // SYMBOL,
-        COLON,      // ':'
-        DOT,        // '.'
-        NUM,        // NUMBER
-        STR,        // STRING
-    };
-    struct Token{
-        Kind kind;
-        u32 row;
-        u32 col;
-        std::string lexeme;
-        i32 prec;
-        i32 width;
-        char justify;
-        char spec;
-    };
+        if(fspec || fjust){
+            throw ELixError(ELixError::RuntimeError, err.str());
+        }
 
-    Vec<Token> tokenize(void){
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
-    }
-
-    Object parse(const Vec<Token>& tokens){
-        //! @todo
-        throw ELixError(Symbol{"NotImplementedError"}, __func__);
+        return ss.str();
     }
 };
 
