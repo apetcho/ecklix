@@ -737,8 +737,10 @@ static Object fn_map(const Vec<Object>& args, ELix* elix){
             [[maybe_unused]] auto _ = std::transform(
                 iterable.as_string().text.begin(), iterable.as_string().text.end(),
                 iterable.as_string().text.begin(),
-                [&fun, elix](const Object& obj) mutable {
-                    return fun(Vec<Object>{obj}, elix);
+                [&fun, elix](const char& c) mutable {
+                    return fun(
+                        Vec<Object>{Object(String{std::string(1, c)})}, elix
+                    );
                 }
             );
             result = Object(iterable);
@@ -773,8 +775,10 @@ static Object fn_map(const Vec<Object>& args, ELix* elix){
             [[maybe_unused]] auto _ = std::transform(
                 iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
                 iterable.as_dict().hmap.begin(),
-                [&fun, elix](const Object& obj) mutable {
-                    return fun(Vec<Object>{obj}, elix);
+                [&fun, elix](const auto& obj) mutable {
+                    return fun(
+                        Vec<Object>{Object(Pair{obj.first, obj.second})}, elix
+                    );
                 }
             );
             result = Object(iterable);
@@ -785,8 +789,10 @@ static Object fn_map(const Vec<Object>& args, ELix* elix){
             [[maybe_unused]] auto _ = std::transform(
                 iterable.as_string().text.begin(), iterable.as_string().text.end(),
                 iterable.as_string().text.begin(),
-                [&fun, elix](const Object& obj) mutable {
-                    return fun(Vec<Object>{obj}, elix);
+                [&fun, elix](const char& c) mutable {
+                    return fun(
+                        Vec<Object>{Object(String{std::string(1, c)})}, elix
+                    );
                 }
             );
             result = Object(iterable);
@@ -821,8 +827,10 @@ static Object fn_map(const Vec<Object>& args, ELix* elix){
             [[maybe_unused]] auto _ = std::transform(
                 iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
                 iterable.as_dict().hmap.begin(),
-                [&fun, elix](const Object& obj) mutable {
-                    return fun(Vec<Object>{obj}, elix);
+                [&fun, elix](const auto& kv) mutable {
+                    return fun(
+                        Vec<Object>{Object(Pair{kv.first, kv.second})}, elix
+                    );
                 }
             );
             result = Object(iterable);
@@ -929,7 +937,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
             auto ptr = std::remove_if(
                 iterable.as_list().items.begin(), iterable.as_list().items.end(),
                 [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                    auto argv = Vec<Object>{};
+                    argv.push_back(obj);
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -940,7 +949,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
             auto ptr = std::remove_if(
                 iterable.as_set().hset.begin(), iterable.as_set().hset.end(),
                 [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                    auto argv = Vec<Object>{};
+                    argv.push_back(obj);
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -950,8 +960,9 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
         }else{
             auto ptr = std::remove_if(
                 iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
-                [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                [&fun, elix](const auto& kv) mutable {
+                    auto argv = Vec<Object>{};
+                    argv.push_back(Object(Pair{kv.first, kv.second}));
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -964,8 +975,9 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
         if(iterable.is_string()){
             auto ptr = std::remove_if(
                 iterable.as_string().text.begin(), iterable.as_string().text.end(),
-                [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                [&fun, elix](const char& c) mutable {
+                    auto argv = Vec<Object>{};
+                    argv.push_back(Object(String{std::string(1, c)}));
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -976,7 +988,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
             auto ptr = std::remove_if(
                 iterable.as_array().items.begin(), iterable.as_array().items.end(),
                 [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                    auto argv = Vec<Object>{};
+                    argv.push_back(obj);
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -987,7 +1000,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
             auto ptr = std::remove_if(
                 iterable.as_list().items.begin(), iterable.as_list().items.end(),
                 [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                    auto argv = Vec<Object>{};
+                    argv.push_back(obj);
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -998,7 +1012,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
             auto ptr = std::remove_if(
                 iterable.as_set().hset.begin(), iterable.as_set().hset.end(),
                 [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                    auto argv = Vec<Object>{};
+                    argv.push_back(obj);
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -1008,8 +1023,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
         }else{
             auto ptr = std::remove_if(
                 iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
-                [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                [&fun, elix](const auto& kv) mutable {
+                    auto argv = Vec<Object>{Object(Pair{kv.first, kv.second})};
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -1022,8 +1037,9 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
         if(iterable.is_string()){
             auto ptr = std::remove_if(
                 iterable.as_string().text.begin(), iterable.as_string().text.end(),
-                [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                [&fun, elix](const char& c) mutable {
+                    auto argv = Vec<Object>{};
+                    argv.push_back(Object(String{std::string(1, c)}));
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -1043,7 +1059,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
             auto ptr = std::remove_if(
                 iterable.as_list().items.begin(), iterable.as_list().items.end(),
                 [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                    auto argv = Vec<Object>{};
+                    argv.push_back(obj);
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -1054,7 +1071,8 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
             auto ptr = std::remove_if(
                 iterable.as_set().hset.begin(), iterable.as_set().hset.end(),
                 [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                    auto argv = Vec<Object>{};
+                    argv.push_back(obj);
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -1064,8 +1082,9 @@ static Object fn_filter(const Vec<Object>& args, ELix* elix){
         }else{
             auto ptr = std::remove_if(
                 iterable.as_dict().hmap.begin(), iterable.as_dict().hmap.end(),
-                [&fun, elix](const Object& obj) mutable {
-                    auto argv = Vec<Object>{obj};
+                [&fun, elix](const auto& kv) mutable {
+                    auto argv = Vec<Object>{};
+                    argv.push_back(Object(Pair{kv.first, kv.second}));
                     ELix::validate_predicate(fun, argv, elix, "filter");
                     return fun(argv, elix);
                 }
@@ -1421,10 +1440,10 @@ static Object fn_min(const Vec<Object>& args, ELix* elix){
             "expect `arg' to a List or an Array."
         );
         if(arg.is_array()){
-            ELix::validate_value(
-                (arg.as_array().len()!=0), "(min xarray)",
-                "cannot sort an empty array `xarray'."
-            );
+            // ELix::validate_value(
+            //     (arg.as_array().len()!=0), "(min xarray)",
+            //     "cannot sort an empty array `xarray'."
+            // );
             std::sort(
                 arg.as_array().items.begin(), arg.as_array().items.end(),
                 [](const Object& lhs, const Object& rhs){
@@ -1433,10 +1452,10 @@ static Object fn_min(const Vec<Object>& args, ELix* elix){
             );
             result = arg.as_array().items[0];
         }else{
-            ELix::validate_value(
-                (arg.as_list().len()!=0), "(min xlist)",
-                "cannot sort an empty list `xlist'."
-            );
+            // ELix::validate_value(
+            //     (arg.as_list().len()!=0), "(min xlist)",
+            //     "cannot sort an empty list `xlist'."
+            // );
             std::sort(
                 arg.as_list().items.begin(), arg.as_list().items.end(),
                 [](const Object& lhs, const Object& rhs){
@@ -1853,6 +1872,7 @@ static Object fn_print(const Vec<Object>& args, ELix* elix){
         if(i > 0){ std::cout << " "; }
         std::cout << args[i].str();
     }
+    return Object();
 }
 
 static Object fn_eprint(const Vec<Object>& args, ELix* elix){
@@ -1861,6 +1881,7 @@ static Object fn_eprint(const Vec<Object>& args, ELix* elix){
         if(i > 0){ std::cout << " "; }
         std::cerr << args[i].str();
     }
+    return Object();
 }
 
 static Object fn_input(const Vec<Object>& args, ELix* elix){
@@ -2135,7 +2156,7 @@ struct Formatter{
                     auto check = [&fmtspec](char x) mutable {
                         if(fmtspec.find(x)!=std::string::npos){
                             auto idx = fmtspec.find(x);
-                            auto [[maybe_unused]] iter = fmtspec.begin()+idx;
+                            auto iter = fmtspec.begin()+idx;
                             fmtspec.erase(iter);
                             return true;
                         }

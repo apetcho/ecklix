@@ -103,7 +103,7 @@ using usize = std::uint64_t;
 using isize = std::int64_t;
 
 using Context = std::shared_ptr<Env>;
-using Expression = std::unique_ptr<ExprBase>;
+using Expression = std::shared_ptr<ExprBase>;
 using Fn = std::function<Object(const Vec<Object>&, ELix*)>;
 //using Visitor = std::unique_ptr<ExprVisitor>;
 typedef ExprVisitor* Visitor;
@@ -396,7 +396,6 @@ struct Set final{
     Set intersection(const Set& rhs) const;
     Set difference(const Set& rhs) const;
     Set symmetric_difference(const Set& rhs) const;
-    Set difference(const Set& rhs) const;
     Set& clear(void);
     Set& remove(const Object& key);
     Object pop(void);
@@ -458,6 +457,9 @@ public:
 
     ~Object(); //{}
 
+    operator bool() const{
+        return as_bool();
+    }
     bool is_nil(void) const;
     bool is_bool(void) const;
     bool is_integer(void) const;
@@ -520,6 +522,10 @@ public:
 
     friend Object operator||(const Object& lhs, const Object& rhs);
     friend Object operator&&(const Object& lhs, const Object& rhs);
+    friend Object operator||(const Object& lhs, bool rhs);
+    friend Object operator||(bool lhs, const Object& rhs);
+    friend Object operator&&(const Object& lhs, bool rhs);
+    friend Object operator&&(bool lhs, const Object& rhs);
 
     Object logical_not(void) const;
     Object negate(void) const;
@@ -756,8 +762,18 @@ private:
 // -*- ELix : the interpreter -*-
 // ------------------------------
 class Module;
-class ModuleHash;
-class ModuleEqual;
+// class ModuleHash;
+// class ModuleEqual;
+
+class ModuleHash final{
+public:
+    size_t operator()(const Module& arg) const;
+};
+
+class ModuleEqual final{
+public:
+    bool operator()(const Module& lhs, const Module& rhs) const;
+};
 
 struct BreakSignal final {};
 struct ContinueSignal final {};
@@ -915,16 +931,6 @@ private:
     void configure(const Symbol& name);
     void configure(const std::string& filename);
     void configure(const fs::path& filepath);
-};
-
-class ModuleHash final{
-public:
-    size_t operator()(const Module& arg) const;
-};
-
-class ModuleEqual final{
-public:
-    bool operator()(const Module& lhs, const Module& rhs) const;
 };
 
 

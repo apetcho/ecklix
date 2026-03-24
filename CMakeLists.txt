@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}")
-
+#[[==
 find_package(Curses REQUIRED)
 add_library(Curses::Curses INTERFACE IMPORTED)
 set_target_properties(
@@ -22,3 +22,6 @@ function(make_exe_with_curses exe srcs)
 endfunction(make_exe_with_curses exe srcs)
 
 add_subdirectory(sandbox)
+==]]
+
+add_subdirectory(src)

@@ -563,10 +563,6 @@ bool operator>=(const Number& lhs, const Number& rhs){
     return !(lhs < rhs);
 }
 
-bool operator>=(const Number& lhs, const Number& rhs){
-    return !(lhs < rhs);
-}
-
 // -*-------------------------*-
 // -*- Symbol Implementation -*-
 // -*-------------------------*-
@@ -632,7 +628,11 @@ Lambda Lambda::clone(void) const{
     Lambda result{};
     result.named = this->named;
     result.params = this->params;
-    result.body = this->body;
+    result.body.clear(); // = this->body;
+    for(auto& expr: this->body){
+        result.body.push_back(expr);
+    }
+
     result.ctx = std::make_shared<Env>(*ctx);
 
     return std::move(result);
@@ -1236,6 +1236,7 @@ i64 String::find(const String& needle, i64 from) const{
     if(from==-1){
         auto pos = this->text.find_last_of(needle.text);
         if(pos==std::string::npos){ return -1; }
+        return static_cast<i64>(pos);
     }else{
         if(from < 0){
             std::stringstream ss;
@@ -1452,12 +1453,15 @@ String& String::replace(const String& old, const String& neo){
 }
 
 String& String::replace_all(const String& old, const String& neo){
-    std::replace(
-        this->text.begin(), this->text.end(),
-        old.text, neo.text
+    // std::replace(
+    //     this->text.begin(), this->text.end(),
+    //     old.text, neo.text
+    // );
+    throw ELixError(
+        ELixError::RuntimeError,
+        "'String::replace_all` not yet implemented"
     );
-
-    return *this;
+    // return *this;
 }
 
 
@@ -1658,6 +1662,7 @@ Vec<Pair> Dict::items(void) const {
         pair.val = Object(val);
         result.push_back(std::move(pair));
     };
+    return result;
 }
 
 // -*----------------------*-
@@ -1729,7 +1734,7 @@ Set Set::intersection(const Set& rhs) const{
     std::set_intersection(
         this->hset.begin(), this->hset.end(),
         rhs.hset.begin(), rhs.hset.end(),
-        std::back_inserter(result.hset)
+        std::inserter(result.hset, result.hset.begin())
     );
 
     return std::move(result);
@@ -1754,26 +1759,26 @@ Set Set::symmetric_difference(const Set& rhs) const{
     std::set_symmetric_difference(
         this->hset.begin(), this->hset.end(),
         rhs.hset.begin(), rhs.hset.end(),
-        std::back_inserter(result.hset)
+        std::inserter(result.hset, result.hset.begin())
     );
 
     return std::move(result);
 }
 
-Set Set::difference(const Set& rhs) const{
-    Set result{};
-    result.hset = {};
-    std::set_difference(
-        this->hset.begin(), this->hset.end(),
-        rhs.hset.begin(), rhs.hset.end(),
-        std::back_inserter(result.hset),
-        [](const Object& x, const Object& y){
-            return utils::Less()(x, y);
-        }
-    );
+// Set Set::difference(const Set& rhs) const{
+//     Set result{};
+//     result.hset = {};
+//     std::set_difference(
+//         this->hset.begin(), this->hset.end(),
+//         rhs.hset.begin(), rhs.hset.end(),
+//         std::back_inserter(result.hset),
+//         [](const Object& x, const Object& y){
+//             return utils::Less()(x, y);
+//         }
+//     );
 
-    return std::move(result);
-}
+//     return std::move(result);
+// }
 
 Set& Set::clear(void){
     this->hset.clear();
@@ -3338,6 +3343,22 @@ Object operator||(const Object& lhs, const Object& rhs){
 Object operator&&(const Object& lhs, const Object& rhs){
     auto ans = (lhs.as_bool() && rhs.as_bool());
     return Object(ans);
+}
+
+Object operator||(const Object& lhs, bool rhs){
+    return lhs.as_bool() || rhs;
+}
+
+Object operator||(bool lhs, const Object& rhs){
+    return lhs || rhs.as_bool();
+}
+
+Object operator&&(const Object& lhs, bool rhs){
+    return lhs.as_bool() && rhs;
+}
+
+Object operator&&(bool lhs, const Object& rhs){
+    return lhs && rhs.as_bool();
 }
 
 // -*-
