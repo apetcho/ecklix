@@ -20,3 +20,10 @@ impl Window {
     // pub fn scroll_left(...)
     // pub fn scroll_right(...)
 }
+
+#[derive(Debug, Clone)]
+pub enum WindowLayout {
+    Horizontal,
+    Vertical,
+    Tab,
+}
