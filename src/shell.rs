@@ -67,3 +67,40 @@ impl Shell {
     // fn execute_external_with_timeout(...)
     // fn resolve_path(...)              
 }
+
+
+// fn filetime_set_times(...)
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_cd(){}
+
+    #[test]
+    fn test_pwd(){}
+
+    #[test]
+    fn test_echo(){}
+
+    #[test]
+    fn test_ls(){}
+
+    #[test]
+    fn test_mkdir_rmdir(){}
+
+    #[test]
+    fn test_touch_cat(){}
+
+    #[test]
+    fn test_alias(){}
+
+    #[test]
+    fn test_history(){}
+
+    #[test]
+    fn test_export_env(){}
+}
