@@ -73,3 +73,8 @@ impl fmt::Display for Buffer {
     fn fmt(&self, f: mut fmt::Formatter<'_>) -> fmt::Result{}
 }
 */
+
+pub trait PositionExt {
+    fn to_byte_index(&self, rope: &Rope) -> (usize, usize);
+    fn from_byte_index(rope: &Rope, line: usize, col: usize) -> Self;
+}
