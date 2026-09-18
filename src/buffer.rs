@@ -19,3 +19,12 @@ pub struct Position{
     pub line: usize,
     pub col: usize,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub enum BufferMode {
+    #[default]
+    Normal,
+    Insert,
+    Visual,
+    Replace,
+}
