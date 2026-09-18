@@ -63,3 +63,15 @@ pub struct FontConfig {
     pub size: f32,
     pub ligatures: bool,
 }
+
+impl Default for FontConfig {
+    fn default() -> Self {
+        Self {
+            regular: "monospace".to_string(),
+            bold: "monospace-bold".to_string(),
+            italic: "monospace-italic".to_string(),
+            size: 12.0,
+            ligatures: true,
+        }
+    }
+}
