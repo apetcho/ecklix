@@ -54,3 +54,12 @@ pub struct EditorConfig {
     pub show_trailing_whitespace: bool,
     pub show_line_endings: bool,
 }
+
+#[derive(Debug, Clone)]
+pub struct FontConfig {
+    pub regular: String,
+    pub bold: String,
+    pub italic: String,
+    pub size: f32,
+    pub ligatures: bool,
+}
