@@ -36,3 +36,30 @@ pub struct Editor {
     running: bool,
     stdout: Stdout,
 }
+
+
+impl Editor {
+    // pub fn new(...)
+    // pub fn run(...)
+    // pub fn init_keybindings(...)
+    // pub fn poll_input(...)
+    // fn handle_key(...)
+    // fn render(...)
+    // fn draw_mode_line(...)
+    // fn draw_status_line(...)
+    // fn insert_char(...)
+    // fn enter_normal_mode(...)
+    // fn enter_insert_mode(...)
+    // fn enter_command_mode(...)
+    // fn open_minibuffer(...)
+    // fn save(...)
+    // fn next_buffer(...)
+    // fn prev_buffer(...)
+    // fn quit(...)
+    // fn cleanup(...)
+
+    // Helper methods
+    // fn buffer(...)
+    // fn buffer_mut(...)
+    // fn active_window(...)
+}
