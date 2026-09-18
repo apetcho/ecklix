@@ -24,3 +24,15 @@ pub struct ShellResult {
     pub success: bool,
     pub execution_time: Duration,
 }
+
+
+#[derive(Debug, Clone, Default)]
+pub struct Shell {
+    working_dir: PathBuf,
+    environment: HashMap<String, String>,
+    history: Vec<String>,
+    history_index: usize,
+    aliases: HashMap<String, String>,
+    process: HashMap<String, Child>,
+    process_counter: usize,
+}
