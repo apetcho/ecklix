@@ -78,3 +78,28 @@ pub trait PositionExt {
     fn to_byte_index(&self, rope: &Rope) -> (usize, usize);
     fn from_byte_index(rope: &Rope, line: usize, col: usize) -> Self;
 }
+
+/*
+impl PositionExt for Position {
+    ...
+}
+*/
+
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum WordDirection {
+    Forward,
+    Backward,
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_buffer_basic(){}
+
+    #[test]
+    fn test_insert_delete(){}
+}
