@@ -27,3 +27,9 @@ pub enum WindowLayout {
     Vertical,
     Tab,
 }
+
+impl Default for WindowLayout {
+    fn default() -> Self {
+        Self::Horizontal
+    }
+}
