@@ -15,3 +15,12 @@ pub struct ShellCommand {
     pub env_vars: HashMap<String, String>,
     pub timeout: Option<Duration>,
 }
+
+#[derive(Debug, Clone)]
+pub struct ShellResult {
+    pub stdout: String,
+    pub stderr: String,
+    pub exit_code: Option<i32>,
+    pub success: bool,
+    pub execution_time: Duration,
+}
