@@ -15,3 +15,13 @@ pub enum SyntaxMode {
     Plain,
     Auto,
 }
+
+impl SyntaxHighlighter {
+    // pub fn new(...)
+    // pub fn highlight(...)
+    // fn highlight_rust(...)
+    // fn highlight_node(...)
+    // fn highlight_lisp(...)
+    // fn highlight_plain(...)
+    // fn highlight_auto(...) 
+}
