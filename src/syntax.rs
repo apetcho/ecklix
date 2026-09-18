@@ -25,3 +25,9 @@ impl SyntaxHighlighter {
     // fn highlight_plain(...)
     // fn highlight_auto(...) 
 }
+
+impl Default for SyntaxHighlighter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
