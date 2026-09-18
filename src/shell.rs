@@ -36,3 +36,34 @@ pub struct Shell {
     process: HashMap<String, Child>,
     process_counter: usize,
 }
+
+
+impl Shell {
+    // pub fn new(...)
+    // pub fn execute(...)
+    // pub fn execute_with_timeout(...)
+    // pub fn execute_background(...)
+    // pub fn wait_for_process(...)
+    // pub fn kill_process(...)
+    // pub fn list_porcesses(...)
+    // pub fn get_working_dir(...)
+    // pub fn set_working_dir(...)
+    // pub fn get_environment(...)
+    // pub fn set_environment(...)
+    // pub fn remove_environment(...)
+    // pub fn add_alias(...)
+    // pub fn remove_alias(...)
+    // pub fn get_aliases(...)
+    // pub fn add_history(...)
+    // pub fn get_history(...)
+    // pub fn get_history_prev(...)
+    // pub fn get_history_next(...)
+    // pub fn clear_history(...)
+    // fn expand_aliases(...)
+    // fn parse_command(...)
+    // fn execute_builtin(...)
+    // fn copy_directory_recursive(...)
+    // fn execute_external(...)
+    // fn execute_external_with_timeout(...)
+    // fn resolve_path(...)              
+}
