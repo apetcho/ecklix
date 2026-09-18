@@ -14,3 +14,8 @@ pub struct Buffer {
 }
 
 
+#[derive(Debug, clone, PartialEq, Eq)]
+pub struct Position{
+    pub line: usize,
+    pub col: usize,
+}
