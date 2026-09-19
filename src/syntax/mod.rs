@@ -45,3 +45,10 @@ pub struct HighlightedToken {
     pub style: Style,
     pub token_type: String,
 }
+
+
+#[derive(Debug, Clone)]
+pub struct HighlightLine {
+    pub spans: Vec<HighlightSpan>,
+    pub line_number: usize,
+}
