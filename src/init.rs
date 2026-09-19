@@ -33,7 +33,7 @@ pub struct EditorConfig {
     pub minimap: bool,
     pub minimap_width: usize,
     pub syntax_highlighting: bool,
-    pub auto_ident: bool,
+    pub auto_indent: bool,
     pub wrap_lines: bool,
     pub search_case_sensitive: bool,
     pub search_whole_word: bool,
@@ -72,6 +72,41 @@ impl Default for FontConfig {
             italic: "monospace-italic".to_string(),
             size: 12.0,
             ligatures: true,
+        }
+    }
+}
+
+impl Default for EditorConfig {
+    fn default() -> Self {
+        Self {
+            tab_size: 4,
+            use_tabs: false,
+            line_numbers: true,
+            status_line: true,
+            mode_line: true,
+            minimap: true,
+            minimap_width: 30,
+            syntax_highlighting: true,
+            auto_indent: true,
+            wrap_lines: false,
+            search_case_sensitive: false,
+            search_whole_word: false,
+            max_buffer_size: 1024 * 1024 * 16,  // 16MB
+            undo_history_size: 1000,
+            save_backup: true,
+            backup_extension: ".bak".to_string(),
+            terminal_width: 80,
+            terminal_height: 24,
+            color_scheme: "default".to_string(),
+            fonts: FontConfig::default(),
+            mouse_support: true,
+            scroll_bar: true,
+            scroll_bar_width: 10,
+            buffer_tabs: true,
+            buffer_tab_width: 15,
+            show_whitespace: false,
+            show_trailing_whitespace: false,
+            show_line_endings: false,
         }
     }
 }
