@@ -69,3 +69,15 @@ pub enum SyntaxError {
     ParseError(String),
     TokenError(String),
 }
+
+
+impl std::fmt::Display for SyntaxError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SyntaxError::UnknownLanguage(lang) => write!(f, "Unknown language: {}", lang),
+            SyntaxError::FileReadError(msg) => write!(f, "File reade error: {}", msg),
+            SyntaxError::ParseError(msg) => write!(f, "Parse error: {}", msg),
+            SyntaxError::TokenError(msg) => write!(f, "Token error: {}", msg),
+        }
+    }
+}
