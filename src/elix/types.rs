@@ -82,3 +82,9 @@ impl From<bool> for Value {
         Value::Bool(b)
     }
 }
+
+impl From<i64> for Value {
+    fn from(num: i64) -> Self {
+        Value::Integer(num)
+    }
+}
