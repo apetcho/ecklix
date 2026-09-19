@@ -4,7 +4,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::env;
 
-use crate::elix::{ELixRuntime, Environment, Value, EvalError};
+use crate::elix::{ELixRuntime, Env, Value, EvalError};
 use crate::plugins::PluginManager;
 use crate::keymap::Keymap;
 use crate::buffer::{Buffer};
