@@ -34,3 +34,5 @@ pub struct Type {
     pub fields: Vec<String>,
     pub methods: HashMap<String, Box<dyn Fn(&mut Value, &[Value]) -> Result<Value, EvalEnv>>>,
 }
+
+impl Object for Type {}
