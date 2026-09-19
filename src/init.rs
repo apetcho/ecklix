@@ -110,3 +110,14 @@ impl Default for EditorConfig {
         }
     }
 }
+
+pub struct InitContext {
+    pub config: InitConfig,
+    pub elix_runtime: ELixRuntime,
+    pub plugin_manager: PluginManager,
+    pub keymap: Keymap,
+    pub syntax_highlighter: SyntaxHighlighter,
+    pub shell: Shell,
+    pub buffers: Vec<Buffer>,
+    pub working_directory: PathBuf,
+}
