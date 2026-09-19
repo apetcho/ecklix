@@ -8,3 +8,12 @@ pub struct Env {
     bindings: HashMap<String, Value>,
     id: usize,
 }
+
+impl Env {
+    // pub fn root(...)
+    // pub fn new(parent: Arc<Mutex<Env>>) -> Self
+    // pub fn bind(...)
+    // pub fn get(...)
+    // pub fn get_all(...)
+    // pub fn has(...)
+}
