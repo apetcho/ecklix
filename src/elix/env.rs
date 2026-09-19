@@ -10,8 +10,15 @@ pub struct Env {
 }
 
 impl Env {
-    // pub fn root(...)
-    // pub fn new(parent: Arc<Mutex<Env>>) -> Self
+    pub fn new_root() -> Self {
+        Self {
+            parent: None,
+            bindings: HashMap::new(),
+            id: 0,
+        }
+    }
+    
+    // pub fn new_child(parent: Arc<Mutex<Env>>) -> Self
     // pub fn bind(...)
     // pub fn get(...)
     // pub fn get_all(...)
