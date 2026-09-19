@@ -36,3 +36,43 @@ pub struct Type {
 }
 
 impl Object for Type {}
+
+/// Implementation of Value
+impl Value {
+    // pub fn nil(...)
+    // pub fn boolean(...)
+    // pub fn integer(...)
+    // pub fn float(...)
+    // pub fn character(...)
+    // pub fn string(...)
+    // pub fn symbol(...)
+    // pub fn keyword(...)
+    // pub fn list(...)
+    // pub fn array(...)
+    // pub fn hashmap(...)
+    // pub fn hashset(...)
+    // pub fn nil_p(...)
+    // pub fn boolean_p(...)
+    // pub fn integer_p(...)
+    // pub fn float_p(...)
+    // pub fn number_p(...)
+    // pub fn character_p(...)
+    // pub fn string_p(...)
+    // pub fn symbol_p(...)
+    // pub fn keyword_p(...)
+    // pub fn list_p(...)
+    // pub fn array_p(...)
+    // pub fn hashmap_p(...)
+    // pub fn hashset_p(...)
+    // pub fn function_p(...)
+    // pub fn macro_p(...)
+    // pub fn class_p(...)
+    // pub fn type_name(...)
+    // pub fn display(...)
+    // pub fn as_integer(...)
+    // pub fn as_float(...)
+    // pub fn as_string(...)
+    // pub fn as_list(...)
+    // pub fn as_array(...)
+    // pub fn as_hashmap(...)
+}
