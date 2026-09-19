@@ -67,3 +67,14 @@ pub struct PluginManagerConfig {
     pub enable_warning: bool,
     pub verbose_loading: bool,
 }
+
+impl Default for PluginManagerConfig {
+    fn default() -> Self {
+        Self {
+            auto_load: true,
+            load_order_mode: LoadOrderMode::Dependency,
+            enable_warning: true,
+            verbose_loading: false,
+        }
+    }
+}
