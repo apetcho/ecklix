@@ -42,3 +42,12 @@ pub struct Plugin {
     hooks: HashMap<String, Box<dyn Fn(&mut PluginManager) -> Result<()>>>,
     commands: HashMap<String, Box<dyn Fn(&mut PluginManager, &[String]) -> Result<Value>>>,
 }
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum PluginState {
+    NotLoaded,
+    Loading,
+    Loaded,
+    Error(String),
+    Disabled,
+}
