@@ -89,3 +89,12 @@ pub struct LanguageDetector {
     shebang_patterns: HashMap<String, String>,
     magic_patterns: HashMap<String, String>,
 }
+
+
+impl LanguageDetector {
+    // pub fn new(...)
+    // pub fn register_shebang(...)
+    // pub fn register_magic(...)
+    // pub fn detect_from_shebang(...)
+    // pub fn detect_from_magic(...)
+}
