@@ -33,3 +33,12 @@ impl Default for PlugingMetadata {
         }
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct Plugin {
+    metadata: PlugingMetadata,
+    source_path: PathBuf,
+    state: PluginState,
+    hooks: HashMap<String, Box<dyn Fn(&mut PluginManager) -> Result<()>>>,
+    commands: HashMap<String, Box<dyn Fn(&mut PluginManager, &[String]) -> Result<Value>>>,
+}
