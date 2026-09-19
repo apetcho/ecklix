@@ -81,3 +81,6 @@ impl std::fmt::Display for SyntaxError {
         }
     }
 }
+
+
+impl std::error::Error for SyntaxError {}
