@@ -32,3 +32,8 @@ impl SyntaxHighlighter {
     // pub fn highlight_text(...)
     // pub fn get_style_for_token(...)
 }
+
+pub trait SyntaxParser: Send + Sync {
+    fn parse(&self, text: &str) -> Result<Vec<HighlightedToken>, SyntaxError>;
+    fn language(&self) -> &str;
+}
