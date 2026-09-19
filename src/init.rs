@@ -178,3 +178,8 @@ impl InitManager {
     // pub fn save_config(...)
     // fn serialize_config(...)
 }
+
+/// Extension trait for parsing elix config
+pub trait ELixConfigParser{
+    fn parse_config(&self, content: &str, context: &mut InitContext) -> Result<(), EvalError>;
+}
