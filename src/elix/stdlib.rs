@@ -119,3 +119,13 @@ pub fn load_standard_library(env: &mut Env){
     env.bind("inspect", Value::Symbol("inspect".to_string()));
     env.bind("dump", Value::Symbol("dump".to_string()));
 }
+
+// Helper functions for standar library
+// pub fn string_to_int(...)
+// pub fn float_to_int(...)
+// pub fn int_to_float(...)
+// pub fn is_even(...)
+// pub fn is_odd(...)
+// pub fn is_positive(...)
+// pub fn is_negative(...)
+// pub fn is_zero(...)
