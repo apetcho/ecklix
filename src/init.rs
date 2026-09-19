@@ -183,3 +183,50 @@ impl InitManager {
 pub trait ELixConfigParser{
     fn parse_config(&self, content: &str, context: &mut InitContext) -> Result<(), EvalError>;
 }
+
+// impl ELixConfigParser for InitManager {}
+
+// Uitliy functions for configuration
+// pub fn get_ecklix_home() -> PathBuf{}
+// pub fn get_plugin_path() -> PathBuf{}
+// pub fn get_package_path() -> PathBuf{}
+// pub fn get_cache_path() -> PathBuf{}
+// pub fn get_load_path() -> Pathbuf{}
+
+// configuration valiation
+// pub fn validate_config(config: &EditorConfig) -> Vec<String>
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_init_context_creation(){}
+
+    #[test]
+    fn test_editor_config_defaults(){}
+
+    #[test]
+    fn test_validate_config_valid(){}
+
+    #[test]
+    fn test_validate_config_invalid(){}
+
+    #[test]
+    fn test_get_ecklix_home(){}
+
+    #[test]
+    fn test_plugin_and_packag_path(){}
+
+    #[test]
+    fn test_add_buffer(){}
+
+    #[test]
+    fn test_add_syntax_mode(){}
+
+    #[test]
+    fn test_add_plugin(){}
+
+    #[test]
+    fn test_get_working_directory(){}
+}
