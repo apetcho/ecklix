@@ -84,3 +84,8 @@ impl std::fmt::Display for SyntaxError {
 
 
 impl std::error::Error for SyntaxError {}
+
+pub struct LanguageDetector {
+    shebang_patterns: HashMap<String, String>,
+    magic_patterns: HashMap<String, String>,
+}
