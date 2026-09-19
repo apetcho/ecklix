@@ -152,3 +152,12 @@ impl InitContext {
     // pub fn get_buffers(...)
     // pub fn get_buffers_mut(...)
 }
+
+pub struct InitManager {
+    config_dir: PathBuf,
+    data_dir: PathBuf,
+    init_file: PathBuf,
+    elix_init_file: PathBuf,
+    plugin_dir: PathBuf,
+    package_dir: PathBuf,
+}
