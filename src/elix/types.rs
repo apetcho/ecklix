@@ -27,3 +27,10 @@ pub struct EnvRef {
 
 #[derive(Debug, Clone)]
 pub trait Object: std::fmt::Display + Send + Sync {}
+
+#[derive(Debug, Clone)]
+pub struct Type {
+    pub name: String,
+    pub fields: Vec<String>,
+    pub methods: HashMap<String, Box<dyn Fn(&mut Value, &[Value]) -> Result<Value, EvalEnv>>>,
+}
