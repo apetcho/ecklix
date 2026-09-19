@@ -52,3 +52,11 @@ pub struct HighlightLine {
     pub spans: Vec<HighlightSpan>,
     pub line_number: usize,
 }
+
+
+#[derive(Debug, Clone)]
+pub struct HighlightSpan {
+    pub start: usize,
+    pub end: usize,
+    pub style: Style,
+}
