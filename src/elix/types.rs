@@ -94,3 +94,9 @@ impl From<f64> for Value {
         Value::Float(num)
     }
 }
+
+impl From<String> for Value {
+    fn from(s: String) -> Self {
+        Value::String(s)
+    }
+}
