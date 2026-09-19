@@ -76,3 +76,9 @@ impl Value {
     // pub fn as_array(...)
     // pub fn as_hashmap(...)
 }
+
+impl From<bool> for Value {
+    fn from(b: bool) -> Self {
+        Value::Bool(b)
+    }
+}
