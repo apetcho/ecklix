@@ -18,3 +18,9 @@ pub enum Value {
     Class(String, Vec<String>, HashMap<String, (String, Vec<Value>)>),
     Closure(String, Vec<String>, Vec<Form>, EnvRef),
 }
+
+#[derive(Debug, Clone)]
+pub struct EnvRef {
+    pub id: usize,
+    pub data: std::sync::Arc<Env>,
+}
