@@ -19,3 +19,16 @@ pub struct SyntaxHighlighter {
     parsers: HashMap<String, Box<dyn SyntaxParser>>,
     file_extensions: HashMap<String, String>,
 }
+
+impl SyntaxHighlighter {
+    // pub fn new(...)
+    // pub fn set_colorscheme(...)
+    // pub fn get_colorscheme(...)
+    // pub fn register_parser(...)
+    // pub fn get_parser(...)
+    // pub fn register_extension(...)
+    // pub fn detect_language(...)
+    // pub fn highlight_file(...)
+    // pub fn highlight_text(...)
+    // pub fn get_style_for_token(...)
+}
