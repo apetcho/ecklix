@@ -17,3 +17,9 @@ impl Env {
     // pub fn get_all(...)
     // pub fn has(...)
 }
+
+impl Default for Env {
+    fn default() -> Self {
+        Self::root()
+    }
+}
