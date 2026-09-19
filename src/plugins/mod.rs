@@ -59,3 +59,11 @@ pub struct PluginManager {
     plugin_dir: PathBuf,
     config: PluginManagerConfig,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PluginManagerConfig {
+    pub auto_load: bool,
+    pub load_order_mode: LoadOrderMode,
+    pub enable_warning: bool,
+    pub verbose_loading: bool,
+}
