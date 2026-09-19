@@ -161,3 +161,20 @@ pub struct InitManager {
     plugin_dir: PathBuf,
     package_dir: PathBuf,
 }
+
+impl InitManager {
+    // pub fn new(...)
+    // pub fn get_config_dir(...)
+    // pub fn get_data_dir(...)
+    // pub fn get_init_dir(...)
+    // pub fn get_elix_init_file(...)
+    // pub fn get_plugin_dir(...)
+    // pub fn get_package_dir(...)
+    // pub fn init_directories(...)
+    // pub fn load_init(...)
+    // fn parse_init_file(...)
+    // fn create_default_init(...)
+    // fn load_elix_config(...)
+    // pub fn save_config(...)
+    // fn serialize_config(...)
+}
