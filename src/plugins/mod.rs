@@ -51,3 +51,11 @@ pub enum PluginState {
     Error(String),
     Disabled,
 }
+
+#[derive(Debug, Clone)]
+pub struct PluginManager {
+    plugins: HashMap<String, Plugin>,
+    loaded_plugins: Vec<String>,
+    plugin_dir: PathBuf,
+    config: PluginManagerConfig,
+}
