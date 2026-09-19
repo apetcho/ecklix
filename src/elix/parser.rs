@@ -157,3 +157,31 @@ struct Parser<'a> {
     token: &'a [Token],
     pos: usize,
 }
+
+impl<'a> Parser<'a> {
+    // fn new(...)
+    // fn has_next(...)
+    // fn peek(...)
+    // fn next(...)
+    // fn parse_form(...)
+    // fn parse_dot_form(...)
+    // fn parse_list(...)
+    // fn parse_fun(...)        // defun
+    // fn parse_macro(...)      // defmacro
+    // fn parse_define(...)     // defparameter
+    // fn parse_let(...)
+    // fn parse_if(...)
+    // fn parse_cond(...)
+    // fn parse_match(...)
+    // fn parse_for(...)
+    // fn parse_while(...)
+    // fn parse_lambda(...)
+    // fn parse_class(...)
+    // fn parse_import(...)
+    // fn parse_export(...)
+    // fn parse_package(...)
+    // fn parse_case(...)
+    // fn parse_try(...)
+    // fn parse_with(...)
+    // fn atom_to_value(...)
+}
