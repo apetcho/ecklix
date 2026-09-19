@@ -22,3 +22,14 @@ pub struct ELixRuntime {
     loaded_packages: Arc<RwLock<Vec<String>>>,
     function_table: Arc<RwLock<HashMap<String, Box<dyn Fn(&EvalEnv, Vec<Value>) -> Result<Value, EvalError>>>>>,
 }
+
+impl ELixRuntime {
+    // pub fn new(...)
+    // pub fn register_stdlib(...)
+    // pub fn eval(...)
+    // pub fn define_function(...)
+    // pub fn load_file(...)
+    // pub fn get_package(...)
+    // pub fn list_packages(...)
+    // pub fn list_loaded_packages(...)
+}
