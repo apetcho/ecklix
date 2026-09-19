@@ -88,3 +88,9 @@ impl From<i64> for Value {
         Value::Integer(num)
     }
 }
+
+impl From<f64> for Value {
+    fn from(num: f64) -> Self {
+        Value::Float(num)
+    }
+}
