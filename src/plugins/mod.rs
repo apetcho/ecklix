@@ -78,3 +78,22 @@ impl Default for PluginManagerConfig {
         }
     }
 }
+
+pub type Value = serde_json::Value;
+
+impl Plugin {
+    // pub fn new(...)
+    // pub fn metadata(...)
+    // pub fn metadata_mut(...)
+    // pub fn source_path(...)
+    // pub fn state(...)
+    // pub fn set_state(...)
+    // pub fn is_loaded(...)
+    // pub fn is_enabled(...)
+    // pub fn register_hook(...)
+    // pub fn register_command(...)
+    // pub fn hooks(...)
+    // pub fn commands(...)
+    // pub fn get_config(...)
+    // pub fn set_config(...)
+}
