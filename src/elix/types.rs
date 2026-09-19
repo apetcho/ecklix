@@ -24,3 +24,6 @@ pub struct EnvRef {
     pub id: usize,
     pub data: std::sync::Arc<Env>,
 }
+
+#[derive(Debug, Clone)]
+pub trait Object: std::fmt::Display + Send + Sync {}
