@@ -30,3 +30,9 @@ impl Default for Env {
         Self::root()
     }
 }
+
+impl PartialEq for Env {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
