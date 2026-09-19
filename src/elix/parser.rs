@@ -128,3 +128,21 @@ pub enum Form {
     },
     Other(String, Vec<Form>),
 }
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Token {
+    Atom(String),
+    LParen,
+    RParen,
+    Quote,
+    Backquote,
+    Comma,
+    Hash,
+    String(String),
+    Char(char),
+    Keyword(String),
+    Comment,
+    Semicolon,
+    Dot,
+    Colon,
+}
