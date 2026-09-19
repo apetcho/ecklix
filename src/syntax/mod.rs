@@ -37,3 +37,11 @@ pub trait SyntaxParser: Send + Sync {
     fn parse(&self, text: &str) -> Result<Vec<HighlightedToken>, SyntaxError>;
     fn language(&self) -> &str;
 }
+
+
+#[derive(Debug, Clone)]
+pub struct HighlightedToken {
+    pub range: std::ops::Range<usize>,
+    pub style: Style,
+    pub token_type: String,
+}
