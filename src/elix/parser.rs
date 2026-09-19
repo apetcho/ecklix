@@ -146,3 +146,14 @@ pub enum Token {
     Dot,
     Colon,
 }
+
+// pub fn parse(...)
+// fn tokenize(...)
+// fn parse_string(...)
+// fn parse_character(...)
+// fn skip_matching(...)
+
+struct Parser<'a> {
+    token: &'a [Token],
+    pos: usize,
+}
