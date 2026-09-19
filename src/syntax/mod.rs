@@ -60,3 +60,12 @@ pub struct HighlightSpan {
     pub end: usize,
     pub style: Style,
 }
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum SyntaxError {
+    UnknownLanguage(String),
+    FileReadError(String),
+    ParseError(String),
+    TokenError(String),
+}
