@@ -132,3 +132,21 @@ impl PluginManager {
     // fn clone_plugin_to_dir(...)
     // fn get_plugin_path(...)
 }
+
+// pub fn create_plugin_template(...)
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_plugin_manager_creation(){}
+
+    #[test]
+    fn test_plugin_metada_parsing(){}
+
+    #[test]
+    fn test_plugin_template_creation(){}
+}
