@@ -121,3 +121,34 @@ pub struct InitContext {
     pub buffers: Vec<Buffer>,
     pub working_directory: PathBuf,
 }
+
+impl InitContext {
+    // pub fn new(...)
+    // pub fn get_working_directory(...)
+    // pub fn set_working_directory(...)
+    // pub fn add_buffer(...)
+    // pub fn get_buffer(...)
+    // pub fn get_buffer_mut(...)
+    // pub fn add_syntax_mode(...)
+    // pub fn get_syntax_mode(...)
+    // pub fn add_plugin(...)
+    // pub fn remove_plugin(...)
+    // pub fn get_plugins(...)
+    // pub fn add_elix_form(...)
+    // pub fn execute_elix_form(...)
+    // pub fn add_package_dependency(...)
+    // pub fn get_package_dependencies(...)
+    // pub fn get_keymap(...)
+    // pub fn get_keymap_mut(...)
+    // pub fn get_editor_config(...)
+    // pub fn get_editor_config_mut(...)
+    // pub fn get_elix_runtime(...)
+    // pub fn get_elix_runtime_mut(...)
+    // pub fn get_plugin_manager(...)
+    // pub fn get_plugin_manager_mut(...)
+    // pub fn get_syntax_highlighter(...)
+    // pub fn get_shell(...)
+    // pub fn get_shell_mut(...)
+    // pub fn get_buffers(...)
+    // pub fn get_buffers_mut(...)
+}
