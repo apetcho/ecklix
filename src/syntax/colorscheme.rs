@@ -16,3 +16,15 @@ pub struct ColorScheme {
     pub waring_style: Style,
     pub info_style: Style,
 }
+
+
+impl ColorScheme {
+    // pub fn new(...)
+}
+
+// pub fn onedark() -> ColorScheme {}
+// pub fn kanagawa() -> ColorScheme {}
+// pub fn nightfox() -> ColorScheme {}
+// pub fn dracula() -> ColorScheme {}
+// pub fn solarized() -> ColorScheme {}
+// pub fn _() -> ColorScheme {}
