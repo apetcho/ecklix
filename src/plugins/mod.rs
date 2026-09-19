@@ -17,3 +17,19 @@ pub struct PlugingMetadata {
     pub load_order: i32,
     pub config: HashMap<String, String>,
 }
+
+impl Default for PlugingMetadata {
+    fn default() -> Self {
+        Self {
+            name: String::new(),
+            version: "0.0.0".to_string(),
+            description: None,
+            author: None,
+            license: None,
+            dependencies: Vec::new(),
+            enabled: true,
+            load_order: 0,
+            config: HashMap::new(),
+        }
+    }
+}
