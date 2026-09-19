@@ -49,3 +49,13 @@ trait EnvExt {
 }
 
 // impl EnvExt for Env {}
+
+// Add Display implementation for Form
+// impl std::fmt::Display for Form {}
+
+// Add From implementation for Form
+impl From<Value> for Form {
+    fn from(value: Value) -> Self {
+        Form::Atom(value)
+    }
+}
