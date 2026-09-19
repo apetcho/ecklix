@@ -1,0 +1,259 @@
+;;; -----------------------------------------------------------------
+;;; EckLix default configuration
+;;; Version: 0.0.1
+;;; -----------------------------------------------------------------
+
+;; ---------------- Basic Editor Settings ---------------------------
+(define editor-name "EckLix")
+(define editor-version "0.0.1")
+(define user-theme "default")
+(define font-size 12)
+(define default-encoding "UTF-8")
+
+;; ---------------- Display & Appearance ----------------------------
+
+(define syntax-highlighting true)
+(define line-numbers true)
+(define show-whitespace false)
+(define auto-save-interval 60)
+(define auto-save-enabled true)
+(define tab-size 4)
+(define indent-size 4)
+(define smart-indent true)
+(define auto-complete true)
+(define auto-complete-delay 300)
+
+;; ---------------- Shell Integration -------------------------------
+
+(define shell-working-dir "~/projects")
+(define shell-history-file "~/.ecklix/history")
+
+; Environment variables for the shell
+(export ECKLIX_EDITOR "ecklix")
+(export ECKLIX_VERSION "0.0.1")
+(export ECKLIX_THEME "default")
+
+; Shell aliases
+(alias ll "ls -la")
+(alias lt "ls -lt")
+(alias gs "git status")
+(alias ga "git add")
+(alias gp "git push")
+(alias gl "git pull")
+
+;; ---------------- Package Management ------------------------------
+
+; Load core packages
+(import "core:buffer" "buffer-new" "buffer-save" "buffer-close")
+(import "core:syntax" "syntax-highlight" "syntax-mode")
+(import "core::shell" "shell-exec" "shell-run")
+(import "core::keymap" "keybind" "macro-def")
+
+; Load optional packages (if available)
+(import "packages:completion" "complete-word" "complete-symbol")
+(import "packages:indent" "auto-indent" "smart-tab")
+(import "packages:search" "search-buffer" "search-file")
+
+;; ----------------- Key Bindings -----------------------------------
+
+; Navigation
+(keybind "ctrl+n" "next-buffer")
+(keybind "ctrl+p" "prev-buffer")
+(keybind "ctrl+f" "next-window")
+(keybind "ctrl+b" "prev-window")
+(keybind "ctrl+left" "prev-window")
+(keybind "ctrl+right" "next-window")
+(keybind "ctrl+up" "scroll-up")
+(keybind "ctrl+down" "scroll-down")
+
+; Editing
+(keybind "ctrl+a" "beginning-of-line")
+(keybind "ctrl+e" "end-of-line")
+(keybind "ctrl+k" "kill-line")
+(keybind "ctrl+u" "undo")
+(keybind "ctrl+y" "redo")
+(keybind "ctrl+w" "kill-word")
+(keybind "ctrl+d" "delete-char")
+(keybind "ctrl+h" "backspace")
+
+; File operations
+(keybind "ctrl+s" "save-buffer")
+(keybind "ctrl+x ctrl+s" "save-buffer")
+(keybind "ctrl+x ctrl+f" "find-file")
+(keybind "ctrl+x ctrl+w" "write-file")
+(keybind "ctrl+x ctrl+c" "exit")
+
+; Window Management
+(keybind "ctrl+x 1" "delete-other-windows")
+(keybind "ctrl+x 2" "split-window-vertically")
+(keybind "ctrl+x 3" "split-window-horizontally")
+(keybind "ctrl+x o" "other-window")
+(keybind "ctrl+x s" "save-some-buffers")
+
+; Search & Replace
+(keybind "ctrl+s" "isearch-forward")
+(keybind "ctrl+r" "isearch-backward")
+(keybind "ctrl+h ctrl+f" "query-replace")
+(keybind "ctrl+h ctrl+r" "query-replace-regexp")
+
+; Help
+(keybind "ctrl+g" "help")
+(keybind "ctrl+x ctrl+h" "help")
+
+;; ---------------- Macro -------------------------------------------
+
+; Define useful macros
+(macro save-and-exit ()
+    "Save all buffers and exit."
+    (progn
+        (save-buffer)
+        (exit)))
+
+(macro find-and-edit (filename)
+    "Find file and open in editor"
+    (progn
+        (find-file ,filename)
+        (goto-line 1)))
+
+(macro run-rust-project ()
+    "Run the current project"
+    (progn
+        (shell-exec "cargo build")
+        (shell-exec "cargo run")))
+
+(macro format-code ()
+    "Format current buffer"
+    (progn
+        (indent-region (point-min) (point-max))
+        (save-buffer)))
+
+;; ---------------- Theme Definition --------------------------------
+
+; Define a simple theme structure
+(class theme-default (foreground background cursor)
+    "Default theme"
+    (
+        (set-foreground (fn (color) (set-theme-foreground color)))
+        (set-background (fn (color) (set-theme-background color)))
+        (set-cursor (fn (color) (set-theme-cursor color)))
+    ))
+
+;
+(define theme-foreground "#c0c0c0")
+(define theme-background "#1e1e1e")
+(define theme-current "#00ff00")
+(define theme-comment "#7f7f7f")
+(define theme-string "#ce9178")
+(define theme-keyword "#569cd6")
+(define theme-function "#dcdcaa")
+(define theme-number "#b5cea8")
+
+;; ---------------- Plugin Configuration ----------------------------
+
+; Define plugin settings
+(define plugin-completion-enabled true)
+(define plugin-completion-trigger-char ".")
+(define plugin-completion-min-length 2)
+
+(define plugin-indent-enabled true)
+(define plugin-indent-mode "smart")
+
+(define plugin-search-enabled true)
+(define plugin-search-path "~")
+
+;; ---------------- Custom Functions --------------------------------
+
+; Helper function to check file existence
+(fun file-exists (path)
+    "Check if a file exists at the given path"
+    (if (system (format "test -f {path}"))
+        true
+        false))
+
+;; Helper function to get current time
+(fun current-time-string ()
+    "Return current time as a string"
+    (shell-exec "date '+%Y-%m-%d %H:%M:%S'"))
+
+
+; Helper function to get working directory
+(fun working-directory ()
+    "Return current working directory"
+    (shell-exec "pwd"))
+
+
+;; ---------------- Initialization Hooks ----------------------------
+
+; Run on startup
+(fun on-startup ()
+    "Execute on editor startup"
+    (progn
+        (if (file-exists "~/.ecklix/history")
+            (shell-run "car ~/.ecklix/history")
+            (print "Welcome to ECKLIX!"))
+        (print (format "ecklix version {editor-version}"))
+        (var cwd (working-directory))
+        (print (format "Working directory: {cwd}"))))
+
+;; ---------------- Run on first save -------------------------------
+(fun on-first-save (buffer-name)
+    "Execute on first save of a buffer"
+    (print (format "First save: {buffer-name}")))
+
+
+;; ---------------- Startup Message ---------------------------------
+
+(fun display-Welcome ()
+    "Display the welcome banner"
+    (print "
+Welcome to EckLix!
+------------------
+A modern, extensible editor build with Rust.
+
+Quick start:
+    - :help for documentation
+    - i to enter insert mode
+    - ESC to return to normal mode
+    - :w to save
+    - :q to quit
+    
+Enjoy hacking!"))
+
+
+;; ---------------- Final Initialization ----------------------------
+
+; Load configuration
+(when (file-exists "~/.ecklix/config.elx")
+    (load "~/.ecklix/config.elx"))
+
+; Apply default configuration
+(apply-config)
+
+; Run on startup hooks
+(on-startup)
+
+; Display welcome message
+(when startup-message
+    (display-welcome))
+
+; Print configuration summary
+(fun print-confi-summary ()
+    "Print a summary of the current configuration"
+    (print (format "Theme: {user-theme}"))
+    (print (format "Font size: {font-size:d}"))
+    (print (format "Tab size: {tab-size:d}"))
+    (var flag (if syntax-highlighting "enabled" "disabled"))
+    (print (format "Syntax highlighting: {flag}"))
+    (var flag (if auto-save-enabled "enabled" "disabled"))
+    (print (format "Auto-save: {flag}"))
+    (print (format "Shell working directory: {shell-working-dir}")))
+
+
+; Print summary if debug mode is enabled
+(when debug-mode
+    (print-config-summary))
+
+; Finalization
+(print "Configuration loaded successfully!")
+(print "Type :help for available commands.")
+(print "Happy Hacking!")
