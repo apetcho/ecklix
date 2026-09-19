@@ -100,3 +100,9 @@ impl From<String> for Value {
         Value::String(s)
     }
 }
+
+impl From<&str> for Value {
+    fn from(s: &str) -> Self {
+        Value::String(s.to_string())
+    }
+}
